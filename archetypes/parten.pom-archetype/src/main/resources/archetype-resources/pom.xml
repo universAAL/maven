@@ -46,9 +46,10 @@
 	
 	<properties>
 		<!-- Default configuration for compiler source and target JVM -->
-		<maven.compile.source>${default.jvm.version}</maven.compile.source>
-		<maven.compile.target>${default.jvm.version}</maven.compile.target>
-		<gforge.project>${gforge.short.project.name}</gforge.project>
+		<maven.compile.source>1.5</maven.compile.source>
+		<maven.compile.target>1.5</maven.compile.target>
+		<!-- this is the shor gforge project identifier, used to construct URLs -->
+		<gforge.project>change_me</gforge.project>
 		<svn.trunk>scm:svn:http://forge.universaal.org/svn/${gforge.project}/trunk</svn.trunk>
 		<gforge.base>http://forge.universaal.org/gf/project/${gforge.project}</gforge.base>
 	<!-- <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> -->
