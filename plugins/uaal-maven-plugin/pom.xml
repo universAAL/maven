@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.universAAL.support</groupId>
+		<artifactId>support.pom</artifactId>
+		<version>0.0.1</version>
+		<relativePath>../pom/pom.xml</relativePath>
+	</parent>
+	<packaging>maven-plugin</packaging>
+	<artifactId>uaal-maven-plugin</artifactId>
+	<version>0.1.0-SNAPSHOT</version>
+	<name>uAAL Maven Plugin</name>
+	<description>Maven plugin for resolution and running uAAL artifacts</description>
+	<url />
+
+	<properties>
+		<mavenVersion>2.2.1</mavenVersion>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-plugin-api</artifactId>
+			<version>${mavenVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-artifact</artifactId>
+			<version>${mavenVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-artifact-manager</artifactId>
+			<version>${mavenVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.shared</groupId>
+			<artifactId>maven-dependency-tree</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-dependency-plugin</artifactId>
+			<version>2.0</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.twdata.maven</groupId>
+			<artifactId>mojo-executor</artifactId>
+			<version>1.5</version>
+		</dependency>
+
+		<!--
+			<dependency> <groupId>org.ops4j.pax.url</groupId>
+			<artifactId>pax-url-mvn</artifactId> <version>1.3.5</version>
+			</dependency>
+		-->
+
+		<!--
+			<dependency> <groupId>org.universAAL.support</groupId>
+			<artifactId>artifact.resolver</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
+			<classifier>jar-with-dependencies</classifier> </dependency>
+		-->
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<inherited>true</inherited>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
