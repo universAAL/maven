@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -922,7 +923,7 @@ public class DependencyTreeBuilder {
 		    Set dependencyArtifacts = project.getDependencyArtifacts();
 
 		    if (dependencyArtifacts == null) {
-			dependencyArtifacts = new HashSet();
+			dependencyArtifacts = new LinkedHashSet();
 			List dependencies = project.getDependencies();
 			for (Object depObj : dependencies) {
 			    Dependency dep = (Dependency) depObj;
