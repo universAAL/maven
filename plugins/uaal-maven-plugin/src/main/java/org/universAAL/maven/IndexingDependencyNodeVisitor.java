@@ -1,20 +1,9 @@
 package org.universAAL.maven;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.factory.ArtifactFactory;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Profile;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectBuilder;
-import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.apache.maven.shared.dependency.tree.traversal.DependencyNodeVisitor;
 
@@ -49,112 +38,9 @@ public class IndexingDependencyNodeVisitor extends FilteringVisitorSupport
 
     private int depthLevel = 0;
 
-    public IndexingDependencyNodeVisitor(Log log,
-	    ArtifactFactory artifactFactory,
-	    MavenProjectBuilder mavenProjectBuilder, List remoteRepositories,
-	    ArtifactRepository localRepository, boolean throwExceptionOnConflict) {
-	super(log, artifactFactory, mavenProjectBuilder, remoteRepositories,
-		localRepository, throwExceptionOnConflict);
+    public IndexingDependencyNodeVisitor(Log log) {
+	super(log);
     }
-
-    // Gathering information about runtime dependencies is no longer needed
-    // because they are handled by the recurse method itself.
-    //	
-    // protected List getRuntimeDeps(DependencyNode node) {
-    // try {
-    // List runtimeDeps = new ArrayList();
-    // Artifact nodeArtifact = node.getArtifact();
-    // Artifact pomArtifact = artifactFactory.createArtifact(nodeArtifact
-    // .getGroupId(), nodeArtifact.getArtifactId(), nodeArtifact
-    // .getVersion(), "", "pom");
-    // MavenProject pomProject = mavenProjectBuilder.buildFromRepository(
-    // pomArtifact, remoteRepositories, localRepository);
-    // List profiles = pomProject.getModel().getProfiles();
-    // if (profiles != null) {
-    // for (Object profileObj : profiles) {
-    // Profile profile = (Profile) profileObj;
-    // if (UAAL_RUNTIME_PROFILE.equals(profile.getId())) {
-    // List deps = profile.getDependencies();
-    // if (deps != null) {
-    // for (Object depObj : deps) {
-    // Dependency dep = (Dependency) depObj;
-    // Artifact runtimeArtifact = artifactFactory
-    // .createArtifact(dep.getGroupId(), dep
-    // .getArtifactId(), dep
-    // .getVersion(), dep.getScope(),
-    // dep.getType());
-    // DependencyNode runtimeDepNode = new DependencyNode(
-    // runtimeArtifact);
-    // runtimeDeps.add(runtimeDepNode);
-    // }
-    // }
-    // }
-    // }
-    // }
-    // return runtimeDeps;
-    // } catch (ProjectBuildingException e) {
-    // throw new RuntimeException(e);
-    // }
-    // }
-    //
-    // private void handleConflict(DependencyNode node, DependencyNode
-    // runtimeDep,
-    // String artifactStrVersionLess) {
-    // DependencyNode conflictedNode = (DependencyNode) nodesByArtifactId
-    // .get(versionsByArtifactId.get(artifactStrVersionLess));
-    // int conflictedDepth = conflictedNode.getParent().getDepth();
-    // DependencyNode omittedNode = null;
-    // DependencyNode keptNode = null;
-    // node.addChild(runtimeDep);
-    // if (node.getDepth() < conflictedDepth) {
-    // omittedNode = conflictedNode;
-    // node.addChild(runtimeDep);
-    // keptNode = runtimeDep;
-    // } else {
-    // keptNode = conflictedNode;
-    // node.addChild(runtimeDep);
-    // omittedNode = runtimeDep;
-    // }
-    // throwConflictException(
-    // omittedNode,
-    // keptNode,
-    // "There is a conflict between RUNTIME kept dependency %s and RUNTIME omitted dependency %s");
-    // /*
-    // * If exception was not thrown than conflict can be resolved
-    // */
-    // omittedNode.getParent().removeChild(omittedNode);
-    // }
-    //
-    // private void indexRuntimeDeps(DependencyNode node) {
-    // try {
-    // List runtimeDeps = getRuntimeDeps(node);
-    // for (Object runtimeDepObj : runtimeDeps) {
-    // DependencyNode runtimeDep = (DependencyNode) runtimeDepObj;
-    // String artifactStrVersionLess = stringifyNoVersion(runtimeDep);
-    // String artifactStr = stringify(runtimeDep);
-    // if (!nodesByArtifactId.containsKey(artifactStr)) {
-    // if (versionsByArtifactId
-    // .containsKey(artifactStrVersionLess)) {
-    // /* There is a conflict. Report it or resolve it */
-    // handleConflict(node, runtimeDep, artifactStrVersionLess);
-    // } else {
-    // /* New depedency is added */
-    // node.addChild(runtimeDep);
-    // nodesByArtifactId.put(artifactStr, runtimeDep);
-    // versionsByArtifactId.put(artifactStrVersionLess,
-    // artifactStr);
-    // }
-    // } else {
-    // /*
-    // * Dependency was already indexed. This is a duplicate which
-    // * can be ignored.
-    // */
-    // }
-    // }
-    // } catch (Exception ex) {
-    // throw new RuntimeException(ex);
-    // }
-    // }
 
     /**
      * If this method returns true then it means that nodes children should be

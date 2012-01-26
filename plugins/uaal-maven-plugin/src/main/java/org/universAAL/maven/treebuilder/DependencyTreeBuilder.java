@@ -21,6 +21,7 @@ package org.universAAL.maven.treebuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -41,6 +42,7 @@ import org.apache.maven.artifact.resolver.ResolutionNode;
 import org.apache.maven.artifact.resolver.filter.AndArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
+import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.artifact.versioning.ManagedVersionMap;
 import org.apache.maven.artifact.versioning.OverConstrainedVersionException;
 import org.apache.maven.artifact.versioning.VersionRange;
@@ -87,15 +89,12 @@ public class DependencyTreeBuilder {
 
     private ArtifactRepository localRepository;
 
-    private List remoteRepositories;
-
     public DependencyTreeBuilder(ArtifactFactory artifactFactory,
 	    MavenProjectBuilder mavenProjectBuilder,
-	    ArtifactRepository localRepository, List remoteRepositories) {
+	    ArtifactRepository localRepository) {
 	this.artifactFactory = artifactFactory;
 	this.mavenProjectBuilder = mavenProjectBuilder;
 	this.localRepository = localRepository;
-	this.remoteRepositories = remoteRepositories;
     }
 
     private void fireEvent(int event, List listeners, ResolutionNode node) {
@@ -107,6 +106,10 @@ public class DependencyTreeBuilder {
 	fireEvent(event, listeners, node, replacement, null);
     }
 
+    /**
+     * fireEvent methods are used for sending events related resolution process
+     * to the listeners passed as arguments.
+     */
     private void fireEvent(int event, List listeners, ResolutionNode node,
 	    Artifact replacement, VersionRange newRange) {
 	for (Iterator i = listeners.iterator(); i.hasNext();) {
@@ -172,6 +175,20 @@ public class DependencyTreeBuilder {
 	}
     }
 
+    /**
+     * Checks if scope update related to conflict or duplication of two given
+     * artifacts (farthest - lower in the subtree, nearest - higher in the
+     * subtree) is needed. And if so, updates the scope of nearest artifact to
+     * the scope of farthest artifact.
+     * 
+     * @param farthest
+     *            artifact lower in the subtree (or the one occuring as second
+     *            if both artifacts are on the same level of the subtree)
+     * @param nearest
+     *            artifact higher in the subtree (or the one occuring as first
+     *            if both artifacts are on the same level of the subtree).
+     * @return Returns true if scope was updated.
+     */
     private boolean checkScopeUpdate(ResolutionNode farthest,
 	    ResolutionNode nearest, List listeners) {
 	boolean updateScope = false;
@@ -214,8 +231,15 @@ public class DependencyTreeBuilder {
 	return updateScope;
     }
 
+    /**
+     * Updates node's scope and version according to the dependency management
+     * information.
+     * 
+     * @param node
+     * @param managedVersions
+     */
     private void manageArtifact(ResolutionNode node,
-	    ManagedVersionMap managedVersions, List listeners) {
+	    ManagedVersionMap managedVersions) {
 	Artifact artifact = (Artifact) managedVersions.get(node.getKey());
 
 	// Before we update the version of the artifact, we need to know
@@ -244,10 +268,24 @@ public class DependencyTreeBuilder {
 	}
     }
 
-    private boolean resolveChildNode(ResolutionNode node, ResolutionNode child,
-	    ArtifactFilter filter, ManagedVersionMap managedVersions,
-	    List listeners, ArtifactMetadataSource source,
-	    Artifact parentArtifact, boolean runtimeDep)
+    /**
+     * Method resolves provided node with the use of provided
+     * ArtifactMetadataSource and taking into account ManagedVersionMap. Output
+     * is passed to listeners, passed as argument, which are notified about all
+     * events related to dependencies detected in the tree.
+     * 
+     * @param parentNode
+     *            parent node
+     * @param child
+     *            child node
+     * @param parentArtifact
+     *            parent artifact
+     * @return returns true if the child should be recursively resolved.
+     */
+    private boolean resolveChildNode(ResolutionNode parentNode,
+	    ResolutionNode child, ArtifactFilter filter,
+	    ManagedVersionMap managedVersions, List listeners,
+	    ArtifactMetadataSource source, Artifact parentArtifact)
 	    throws OverConstrainedVersionException,
 	    ArtifactMetadataRetrievalException {
 	// We leave in optional ones, but don't pick up its dependencies
@@ -255,7 +293,7 @@ public class DependencyTreeBuilder {
 		&& (!child.getArtifact().isOptional() || child
 			.isChildOfRootNode())) {
 	    Artifact artifact = child.getArtifact();
-	    artifact.setDependencyTrail(node.getDependencyTrail());
+	    artifact.setDependencyTrail(parentNode.getDependencyTrail());
 
 	    List childRemoteRepositories = child.getRemoteRepositories();
 	    try {
@@ -274,7 +312,7 @@ public class DependencyTreeBuilder {
 			// version's POM.
 			// We retrieve the POM below in the retrieval
 			// step.
-			manageArtifact(child, managedVersions, listeners);
+			manageArtifact(child, managedVersions);
 
 			// Also, we need to ensure that any exclusions
 			// it presents are
@@ -401,13 +439,49 @@ public class DependencyTreeBuilder {
 			new ResolutionNode(e.getArtifact(),
 				childRemoteRepositories, child));
 	    } catch (ArtifactMetadataRetrievalException e) {
-		artifact.setDependencyTrail(node.getDependencyTrail());
+		artifact.setDependencyTrail(parentNode.getDependencyTrail());
 		throw e;
 	    }
 	}
 	return false;
     }
 
+    /**
+     * The heart of the tree builder. Recursively resolves provided artifact.
+     * Output is passed to listeners, passed as argument, which are notified
+     * about all dependencies detected in the tree. Resolving of each child node
+     * is delegated to resolveChildNode method.
+     * 
+     * @param originatingArtifact
+     *            rootnode of recursed subtree
+     * @param node
+     *            current node which is resolved
+     * @param resolvedArtifacts
+     *            map which is used for remembering already resolved artifacts.
+     *            Artifacts are indexed by a key which calculation algorithm is
+     *            the same as the one present in calculateDepKey method. Thanks
+     *            to this map, duplicates and conflicts are detected and
+     *            resolved.
+     * @param managedVersions
+     *            information about dependency management extracted from the
+     *            subtree rootnode - a maven project.
+     * @param localRepository
+     * @param remoteRepositories
+     * @param source
+     * @param filter
+     *            is used for unfiltering artifacts which should not be included
+     *            in the dependency tree.
+     * @param listeners
+     *            are used for providing the output of the resolve process.
+     * @param transitive
+     *            If this parameter is false than the children of current node
+     *            are not resolved.
+     * 
+     * @throws CyclicDependencyException
+     * @throws ArtifactResolutionException
+     * @throws OverConstrainedVersionException
+     * @throws ArtifactMetadataRetrievalException
+     */
     private void recurse(Artifact originatingArtifact, ResolutionNode node,
 	    Map resolvedArtifacts, ManagedVersionMap managedVersions,
 	    ArtifactRepository localRepository, List remoteRepositories,
@@ -421,7 +495,7 @@ public class DependencyTreeBuilder {
 	// TODO: Does this check need to happen here? Had to add the same call
 	// below when we iterate on child nodes -- will that suffice?
 	if (managedVersions.containsKey(key)) {
-	    manageArtifact(node, managedVersions, listeners);
+	    manageArtifact(node, managedVersions);
 	}
 
 	List previousNodes = (List) resolvedArtifacts.get(key);
@@ -583,8 +657,7 @@ public class DependencyTreeBuilder {
 			continue;
 		    }
 		    boolean isContinue = resolveChildNode(node, child, filter,
-			    managedVersions, listeners, source, parentArtifact,
-			    false);
+			    managedVersions, listeners, source, parentArtifact);
 		    if (isContinue) {
 			continue;
 		    }
@@ -594,7 +667,7 @@ public class DependencyTreeBuilder {
 			    listeners, true);
 		}
 		List runtimeDeps = getRuntimeDeps(node.getArtifact(),
-			managedVersions);
+			managedVersions, remoteRepositories);
 		for (Object runtimeDepObj : runtimeDeps) {
 		    DependencyNode runtimeDep = (DependencyNode) runtimeDepObj;
 		    Artifact artifact = runtimeDep.getArtifact();
@@ -613,7 +686,7 @@ public class DependencyTreeBuilder {
 		    }
 		    boolean isContinue = resolveChildNode(node, childRuntime,
 			    filter, managedVersions, listeners, source,
-			    parentArtifact, false);
+			    parentArtifact);
 		    if (isContinue) {
 			continue;
 		    }
@@ -626,74 +699,6 @@ public class DependencyTreeBuilder {
 	    }
 	    fireEvent(ResolutionListener.FINISH_PROCESSING_CHILDREN, listeners,
 		    node);
-	}
-    }
-
-    private String calculateDepKey(Dependency dep) {
-	StringBuffer sb = new StringBuffer();
-	sb.append(dep.getGroupId());
-	sb.append(":");
-	sb.append(dep.getArtifactId());
-	sb.append(":");
-	sb.append(dep.getType());
-	if (dep.getClassifier() != null) {
-	    sb.append(":");
-	    sb.append(dep.getClassifier());
-	}
-	return sb.toString();
-    }
-
-    private List getRuntimeDeps(Artifact nodeArtifact,
-	    ManagedVersionMap managedVersions) {
-	try {
-	    List runtimeDeps = new ArrayList();
-	    Artifact pomArtifact = artifactFactory.createArtifact(nodeArtifact
-		    .getGroupId(), nodeArtifact.getArtifactId(), nodeArtifact
-		    .getVersion(), "", "pom");
-	    MavenProject pomProject = mavenProjectBuilder.buildFromRepository(
-		    pomArtifact, remoteRepositories, localRepository);
-	    List profiles = pomProject.getModel().getProfiles();
-	    if (profiles != null) {
-		for (Object profileObj : profiles) {
-		    Profile profile = (Profile) profileObj;
-		    if (UAAL_RUNTIME_PROFILE.equals(profile.getId())) {
-			List deps = profile.getDependencies();
-			if (deps != null) {
-			    for (Object depObj : deps) {
-				Dependency dep = (Dependency) depObj;
-				String depKey = calculateDepKey(dep);
-
-				String depVersion = dep.getVersion();
-				String depScope = dep.getScope();
-
-				if (managedVersions.containsKey(depKey)) {
-				    Artifact managedArtifact = (Artifact) managedVersions
-					    .get(depKey);
-				    if (managedArtifact.getVersion() != null
-					    && (depVersion == null)) {
-					depVersion = managedArtifact
-						.getVersion();
-				    }
-				    if (managedArtifact.getScope() != null
-					    && (depScope == null)) {
-					depScope = managedArtifact.getScope();
-				    }
-				}
-				Artifact runtimeArtifact = artifactFactory
-					.createArtifact(dep.getGroupId(), dep
-						.getArtifactId(), depVersion,
-						depScope, dep.getType());
-				DependencyNode runtimeDepNode = new DependencyNode(
-					runtimeArtifact);
-				runtimeDeps.add(runtimeDepNode);
-			    }
-			}
-		    }
-		}
-	    }
-	    return runtimeDeps;
-	} catch (ProjectBuildingException e) {
-	    throw new RuntimeException(e);
 	}
     }
 
@@ -739,27 +744,164 @@ public class DependencyTreeBuilder {
 	return versionMap;
     }
 
+    /**
+     * Calculates a stringified representation - a key of given dependency. The
+     * algorithm present in org.apache.maven.artifact.resolver.ResolutionNode
+     * class (maven-artifact-2.2.1.jar) is used.
+     * 
+     * @param dep
+     *            dependency which key is calculated
+     * @return stringified representation of dependency in a form:
+     *         groupId:artifactId:type:classifier. Classifier is added only when
+     *         it is present.
+     */
+    private String calculateDepKey(Dependency dep) {
+	StringBuffer sb = new StringBuffer();
+	sb.append(dep.getGroupId());
+	sb.append(":");
+	sb.append(dep.getArtifactId());
+	sb.append(":");
+	sb.append(dep.getType());
+	if (dep.getClassifier() != null) {
+	    sb.append(":");
+	    sb.append(dep.getClassifier());
+	}
+	return sb.toString();
+    }
+
+    /**
+     * Resolves runtime dependencies of given artifact. It is assumed that
+     * runtime dependencies are enclosed in a "uAAL-Runtime" maven profile.
+     * Dependencies are resolved taking into account dependency management of
+     * maven project which subtree is resolved. Thanks to that there is no need
+     * to provide versions for runtime artifacts if they are managed in parent
+     * poms.
+     * 
+     * 
+     * @param nodeArtifact
+     * @param managedVersions
+     * @return
+     */
+    private List getRuntimeDeps(Artifact nodeArtifact,
+	    ManagedVersionMap managedVersions, List remoteRepositories) {
+	try {
+	    List runtimeDeps = new ArrayList();
+	    Artifact pomArtifact = artifactFactory.createArtifact(nodeArtifact
+		    .getGroupId(), nodeArtifact.getArtifactId(), nodeArtifact
+		    .getVersion(), "", "pom");
+	    MavenProject pomProject = mavenProjectBuilder.buildFromRepository(
+		    pomArtifact, remoteRepositories, localRepository);
+	    List profiles = pomProject.getModel().getProfiles();
+	    if (profiles != null) {
+		for (Object profileObj : profiles) {
+		    Profile profile = (Profile) profileObj;
+		    if (UAAL_RUNTIME_PROFILE.equals(profile.getId())) {
+			List deps = profile.getDependencies();
+			if (deps != null) {
+			    for (Object depObj : deps) {
+				Dependency dep = (Dependency) depObj;
+				String depKey = calculateDepKey(dep);
+
+				String depVersion = dep.getVersion();
+				String depScope = dep.getScope();
+
+				VersionRange versionRange = null;
+				if (managedVersions.containsKey(depKey)) {
+				    Artifact managedArtifact = (Artifact) managedVersions
+					    .get(depKey);
+				    if (managedArtifact.getVersion() != null
+					    && (depVersion == null)) {
+					depVersion = managedArtifact
+						.getVersion();
+				    } else if (managedArtifact
+					    .getVersionRange() != null
+					    && (depVersion == null)) {
+					versionRange = managedArtifact
+						.getVersionRange();
+				    }
+				    if (managedArtifact.getScope() != null
+					    && (depScope == null)) {
+					depScope = managedArtifact.getScope();
+				    }
+				}
+				Artifact runtimeArtifact = null;
+				if (versionRange == null) {
+				    runtimeArtifact = artifactFactory
+					    .createArtifact(dep.getGroupId(),
+						    dep.getArtifactId(),
+						    depVersion, depScope, dep
+							    .getType());
+				} else {
+				    runtimeArtifact = artifactFactory
+					    .createDependencyArtifact(dep
+						    .getGroupId(), dep
+						    .getArtifactId(),
+						    versionRange,
+						    dep.getType(), dep
+							    .getClassifier(),
+						    depScope);
+				}
+				DependencyNode runtimeDepNode = new DependencyNode(
+					runtimeArtifact);
+				runtimeDeps.add(runtimeDepNode);
+			    }
+			}
+		    }
+		}
+	    }
+	    return runtimeDeps;
+	} catch (ProjectBuildingException e) {
+	    throw new RuntimeException(e);
+	}
+    }
+
+    /**
+     * Method builds dependency tree for a list of maven projects. All artifacts
+     * in the tree are crosschecked against duplications and conflicts. In each
+     * case of duplication, conflict, the case is resolved by omitting artifact
+     * which is lower in the tree and keeping artifact which is higher in the
+     * tree. If artifacts are on the same level then the one occuring first in
+     * the tree is kept.
+     * 
+     * @param repository
+     * @param factory
+     * @param metadataSource
+     * @param filter
+     *            is used for unfiltering artifacts which should not be included
+     *            in the dependency tree
+     * @param projectDescs
+     *            list of maven project descriptors. Each descriptor contains
+     *            MavenProject and a boolean indicator if the project needs to
+     *            be resolved transitively or not.
+     * @return a dependency tree as a list of rootnodes (instances of
+     *         DependencyNode class) which contain their own subtrees. Each
+     *         rootnode corresponds to one maven project provided as argument.
+     *         The order of rootnodes list is the same as order of provided
+     *         maven projects list.
+     * @throws DependencyTreeBuilderException
+     * @throws ArtifactMetadataRetrievalException
+     * @throws InvalidVersionSpecificationException 
+     */
     public List buildDependencyTree(ArtifactRepository repository,
 	    ArtifactFactory factory, ArtifactMetadataSource metadataSource,
-	    ArtifactFilter filter, MavenProject... projects)
+	    MavenProjectDescriptor... projectDescs)
 	    throws DependencyTreeBuilderException,
-	    ArtifactMetadataRetrievalException {
+	    ArtifactMetadataRetrievalException, InvalidVersionSpecificationException {
+	ArtifactFilter filter = new ScopeArtifactFilter();
 	DependencyTreeResolutionListener listener = new DependencyTreeResolutionListener(
 		filter);
 	Map resolvedArtifacts = new LinkedHashMap();
-	for (MavenProject project : projects) {
+	for (MavenProjectDescriptor projectDesc : projectDescs) {
+	    MavenProject project = projectDesc.project;
 	    try {
-		Map managedVersions = project.getManagedVersionMap();
-
-		Set dependencyArtifacts = project.getDependencyArtifacts();
-
+		List remoteRepositories = project
+			.getRemoteArtifactRepositories();
+		// If artifact is marked in pom as a bundle then it is changed
+		// to jar. Retaining bundle can impose problems when the
+		// artifact is duplicated or conflicted with other artifact
+		// specified as a dependency, because in the
+		// dependency there is only jar type specified.
 		Artifact originatingArtifact = project.getArtifact();
-
-		if (dependencyArtifacts == null) {
-		    dependencyArtifacts = project.createArtifacts(factory,
-			    null, null);
-		}
-
 		if ("bundle".equals(originatingArtifact.getType())) {
 		    Artifact changeArtifact = artifactFactory.createArtifact(
 			    originatingArtifact.getGroupId(),
@@ -771,26 +913,51 @@ public class DependencyTreeBuilder {
 		ResolutionNode root = new ResolutionNode(originatingArtifact,
 			remoteRepositories);
 
-		root.addDependencies(dependencyArtifacts, remoteRepositories,
-			filter);
+		// If the project is not supposed to be transitively resolved
+		// then its dependencies are not added to the root. Moreover the
+		// parameter is passed to the recurse method. Thanks to than
+		// when transitive is false, resolving of runtime dependencies
+		// is not performed.
+		if (projectDesc.transitive) {
+		    Set dependencyArtifacts = project.getDependencyArtifacts();
 
+		    if (dependencyArtifacts == null) {
+			dependencyArtifacts = new HashSet();
+			List dependencies = project.getDependencies();
+			for (Object depObj : dependencies) {
+			    Dependency dep = (Dependency) depObj;
+			    Artifact dependencyArtifact;
+			    VersionRange versionRange = VersionRange
+				    .createFromVersionSpec(dep.getVersion());
+			    dependencyArtifact = factory
+				    .createDependencyArtifact(dep.getGroupId(),
+					    dep.getArtifactId(), versionRange,
+					    dep.getType(), dep.getClassifier(),
+					    dep.getScope());
+			    dependencyArtifacts.add(dependencyArtifact);
+			}
+		    }
+
+		    root.addDependencies(dependencyArtifacts,
+			    remoteRepositories, filter);
+		}
+
+		// Information about managed versions is extracted from the
+		// artifact's pom (but also from parent poms and settings.xml
+		// file).
 		ManagedVersionMap versionMap = getManagedVersionsMap(
-			originatingArtifact, managedVersions);
+			originatingArtifact, project.getManagedVersionMap());
 
 		recurse(originatingArtifact, root, resolvedArtifacts,
 			versionMap, localRepository, remoteRepositories,
 			metadataSource, filter, Collections
-				.singletonList(listener), false);
+				.singletonList(listener),
+			projectDesc.transitive);
 	    } catch (ArtifactResolutionException exception) {
 		throw new DependencyTreeBuilderException(
 			"Cannot build project dependency tree", exception);
-	    } catch (InvalidDependencyVersionException e) {
-		throw new DependencyTreeBuilderException(
-			"Invalid dependency version for artifact "
-				+ project.getArtifact());
 	    }
 	}
 	return listener.getRootNodes();
     }
-
 }

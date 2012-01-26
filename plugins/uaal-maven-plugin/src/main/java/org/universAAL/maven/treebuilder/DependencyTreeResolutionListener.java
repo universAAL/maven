@@ -38,14 +38,15 @@ import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.apache.maven.shared.dependency.tree.traversal.CollectingDependencyNodeVisitor;
 
 /**
- * An artifact resolution listener that constructs a dependency tree.
+ * An artifact resolution listener that constructs a dependency tree. The tree
+ * is constructed on basis of events related to resolution process.
  * 
  * Class code was based on implementation of class
  * org.apache.maven.shared.dependency.tree.DependencyTreeResolutionListener
  * present in maven-dependency-tree-1.1.jar which is licensed under Apache
  * License, Version 2.0.
  * 
- * @author Marek Psiuk 
+ * @author rotgier
  * @author Edwin Punzalan
  * @author <a href="mailto:markhobson@gmail.com">Mark Hobson</a>
  * @version $Id: DependencyTreeResolutionListener.java 576969 2007-09-18

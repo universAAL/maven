@@ -1,0 +1,227 @@
+package org.universAAL.maven.treebuilder;
+
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.factory.ArtifactFactory;
+import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectBuilder;
+import org.apache.maven.shared.dependency.tree.DependencyNode;
+import org.universAAL.maven.IndexingDependencyNodeVisitor;
+import org.universAAL.maven.LaunchOrderDependencyNodeVisitor;
+
+/**
+ * This class provides creation of OSGi bundles execution list on basis of list
+ * of maven artifacts. Basically, if there is a need to launch given set of
+ * maven artifacts (they assumed to be OSGi bundles) in OSGi congainer, the
+ * class resolves all their dependencies and prepares execution list of bundles
+ * (in a proper order) which have to be launched to have these maven artifacts
+ * working.
+ * 
+ * It aggregates DependencyTreeBuilder and on top of it adds functionality of
+ * flattening dependency tree into an artifact list sorted in the execution
+ * order. All artifacts of execution list are resolved and downloaded to the
+ * local maven repository.
+ * 
+ * @author rotgier
+ * 
+ */
+public class ExecutionListCreator {
+
+    private Log log;
+
+    private ArtifactMetadataSource artifactMetadataSource;
+
+    private ArtifactFactory artifactFactory;
+
+    private MavenProjectBuilder mavenProjectBuilder;
+
+    private ArtifactRepository localRepository;
+
+    private List remoteRepositories;
+
+    private boolean throwExceptionOnConflict;
+
+    public ExecutionListCreator(Log log,
+	    ArtifactMetadataSource artifactMetadataSource,
+	    ArtifactFactory artifactFactory,
+	    MavenProjectBuilder mavenProjectBuilder,
+	    ArtifactRepository localRepository, List remoteRepositories,
+	    String throwExceptionOnConflictStr) {
+	this.log = log;
+	this.artifactMetadataSource = artifactMetadataSource;
+	this.artifactFactory = artifactFactory;
+	this.mavenProjectBuilder = mavenProjectBuilder;
+	this.localRepository = localRepository;
+	this.remoteRepositories = remoteRepositories;
+	this.throwExceptionOnConflict = !("true"
+		.equals(throwExceptionOnConflictStr));
+    }
+
+    /**
+     * Method builds dependency tree for a list of provision strings and
+     * parameter specifying default transitiveness. Method validates format of
+     * provision strings and parses them into representation acceptable by
+     * DependencyTreeBuilder. DependencyTreeBuilder is invoked and its output is
+     * returned.
+     * 
+     * @return a dependency tree as a list of rootnodes (instances of
+     *         DependencyNode class) which contain their own subtrees.
+     */
+    private List parseProvisionsAndBuiltTree(String[] provisions,
+	    boolean transitive, DependencyTreeBuilder treeBuilder)
+	    throws Exception {
+	MavenProjectDescriptor[] projectDescs = new MavenProjectDescriptor[provisions.length];
+	int i = 0;
+	for (String provision : provisions) {
+	    boolean localtransitive = transitive;
+	    String provisionNoHeader = provision;
+	    if (provision.startsWith("transitive:")) {
+		provisionNoHeader = provision.substring("transitive:".length());
+		localtransitive = true;
+	    } else if (provision.startsWith("nontransitive:")) {
+		provisionNoHeader = provision.substring("nontransitive:"
+			.length());
+		localtransitive = false;
+	    }
+	    if (!provisionNoHeader.startsWith("mvn:")) {
+		throw new IllegalArgumentException(
+			"The URL "
+				+ provision
+				+ " does not start with \"mvn:\". Non mvn protocols are not supported");
+	    }
+	    provisionNoHeader = provisionNoHeader.substring("mvn:".length());
+	    String[] provisionElements = provisionNoHeader.split("/");
+	    if (provisionElements.length != 3) {
+		throw new IllegalArgumentException(
+			"The URL "
+				+ provision
+				+ "does not contain exactly two slashes \"/\". The URL is expected to provide groupId/artifactId/version");
+	    }
+	    Artifact pomArtifact = artifactFactory.createArtifact(
+		    provisionElements[0], provisionElements[1],
+		    provisionElements[2], "", "pom");
+	    MavenProject pomProject = mavenProjectBuilder.buildFromRepository(
+		    pomArtifact, remoteRepositories, localRepository);
+	    projectDescs[i] = new MavenProjectDescriptor(pomProject,
+		    localtransitive);
+	    i++;
+	}
+	return treeBuilder.buildDependencyTree(localRepository,
+		artifactFactory, artifactMetadataSource, projectDescs);
+    }
+
+    /**
+     * Method flattens provided dependency tree and creates on its basis an
+     * execution list. To do this, method walks the tree twice. At first all
+     * artifacts are indexed. In second walk artifacts are processed in a
+     * deep-first manner. When an omitted artifact is encountered, walk is
+     * continued at related kept artifact. After finishing processing of all
+     * childs of given artifact, the artifact is added to the execution list.
+     * Thanks to that it is ensured that before bundle will be started, all
+     * dependency bundles will be started earlier.
+     * 
+     * @param rootNodes
+     *            a dependency tree as a list of rootnodes (instances of
+     *            DependencyNode class) which contain their own subtrees.
+     * @return execution list - list of strings representing mvnUrls of bundles
+     *         which should be launched
+     */
+    private List processTreeIntoFlatList(List rootNodes) {
+	Iterator rootNodesIterator = rootNodes.iterator();
+	int i = 0;
+	while (rootNodesIterator.hasNext()) {
+	    DependencyNode rootNode = (DependencyNode) rootNodesIterator.next();
+	    log.info("Dependency tree for artifact: " + rootNode.getArtifact()
+		    + System.getProperty("line.separator")
+		    + rootNode.toString());
+	}
+
+	IndexingDependencyNodeVisitor filteringVisitor = new IndexingDependencyNodeVisitor(
+		log);
+	rootNodesIterator = rootNodes.iterator();
+	while (rootNodesIterator.hasNext()) {
+	    DependencyNode rootNode = (DependencyNode) rootNodesIterator.next();
+	    rootNode.accept(filteringVisitor);
+	}
+
+	LaunchOrderDependencyNodeVisitor visitor = new LaunchOrderDependencyNodeVisitor(
+		log, filteringVisitor.getNodesByArtifactId(), filteringVisitor
+			.getVersionByArtifactId(), throwExceptionOnConflict,
+		localRepository);
+	rootNodesIterator = rootNodes.iterator();
+	while (rootNodesIterator.hasNext()) {
+	    DependencyNode rootNode = (DependencyNode) rootNodesIterator.next();
+	    rootNode.accept(visitor);
+	}
+
+	List<String> mvnUrls = visitor.getMvnUrls();
+	log.info("Final ordered execution list:");
+	int x = 1;
+	for (String mvnUrl : mvnUrls) {
+	    log.info(String.format("%2d. %s", x++, mvnUrl));
+	}
+
+	return mvnUrls;
+    }
+
+    /**
+     * Creates execution list for given MavenProject.
+     * 
+     * @param mavenProject
+     * @return
+     * @throws MojoExecutionException
+     * @throws MojoFailureException
+     */
+    public List createArtifactExecutionList(MavenProject mavenProject)
+	    throws Exception {
+	DependencyTreeBuilder treeBuilder = new DependencyTreeBuilder(
+		artifactFactory, mavenProjectBuilder, localRepository);
+	List rootNodes = treeBuilder.buildDependencyTree(localRepository,
+		artifactFactory, artifactMetadataSource,
+		new MavenProjectDescriptor(mavenProject, true));
+	return processTreeIntoFlatList(rootNodes);
+    }
+
+    /**
+     * Creates execution list on basis of provisions list and parameter
+     * specifying default transitiveness.
+     * 
+     * @param provisions
+     *            list of provision strings. Each provision string has to have
+     *            the following format:
+     *            (nontransitive|transitive)?mvn:/groupId/artifactId/version.
+     *            Information at the beginning: "transitive", "nontransitive" is
+     *            optional. If it is present it overrides the defaultTransitive
+     *            parameter but only for given provision string.
+     * @param defaultTransitive
+     *            default value of transitive parameter for all provision
+     *            strings. If transitive is true then artifact related to each
+     *            provision string is recursively resolved and all its regular
+     *            and uAAL-Runtime maven dependencies are included in returned
+     *            artifact list. If transitive is false then only artifacts
+     *            (related to provision strings) themselves are resolved without
+     *            looking at their dependencies. Thanks to that, providing
+     *            explicit list of artifact to be launched is possible.
+     * @return execution list - list of strings representing mvnUrls of bundles
+     *         which should be launched
+     * @throws MojoExecutionException
+     * @throws MojoFailureException
+     */
+    public List createArtifactExecutionList(String[] provisions,
+	    boolean defaultTransitive) throws Exception {
+	DependencyTreeBuilder treeBuilder = new DependencyTreeBuilder(
+		artifactFactory, mavenProjectBuilder, localRepository);
+	List rootNodes = parseProvisionsAndBuiltTree(provisions,
+		defaultTransitive, treeBuilder);
+	return processTreeIntoFlatList(rootNodes);
+    }
+
+}
