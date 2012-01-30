@@ -1,5 +1,6 @@
 package org.universAAL.maven.treebuilder;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -7,6 +8,8 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.artifact.resolver.ResolutionNode;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -47,6 +50,8 @@ public class ExecutionListCreator {
 
     private List remoteRepositories;
 
+    private ArtifactResolver artifactResolver;
+
     private boolean throwExceptionOnConflict;
 
     public ExecutionListCreator(Log log,
@@ -54,6 +59,7 @@ public class ExecutionListCreator {
 	    ArtifactFactory artifactFactory,
 	    MavenProjectBuilder mavenProjectBuilder,
 	    ArtifactRepository localRepository, List remoteRepositories,
+	    ArtifactResolver artifactResolver,
 	    String throwExceptionOnConflictStr) {
 	this.log = log;
 	this.artifactMetadataSource = artifactMetadataSource;
@@ -61,8 +67,21 @@ public class ExecutionListCreator {
 	this.mavenProjectBuilder = mavenProjectBuilder;
 	this.localRepository = localRepository;
 	this.remoteRepositories = remoteRepositories;
+	this.artifactFactory = artifactFactory;
+	this.artifactResolver = artifactResolver;
 	this.throwExceptionOnConflict = !("true"
 		.equals(throwExceptionOnConflictStr));
+    }
+
+    private class RootNode {
+
+	public RootNode(DependencyNode rootNode, List remoteRepositories) {
+	    this.rootNode = rootNode;
+	    this.remoteRepositories = remoteRepositories;
+	}
+
+	private DependencyNode rootNode;
+	private List remoteRepositories;
     }
 
     /**
@@ -75,11 +94,12 @@ public class ExecutionListCreator {
      * @return a dependency tree as a list of rootnodes (instances of
      *         DependencyNode class) which contain their own subtrees.
      */
-    private List parseProvisionsAndBuiltTree(String[] provisions,
+    private List<RootNode> parseProvisionsAndBuiltTree(String[] provisions,
 	    boolean transitive, DependencyTreeBuilder treeBuilder)
 	    throws Exception {
 	MavenProjectDescriptor[] projectDescs = new MavenProjectDescriptor[provisions.length];
 	int i = 0;
+	List<List> listOfRemoteRepositories = new ArrayList<List>();
 	for (String provision : provisions) {
 	    boolean localtransitive = transitive;
 	    String provisionNoHeader = provision;
@@ -112,10 +132,25 @@ public class ExecutionListCreator {
 		    pomArtifact, remoteRepositories, localRepository);
 	    projectDescs[i] = new MavenProjectDescriptor(pomProject,
 		    localtransitive);
+	    listOfRemoteRepositories.add(pomProject
+		    .getRemoteArtifactRepositories());
 	    i++;
 	}
-	return treeBuilder.buildDependencyTree(localRepository,
-		artifactFactory, artifactMetadataSource, projectDescs);
+	List<DependencyNode> rootNodesOnly = treeBuilder.buildDependencyTree(
+		localRepository, artifactFactory, artifactMetadataSource,
+		projectDescs);
+	Iterator<List> listOfRemoteRepositoriesIter = listOfRemoteRepositories
+		.iterator();
+	if (listOfRemoteRepositories.size() != rootNodesOnly.size()) {
+	    throw new IllegalStateException(
+		    "listOfRemoteRepositories.size() != rootNodesWithRepositories.size()");
+	}
+	List<RootNode> rootNodesWithRepositories = new ArrayList();
+	for (DependencyNode rootNode : rootNodesOnly) {
+	    rootNodesWithRepositories.add(new RootNode(rootNode,
+		    listOfRemoteRepositoriesIter.next()));
+	}
+	return rootNodesWithRepositories;
     }
 
     /**
@@ -134,12 +169,13 @@ public class ExecutionListCreator {
      * @return execution list - list of strings representing mvnUrls of bundles
      *         which should be launched
      */
-    private List processTreeIntoFlatList(List rootNodes) {
-	Iterator rootNodesIterator = rootNodes.iterator();
+    private List processTreeIntoFlatList(List<RootNode> rootNodes) {
+	Iterator<RootNode> rootNodesIterator = rootNodes.iterator();
 	int i = 0;
 	while (rootNodesIterator.hasNext()) {
-	    DependencyNode rootNode = (DependencyNode) rootNodesIterator.next();
-	    log.info("Dependency tree for artifact: " + rootNode.getArtifact()
+	    RootNode rootNode = rootNodesIterator.next();
+	    log.info("Dependency tree for artifact: "
+		    + rootNode.rootNode.getArtifact()
 		    + System.getProperty("line.separator")
 		    + rootNode.toString());
 	}
@@ -148,18 +184,19 @@ public class ExecutionListCreator {
 		log);
 	rootNodesIterator = rootNodes.iterator();
 	while (rootNodesIterator.hasNext()) {
-	    DependencyNode rootNode = (DependencyNode) rootNodesIterator.next();
-	    rootNode.accept(filteringVisitor);
+	    RootNode rootNode = rootNodesIterator.next();
+	    rootNode.rootNode.accept(filteringVisitor);
 	}
 
 	LaunchOrderDependencyNodeVisitor visitor = new LaunchOrderDependencyNodeVisitor(
 		log, filteringVisitor.getNodesByArtifactId(), filteringVisitor
 			.getVersionByArtifactId(), throwExceptionOnConflict,
-		localRepository);
+		localRepository, artifactResolver);
 	rootNodesIterator = rootNodes.iterator();
 	while (rootNodesIterator.hasNext()) {
-	    DependencyNode rootNode = (DependencyNode) rootNodesIterator.next();
-	    rootNode.accept(visitor);
+	    RootNode rootNode = rootNodesIterator.next();
+	    visitor.setRemoteRepositories(rootNode.remoteRepositories);
+	    rootNode.rootNode.accept(visitor);
 	}
 
 	List<String> mvnUrls = visitor.getMvnUrls();
@@ -184,10 +221,16 @@ public class ExecutionListCreator {
 	    throws Exception {
 	DependencyTreeBuilder treeBuilder = new DependencyTreeBuilder(
 		artifactFactory, mavenProjectBuilder, localRepository);
-	List rootNodes = treeBuilder.buildDependencyTree(localRepository,
-		artifactFactory, artifactMetadataSource,
+	List<DependencyNode> rootNodes = treeBuilder.buildDependencyTree(
+		localRepository, artifactFactory, artifactMetadataSource,
 		new MavenProjectDescriptor(mavenProject, true));
-	return processTreeIntoFlatList(rootNodes);
+	if (rootNodes.size() != 1) {
+	    throw new IllegalStateException("rootNodes.size() != 1");
+	}
+	List<RootNode> realRootNodes = new ArrayList<RootNode>();
+	realRootNodes.add(new RootNode(rootNodes.get(0), mavenProject
+		.getRemoteArtifactRepositories()));
+	return processTreeIntoFlatList(realRootNodes);
     }
 
     /**
@@ -219,7 +262,7 @@ public class ExecutionListCreator {
 	    boolean defaultTransitive) throws Exception {
 	DependencyTreeBuilder treeBuilder = new DependencyTreeBuilder(
 		artifactFactory, mavenProjectBuilder, localRepository);
-	List rootNodes = parseProvisionsAndBuiltTree(provisions,
+	List<RootNode> rootNodes = parseProvisionsAndBuiltTree(provisions,
 		defaultTransitive, treeBuilder);
 	return processTreeIntoFlatList(rootNodes);
     }

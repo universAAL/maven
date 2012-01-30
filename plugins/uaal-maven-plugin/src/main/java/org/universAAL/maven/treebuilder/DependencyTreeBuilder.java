@@ -21,7 +21,6 @@ package org.universAAL.maven.treebuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -35,6 +34,9 @@ import org.apache.maven.artifact.metadata.ArtifactMetadataRetrievalException;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.metadata.ResolutionGroup;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.repository.ArtifactRepositoryPolicy;
+import org.apache.maven.artifact.repository.DefaultArtifactRepository;
+import org.apache.maven.artifact.repository.layout.DefaultRepositoryLayout;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.CyclicDependencyException;
 import org.apache.maven.artifact.resolver.ResolutionListener;
@@ -52,7 +54,6 @@ import org.apache.maven.model.Profile;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
-import org.apache.maven.project.artifact.InvalidDependencyVersionException;
 import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
 
@@ -643,6 +644,12 @@ public class DependencyTreeBuilder {
 	    if (transitive) {
 		Artifact parentArtifact = node.getArtifact();
 
+		try {
+		    node.getChildrenIterator();
+		} catch (Exception ex) {
+		    int i = 2;
+		    i++;
+		}
 		for (Iterator i = node.getChildrenIterator(); i.hasNext();) {
 		    ResolutionNode child = (ResolutionNode) i.next();
 		    if (!filter.include(child.getArtifact())) {
@@ -881,13 +888,15 @@ public class DependencyTreeBuilder {
      *         maven projects list.
      * @throws DependencyTreeBuilderException
      * @throws ArtifactMetadataRetrievalException
-     * @throws InvalidVersionSpecificationException 
+     * @throws InvalidVersionSpecificationException
      */
-    public List buildDependencyTree(ArtifactRepository repository,
-	    ArtifactFactory factory, ArtifactMetadataSource metadataSource,
+    public List<DependencyNode> buildDependencyTree(
+	    ArtifactRepository repository, ArtifactFactory factory,
+	    ArtifactMetadataSource metadataSource,
 	    MavenProjectDescriptor... projectDescs)
 	    throws DependencyTreeBuilderException,
-	    ArtifactMetadataRetrievalException, InvalidVersionSpecificationException {
+	    ArtifactMetadataRetrievalException,
+	    InvalidVersionSpecificationException {
 	ArtifactFilter filter = new ScopeArtifactFilter();
 	DependencyTreeResolutionListener listener = new DependencyTreeResolutionListener(
 		filter);
@@ -897,6 +906,37 @@ public class DependencyTreeBuilder {
 	    try {
 		List remoteRepositories = project
 			.getRemoteArtifactRepositories();
+
+		boolean paxRunnerPresent = false;
+		boolean ops4jPresent = false;
+		for (Object repoObj : remoteRepositories) {
+		    ArtifactRepository repo = (ArtifactRepository) repoObj;
+		    if ("paxrunner".equals(repo.getId())) {
+			paxRunnerPresent = true;
+		    }
+		    if ("ops4j-releases".equals(repo.getId())) {
+			ops4jPresent = true;
+		    }
+		}
+		if (!paxRunnerPresent) {
+		    ArtifactRepository repo = new DefaultArtifactRepository(
+			    "paxrunner",
+			    "http://osgi.sonatype.org/content/groups/pax-runner",
+			    new DefaultRepositoryLayout(),
+			    new ArtifactRepositoryPolicy(false, null, null),
+			    new ArtifactRepositoryPolicy());
+		    remoteRepositories.add(repo);
+		}
+		if (!ops4jPresent) {
+		    ArtifactRepository repo = new DefaultArtifactRepository(
+			    "ops4j-releases",
+			    "http://repository.ops4j.org/maven2",
+			    new DefaultRepositoryLayout(),
+			    new ArtifactRepositoryPolicy(false, null, null),
+			    new ArtifactRepositoryPolicy());
+		    remoteRepositories.add(repo);
+		}
+
 		// If artifact is marked in pom as a bundle then it is changed
 		// to jar. Retaining bundle can impose problems when the
 		// artifact is duplicated or conflicted with other artifact

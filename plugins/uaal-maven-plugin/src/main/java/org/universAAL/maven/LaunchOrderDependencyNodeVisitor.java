@@ -13,6 +13,9 @@ import java.util.jar.Manifest;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.apache.maven.shared.dependency.tree.traversal.DependencyNodeVisitor;
@@ -41,6 +44,10 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 
     private ArtifactRepository localRepository;
 
+    private List remoteRepositories;
+
+    private ArtifactResolver artifactResolver;
+
     /**
      * After finishing the visit this list contains mvnUrls in launch order of
      * all artifacts needed for processed run configuration.
@@ -67,12 +74,14 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 
     public LaunchOrderDependencyNodeVisitor(Log log, Map nodesByArtifactId,
 	    Map versionsByArtifactId, boolean throwExceptionOnConflict,
-	    ArtifactRepository localRepository) {
+	    ArtifactRepository localRepository,
+	    ArtifactResolver artifactResolver) {
 	super(log);
 	this.localRepository = localRepository;
 	this.nodesByArtifactId = nodesByArtifactId;
 	this.versionsByArtifactId = versionsByArtifactId;
 	this.throwExceptionOnConflict = throwExceptionOnConflict;
+	this.artifactResolver = artifactResolver;
     }
 
     /**
@@ -136,6 +145,8 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 	try {
 	    if (!wasVisited(node)) {
 		Artifact artifact = node.getArtifact();
+		artifactResolver.resolve(artifact, remoteRepositories,
+			localRepository);
 		String mvnUrl = String.format("mvn:%s/%s/%s", artifact
 			.getGroupId(), artifact.getArtifactId(), artifact
 			.getVersion());
@@ -146,7 +157,8 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 			jarPath));
 		Manifest manifest = jio.getManifest();
 		Attributes attribs = manifest.getMainAttributes();
-		Object bundleManifestVersion = attribs.getValue("Bundle-ManifestVersion");
+		Object bundleManifestVersion = attribs
+			.getValue("Bundle-ManifestVersion");
 		if (bundleManifestVersion == null) {
 		    // it means that the jar is not a bundle - it has to be
 		    // wrapped before installation in OSGi container
@@ -155,7 +167,9 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 		visited.add(stringify(node));
 		mvnUrls.add(mvnUrl);
 	    }
-	} catch (IOException e) {
+	} catch (RuntimeException e) {
+	    throw e;
+	} catch (Exception e) {
 	    throw new RuntimeException(e);
 	}
     }
@@ -245,4 +259,9 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
     public List getMvnUrls() {
 	return mvnUrls;
     }
+
+    public void setRemoteRepositories(List remoteRepositories) {
+	this.remoteRepositories = remoteRepositories;
+    }
+
 }

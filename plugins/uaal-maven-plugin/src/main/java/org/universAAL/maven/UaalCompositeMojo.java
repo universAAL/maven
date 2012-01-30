@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -30,6 +31,13 @@ public class UaalCompositeMojo extends AbstractMojo {
      * @readonly
      */
     private ArtifactFactory artifactFactory;
+
+    /**
+     * @component
+     * @required
+     * @readonly
+     */
+    protected ArtifactResolver artifactResolver;
 
     /**
      * @component
@@ -88,10 +96,11 @@ public class UaalCompositeMojo extends AbstractMojo {
 	    ExecutionListCreator execListCreator = new ExecutionListCreator(
 		    getLog(), artifactMetadataSource, artifactFactory,
 		    mavenProjectBuilder, localRepository, remoteRepositories,
-		    throwExceptionOnConflictStr);
+		    artifactResolver, throwExceptionOnConflictStr);
 	    List mvnUrls = execListCreator.createArtifactExecutionList(project);
-	    //File baseDirFile = new File(basedir);
+	    // File baseDirFile = new File(basedir);
 	    File targetDir = new File(baseDirectory, "target");
+	    targetDir.mkdirs();
 	    File generatedCompositeFile = new File(targetDir,
 		    "artifact.composite");
 	    BufferedWriter compositeWriter = new BufferedWriter(
