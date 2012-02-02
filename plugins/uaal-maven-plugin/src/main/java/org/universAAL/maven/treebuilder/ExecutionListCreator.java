@@ -76,6 +76,14 @@ public class ExecutionListCreator {
 		.equals(throwExceptionOnConflictStr));
     }
 
+    /**
+     * Helper class for passing arguments and return values to/from methods. It
+     * aggregates a rootnode of resolved dependency tree and list of remote
+     * repositories used during the resolve proces.
+     * 
+     * @author rotgier
+     * 
+     */
     private class RootNode {
 
 	public RootNode(DependencyNode rootNode, List remoteRepositories) {
@@ -87,6 +95,14 @@ public class ExecutionListCreator {
 	private List remoteRepositories;
     }
 
+    /**
+     * Method verifies if passed list of repositories contains paxrunner and
+     * ops4j-releases repositories. If not, a new list containing passed
+     * repositories plus paxrunner and ops4j-releases is created and returned.
+     * 
+     * @param remoteRepositories
+     * @return
+     */
     private List<ArtifactRepository> addMissingRepositories(
 	    List<ArtifactRepository> remoteRepositories) {
 	List<ArtifactRepository> modifiedRemoteRepositories = new ArrayList<ArtifactRepository>(
@@ -129,8 +145,8 @@ public class ExecutionListCreator {
      * DependencyTreeBuilder. DependencyTreeBuilder is invoked and its output is
      * returned.
      * 
-     * @return a dependency tree as a list of rootnodes (instances of
-     *         DependencyNode class) which contain their own subtrees.
+     * @return a dependency tree as a list of rootnodes (instances of RootNode
+     *         class) which contain their own subtrees.
      */
     private List<RootNode> parseProvisionsAndBuiltTree(String[] provisions,
 	    boolean transitive, DependencyTreeBuilder treeBuilder)
@@ -204,7 +220,8 @@ public class ExecutionListCreator {
      * 
      * @param rootNodes
      *            a dependency tree as a list of rootnodes (instances of
-     *            DependencyNode class) which contain their own subtrees.
+     *            RootNode class) which contain their own subtrees and lists of
+     *            remote repositories.
      * @return execution list - list of strings representing mvnUrls of bundles
      *         which should be launched
      */
@@ -216,7 +233,7 @@ public class ExecutionListCreator {
 	    log.info("Dependency tree for artifact: "
 		    + rootNode.rootNode.getArtifact()
 		    + System.getProperty("line.separator")
-		    + rootNode.toString());
+		    + rootNode.rootNode.toString());
 	}
 
 	IndexingDependencyNodeVisitor filteringVisitor = new IndexingDependencyNodeVisitor(

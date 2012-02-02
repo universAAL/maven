@@ -34,9 +34,6 @@ import org.apache.maven.artifact.metadata.ArtifactMetadataRetrievalException;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.metadata.ResolutionGroup;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.repository.ArtifactRepositoryPolicy;
-import org.apache.maven.artifact.repository.DefaultArtifactRepository;
-import org.apache.maven.artifact.repository.layout.DefaultRepositoryLayout;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.CyclicDependencyException;
 import org.apache.maven.artifact.resolver.ResolutionListener;
@@ -644,12 +641,6 @@ public class DependencyTreeBuilder {
 	    if (transitive) {
 		Artifact parentArtifact = node.getArtifact();
 
-		try {
-		    node.getChildrenIterator();
-		} catch (Exception ex) {
-		    int i = 2;
-		    i++;
-		}
 		for (Iterator i = node.getChildrenIterator(); i.hasNext();) {
 		    ResolutionNode child = (ResolutionNode) i.next();
 		    if (!filter.include(child.getArtifact())) {
@@ -874,13 +865,11 @@ public class DependencyTreeBuilder {
      * @param repository
      * @param factory
      * @param metadataSource
-     * @param filter
-     *            is used for unfiltering artifacts which should not be included
-     *            in the dependency tree
      * @param projectDescs
      *            list of maven project descriptors. Each descriptor contains
-     *            MavenProject and a boolean indicator if the project needs to
-     *            be resolved transitively or not.
+     *            MavenProject, a list of project's remote repositories and a
+     *            boolean indicator if the project needs to be resolved
+     *            transitively or not.
      * @return a dependency tree as a list of rootnodes (instances of
      *         DependencyNode class) which contain their own subtrees. Each
      *         rootnode corresponds to one maven project provided as argument.
@@ -904,7 +893,7 @@ public class DependencyTreeBuilder {
 	for (MavenProjectDescriptor projectDesc : projectDescs) {
 	    MavenProject project = projectDesc.project;
 	    try {
-		//Tutaj wystarczy dodaæ tworzenie nowej listy
+		// Tutaj wystarczy dodaæ tworzenie nowej listy
 		List remoteRepositories = projectDesc.remoteRepositories;
 
 		// If artifact is marked in pom as a bundle then it is changed
