@@ -10,7 +10,7 @@
 	</parent>
 	<packaging>maven-plugin</packaging>
 	<artifactId>uaal-maven-plugin</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>uAAL Maven Plugin</name>
 	<description>Maven plugin for resolution and running uAAL artifacts</description>
 	<url />
