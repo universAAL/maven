@@ -904,38 +904,8 @@ public class DependencyTreeBuilder {
 	for (MavenProjectDescriptor projectDesc : projectDescs) {
 	    MavenProject project = projectDesc.project;
 	    try {
-		List remoteRepositories = project
-			.getRemoteArtifactRepositories();
-
-		boolean paxRunnerPresent = false;
-		boolean ops4jPresent = false;
-		for (Object repoObj : remoteRepositories) {
-		    ArtifactRepository repo = (ArtifactRepository) repoObj;
-		    if ("paxrunner".equals(repo.getId())) {
-			paxRunnerPresent = true;
-		    }
-		    if ("ops4j-releases".equals(repo.getId())) {
-			ops4jPresent = true;
-		    }
-		}
-		if (!paxRunnerPresent) {
-		    ArtifactRepository repo = new DefaultArtifactRepository(
-			    "paxrunner",
-			    "http://osgi.sonatype.org/content/groups/pax-runner",
-			    new DefaultRepositoryLayout(),
-			    new ArtifactRepositoryPolicy(false, null, null),
-			    new ArtifactRepositoryPolicy());
-		    remoteRepositories.add(repo);
-		}
-		if (!ops4jPresent) {
-		    ArtifactRepository repo = new DefaultArtifactRepository(
-			    "ops4j-releases",
-			    "http://repository.ops4j.org/maven2",
-			    new DefaultRepositoryLayout(),
-			    new ArtifactRepositoryPolicy(false, null, null),
-			    new ArtifactRepositoryPolicy());
-		    remoteRepositories.add(repo);
-		}
+		//Tutaj wystarczy dodaæ tworzenie nowej listy
+		List remoteRepositories = projectDesc.remoteRepositories;
 
 		// If artifact is marked in pom as a bundle then it is changed
 		// to jar. Retaining bundle can impose problems when the

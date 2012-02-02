@@ -8,6 +8,9 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.repository.ArtifactRepositoryPolicy;
+import org.apache.maven.artifact.repository.DefaultArtifactRepository;
+import org.apache.maven.artifact.repository.layout.DefaultRepositoryLayout;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.artifact.resolver.ResolutionNode;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
@@ -84,6 +87,41 @@ public class ExecutionListCreator {
 	private List remoteRepositories;
     }
 
+    private List<ArtifactRepository> addMissingRepositories(
+	    List<ArtifactRepository> remoteRepositories) {
+	List<ArtifactRepository> modifiedRemoteRepositories = new ArrayList<ArtifactRepository>(
+		remoteRepositories);
+	boolean paxRunnerPresent = false;
+	boolean ops4jPresent = false;
+	for (Object repoObj : modifiedRemoteRepositories) {
+	    ArtifactRepository repo = (ArtifactRepository) repoObj;
+	    if ("paxrunner".equals(repo.getId())) {
+		paxRunnerPresent = true;
+	    }
+	    if ("ops4j-releases".equals(repo.getId())) {
+		ops4jPresent = true;
+	    }
+	}
+	if (!paxRunnerPresent) {
+	    ArtifactRepository repo = new DefaultArtifactRepository(
+		    "paxrunner",
+		    "http://osgi.sonatype.org/content/groups/pax-runner",
+		    new DefaultRepositoryLayout(),
+		    new ArtifactRepositoryPolicy(false, null, null),
+		    new ArtifactRepositoryPolicy());
+	    modifiedRemoteRepositories.add(repo);
+	}
+	if (!ops4jPresent) {
+	    ArtifactRepository repo = new DefaultArtifactRepository(
+		    "ops4j-releases", "http://repository.ops4j.org/maven2",
+		    new DefaultRepositoryLayout(),
+		    new ArtifactRepositoryPolicy(false, null, null),
+		    new ArtifactRepositoryPolicy());
+	    modifiedRemoteRepositories.add(repo);
+	}
+	return modifiedRemoteRepositories;
+    }
+
     /**
      * Method builds dependency tree for a list of provision strings and
      * parameter specifying default transitiveness. Method validates format of
@@ -130,10 +168,11 @@ public class ExecutionListCreator {
 		    provisionElements[2], "", "pom");
 	    MavenProject pomProject = mavenProjectBuilder.buildFromRepository(
 		    pomArtifact, remoteRepositories, localRepository);
-	    projectDescs[i] = new MavenProjectDescriptor(pomProject,
-		    localtransitive);
-	    listOfRemoteRepositories.add(pomProject
+	    List<ArtifactRepository> finalRemoteRepositories = addMissingRepositories(pomProject
 		    .getRemoteArtifactRepositories());
+	    projectDescs[i] = new MavenProjectDescriptor(pomProject,
+		    finalRemoteRepositories, localtransitive);
+	    listOfRemoteRepositories.add(finalRemoteRepositories);
 	    i++;
 	}
 	List<DependencyNode> rootNodesOnly = treeBuilder.buildDependencyTree(
@@ -221,15 +260,18 @@ public class ExecutionListCreator {
 	    throws Exception {
 	DependencyTreeBuilder treeBuilder = new DependencyTreeBuilder(
 		artifactFactory, mavenProjectBuilder, localRepository);
+	List<ArtifactRepository> finalRemoteRpositories = addMissingRepositories(mavenProject
+		.getRemoteArtifactRepositories());
 	List<DependencyNode> rootNodes = treeBuilder.buildDependencyTree(
 		localRepository, artifactFactory, artifactMetadataSource,
-		new MavenProjectDescriptor(mavenProject, true));
+		new MavenProjectDescriptor(mavenProject,
+			finalRemoteRpositories, true));
 	if (rootNodes.size() != 1) {
 	    throw new IllegalStateException("rootNodes.size() != 1");
 	}
 	List<RootNode> realRootNodes = new ArrayList<RootNode>();
-	realRootNodes.add(new RootNode(rootNodes.get(0), mavenProject
-		.getRemoteArtifactRepositories()));
+	realRootNodes
+		.add(new RootNode(rootNodes.get(0), finalRemoteRpositories));
 	return processTreeIntoFlatList(realRootNodes);
     }
 
