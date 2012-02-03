@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
@@ -19,12 +20,13 @@ import org.universAAL.itests.conf.IntegrationTestConsts;
 import org.universAAL.maven.treebuilder.ExecutionListCreator;
 
 /**
- * This mojo creates composite file (artifact.composite) for project in which it
- * is executed.
+ * This mojo creates composite file (artifact-test.composite) for project in
+ * which it is executed. Additionally it resolves artifact specified in
+ * IntegrationTest.RUN_DIR_MVN_URL which is needed by integration tests.
  * 
- * @goal composite
+ * @goal test
  */
-public class UaalCompositeMojo extends AbstractMojo {
+public class UaalTestMojo extends AbstractMojo {
 
     /**
      * @component
@@ -92,16 +94,14 @@ public class UaalCompositeMojo extends AbstractMojo {
      */
     private File baseDirectory;
 
-    private static final String MAIN_COMPOSITE = "target/artifact.composite";
-
     public void execute() throws MojoExecutionException, MojoFailureException {
 	try {
 	    getLog()
 		    .info(
 			    System.getProperty("line.separator")
 				    + System.getProperty("line.separator")
-				    + "Creating MAIN composite file - output generated in "
-				    + MAIN_COMPOSITE
+				    + "Creating composite file for itests - output generated in "
+				    + IntegrationTestConsts.TEST_COMPOSITE
 				    + System.getProperty("line.separator")
 				    + System.getProperty("line.separator"));
 	    ExecutionListCreator execListCreator = new ExecutionListCreator(
@@ -109,11 +109,10 @@ public class UaalCompositeMojo extends AbstractMojo {
 		    mavenProjectBuilder, localRepository, remoteRepositories,
 		    artifactResolver, throwExceptionOnConflictStr);
 	    List mvnUrls = execListCreator.createArtifactExecutionList(project);
-	    // File baseDirFile = new File(basedir);
 	    File targetDir = new File(baseDirectory, "target");
 	    targetDir.mkdirs();
 	    File generatedCompositeFile = new File(baseDirectory,
-		    MAIN_COMPOSITE);
+		    IntegrationTestConsts.TEST_COMPOSITE);
 	    BufferedWriter compositeWriter = new BufferedWriter(
 		    new OutputStreamWriter(new FileOutputStream(
 			    generatedCompositeFile, false)));
@@ -123,6 +122,10 @@ public class UaalCompositeMojo extends AbstractMojo {
 			+ System.getProperty("line.separator"));
 	    }
 	    compositeWriter.close();
+	    Artifact runDirArtifact = execListCreator
+		    .parseMvnUrlWithType(IntegrationTestConsts.RUN_DIR_MVN_URL);
+	    artifactResolver.resolve(runDirArtifact, remoteRepositories,
+		    localRepository);
 	} catch (Exception e) {
 	    getLog().error(e);
 	    throw new RuntimeException(e);

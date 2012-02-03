@@ -165,23 +165,7 @@ public class ExecutionListCreator {
 			.length());
 		localtransitive = false;
 	    }
-	    if (!provisionNoHeader.startsWith("mvn:")) {
-		throw new IllegalArgumentException(
-			"The URL "
-				+ provision
-				+ " does not start with \"mvn:\". Non mvn protocols are not supported");
-	    }
-	    provisionNoHeader = provisionNoHeader.substring("mvn:".length());
-	    String[] provisionElements = provisionNoHeader.split("/");
-	    if (provisionElements.length != 3) {
-		throw new IllegalArgumentException(
-			"The URL "
-				+ provision
-				+ "does not contain exactly two slashes \"/\". The URL is expected to provide groupId/artifactId/version");
-	    }
-	    Artifact pomArtifact = artifactFactory.createArtifact(
-		    provisionElements[0], provisionElements[1],
-		    provisionElements[2], "", "pom");
+	    Artifact pomArtifact = parseMvnUrl(provisionNoHeader);
 	    MavenProject pomProject = mavenProjectBuilder.buildFromRepository(
 		    pomArtifact, remoteRepositories, localRepository);
 	    List<ArtifactRepository> finalRemoteRepositories = addMissingRepositories(pomProject
@@ -269,6 +253,62 @@ public class ExecutionListCreator {
     }
 
     /**
+     * Parses mvn url which has to be in the following format:
+     * mvn:/groupId/artifactId/version.
+     * 
+     * @param mvnurl
+     * @return returns maven artifact which corresponds to the provided mvnurl.
+     */
+    private Artifact parseMvnUrl(String mvnurl) {
+	if (!mvnurl.startsWith("mvn:")) {
+	    throw new IllegalArgumentException(
+		    "The URL "
+			    + mvnurl
+			    + " does not start with \"mvn:\". Non mvn protocols are not supported");
+	}
+	mvnurl = mvnurl.substring("mvn:".length());
+	String[] provisionElements = mvnurl.split("/");
+	if (provisionElements.length != 3) {
+	    throw new IllegalArgumentException(
+		    "The URL "
+			    + mvnurl
+			    + "does not contain exactly two slashes \"/\". The URL is expected to provide groupId/artifactId/version");
+	}
+	Artifact pomArtifact = artifactFactory.createArtifact(
+		provisionElements[0], provisionElements[1],
+		provisionElements[2], "", "pom");
+	return pomArtifact;
+    }
+
+    /**
+     * Parses mvn url which has to be in the following format:
+     * mvn:/groupId/artifactId/version/type.
+     * 
+     * @param mvnurl
+     * @return returns maven artifact which corresponds to the provided mvnurl.
+     */
+    public Artifact parseMvnUrlWithType(String mvnurl) {
+	if (!mvnurl.startsWith("mvn:")) {
+	    throw new IllegalArgumentException(
+		    "The URL "
+			    + mvnurl
+			    + " does not start with \"mvn:\". Non mvn protocols are not supported");
+	}
+	mvnurl = mvnurl.substring("mvn:".length());
+	String[] provisionElements = mvnurl.split("/");
+	if (provisionElements.length != 4) {
+	    throw new IllegalArgumentException(
+		    "The URL "
+			    + mvnurl
+			    + "does not contain exactly three slashes \"/\". The URL is expected to provide groupId/artifactId/version/type");
+	}
+	Artifact pomArtifact = artifactFactory.createArtifact(
+		provisionElements[0], provisionElements[1],
+		provisionElements[2], "", provisionElements[3]);
+	return pomArtifact;
+    }
+
+    /**
      * Creates execution list for given MavenProject.
      * 
      * @param mavenProject
@@ -292,7 +332,8 @@ public class ExecutionListCreator {
 	List<RootNode> realRootNodes = new ArrayList<RootNode>();
 	realRootNodes
 		.add(new RootNode(rootNodes.get(0), finalRemoteRpositories));
-	return processTreeIntoFlatList(realRootNodes, mavenProject.getArtifact());
+	return processTreeIntoFlatList(realRootNodes, mavenProject
+		.getArtifact());
     }
 
     /**
