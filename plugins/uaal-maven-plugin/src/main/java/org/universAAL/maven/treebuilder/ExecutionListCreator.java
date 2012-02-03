@@ -222,10 +222,13 @@ public class ExecutionListCreator {
      *            a dependency tree as a list of rootnodes (instances of
      *            RootNode class) which contain their own subtrees and lists of
      *            remote repositories.
+     * @param dontResolve
+     *            artifact which should not be resolved
      * @return execution list - list of strings representing mvnUrls of bundles
      *         which should be launched
      */
-    private List processTreeIntoFlatList(List<RootNode> rootNodes) {
+    private List processTreeIntoFlatList(List<RootNode> rootNodes,
+	    Artifact dontResolve) {
 	Iterator<RootNode> rootNodesIterator = rootNodes.iterator();
 	int i = 0;
 	while (rootNodesIterator.hasNext()) {
@@ -247,7 +250,7 @@ public class ExecutionListCreator {
 	LaunchOrderDependencyNodeVisitor visitor = new LaunchOrderDependencyNodeVisitor(
 		log, filteringVisitor.getNodesByArtifactId(), filteringVisitor
 			.getVersionByArtifactId(), throwExceptionOnConflict,
-		localRepository, artifactResolver);
+		localRepository, artifactResolver, dontResolve);
 	rootNodesIterator = rootNodes.iterator();
 	while (rootNodesIterator.hasNext()) {
 	    RootNode rootNode = rootNodesIterator.next();
@@ -289,7 +292,7 @@ public class ExecutionListCreator {
 	List<RootNode> realRootNodes = new ArrayList<RootNode>();
 	realRootNodes
 		.add(new RootNode(rootNodes.get(0), finalRemoteRpositories));
-	return processTreeIntoFlatList(realRootNodes);
+	return processTreeIntoFlatList(realRootNodes, mavenProject.getArtifact());
     }
 
     /**
@@ -323,7 +326,7 @@ public class ExecutionListCreator {
 		artifactFactory, mavenProjectBuilder, localRepository);
 	List<RootNode> rootNodes = parseProvisionsAndBuiltTree(provisions,
 		defaultTransitive, treeBuilder);
-	return processTreeIntoFlatList(rootNodes);
+	return processTreeIntoFlatList(rootNodes, null);
     }
 
 }

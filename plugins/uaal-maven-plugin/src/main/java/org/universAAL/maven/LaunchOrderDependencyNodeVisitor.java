@@ -49,6 +49,11 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
     private ArtifactResolver artifactResolver;
 
     /**
+     * Stringified representation of artifact which should not be resolved.
+     */
+    private String artifactDontResolve;
+
+    /**
      * After finishing the visit this list contains mvnUrls in launch order of
      * all artifacts needed for processed run configuration.
      */
@@ -75,13 +80,16 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
     public LaunchOrderDependencyNodeVisitor(Log log, Map nodesByArtifactId,
 	    Map versionsByArtifactId, boolean throwExceptionOnConflict,
 	    ArtifactRepository localRepository,
-	    ArtifactResolver artifactResolver) {
+	    ArtifactResolver artifactResolver, Artifact dontResolve) {
 	super(log);
 	this.localRepository = localRepository;
 	this.nodesByArtifactId = nodesByArtifactId;
 	this.versionsByArtifactId = versionsByArtifactId;
 	this.throwExceptionOnConflict = throwExceptionOnConflict;
 	this.artifactResolver = artifactResolver;
+	if (dontResolve != null) {
+	    this.artifactDontResolve = stringify(dontResolve);
+	}
     }
 
     /**
@@ -144,25 +152,39 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
     protected void addNode(DependencyNode node) {
 	try {
 	    if (!wasVisited(node)) {
+		boolean shouldResolve = true;
 		Artifact artifact = node.getArtifact();
-		artifactResolver.resolve(artifact, remoteRepositories,
-			localRepository);
+		String nodeStr = stringify(node);
+		if (artifactDontResolve != null) {
+		    if (artifactDontResolve.equals(nodeStr)) {
+			shouldResolve = false;
+		    }
+		}
+		if (shouldResolve) {
+		    artifactResolver.resolve(artifact, remoteRepositories,
+			    localRepository);
+		}
+
 		String mvnUrl = String.format("mvn:%s/%s/%s", artifact
 			.getGroupId(), artifact.getArtifactId(), artifact
 			.getVersion());
-		File localRepoBaseDir = new File(localRepository.getBasedir());
-		File jarPath = new File(localRepoBaseDir, localRepository
-			.pathOf(node.getArtifact()));
-		JarInputStream jio = new JarInputStream(new FileInputStream(
-			jarPath));
-		Manifest manifest = jio.getManifest();
-		Attributes attribs = manifest.getMainAttributes();
-		Object bundleManifestVersion = attribs
-			.getValue("Bundle-ManifestVersion");
-		if (bundleManifestVersion == null) {
-		    // it means that the jar is not a bundle - it has to be
-		    // wrapped before installation in OSGi container
-		    mvnUrl = "wrap:" + mvnUrl;
+
+		if (shouldResolve) {
+		    File localRepoBaseDir = new File(localRepository
+			    .getBasedir());
+		    File jarPath = new File(localRepoBaseDir, localRepository
+			    .pathOf(node.getArtifact()));
+		    JarInputStream jio = new JarInputStream(
+			    new FileInputStream(jarPath));
+		    Manifest manifest = jio.getManifest();
+		    Attributes attribs = manifest.getMainAttributes();
+		    Object bundleManifestVersion = attribs
+			    .getValue("Bundle-ManifestVersion");
+		    if (bundleManifestVersion == null) {
+			// it means that the jar is not a bundle - it has to be
+			// wrapped before installation in OSGi container
+			mvnUrl = "wrap:" + mvnUrl;
+		    }
 		}
 		visited.add(stringify(node));
 		mvnUrls.add(mvnUrl);
