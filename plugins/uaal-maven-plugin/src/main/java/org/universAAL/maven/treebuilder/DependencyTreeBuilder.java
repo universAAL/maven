@@ -919,7 +919,8 @@ public class DependencyTreeBuilder {
 		// when transitive is false, resolving of runtime dependencies
 		// is not performed.
 		if (projectDesc.transitive) {
-		    Set dependencyArtifacts = project.getDependencyArtifacts();
+		    Set<Artifact> dependencyArtifacts = project
+			    .getDependencyArtifacts();
 
 		    if (dependencyArtifacts == null) {
 			dependencyArtifacts = new LinkedHashSet();
@@ -935,6 +936,17 @@ public class DependencyTreeBuilder {
 					    dep.getType(), dep.getClassifier(),
 					    dep.getScope());
 			    dependencyArtifacts.add(dependencyArtifact);
+			}
+		    }
+		    for (Artifact depArtifact : dependencyArtifacts) {
+			if (depArtifact.getVersion() != null) {
+			    if (!depArtifact.getVersion().equals(
+				    depArtifact.getBaseVersion())) {
+				if (depArtifact.isSnapshot()) {
+				    depArtifact.setVersion(depArtifact
+					    .getBaseVersion());
+				}
+			    }
 			}
 		    }
 

@@ -160,16 +160,12 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 			shouldResolve = false;
 		    }
 		}
-		if (shouldResolve) {
-		    artifactResolver.resolve(artifact, remoteRepositories,
-			    localRepository);
-		}
-
 		String mvnUrl = String.format("mvn:%s/%s/%s", artifact
 			.getGroupId(), artifact.getArtifactId(), artifact
 			.getVersion());
-
 		if (shouldResolve) {
+		    artifactResolver.resolve(artifact, remoteRepositories,
+			    localRepository);
 		    File localRepoBaseDir = new File(localRepository
 			    .getBasedir());
 		    File jarPath = new File(localRepoBaseDir, localRepository
