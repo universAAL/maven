@@ -19,6 +19,7 @@ package org.universAAL.maven.treebuilder;
  * under the License.
  */
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -480,6 +481,10 @@ public class DependencyTreeBuilder {
      * @throws ArtifactResolutionException
      * @throws OverConstrainedVersionException
      * @throws ArtifactMetadataRetrievalException
+     * @throws NoSuchFieldException 
+     * @throws SecurityException 
+     * @throws IllegalAccessException 
+     * @throws IllegalArgumentException 
      */
     private void recurse(Artifact originatingArtifact, ResolutionNode node,
 	    Map resolvedArtifacts, ManagedVersionMap managedVersions,
@@ -487,7 +492,7 @@ public class DependencyTreeBuilder {
 	    ArtifactMetadataSource source, ArtifactFilter filter,
 	    List listeners, boolean transitive)
 	    throws CyclicDependencyException, ArtifactResolutionException,
-	    OverConstrainedVersionException, ArtifactMetadataRetrievalException {
+	    OverConstrainedVersionException, ArtifactMetadataRetrievalException, SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
 	fireEvent(ResolutionListener.TEST_ARTIFACT, listeners, node);
 	Object key = node.getKey();
 
@@ -667,6 +672,9 @@ public class DependencyTreeBuilder {
 		}
 		List runtimeDeps = getRuntimeDeps(node.getArtifact(),
 			managedVersions, remoteRepositories);
+		Field childrenField = node.getClass().getDeclaredField("children");
+		childrenField.setAccessible(true);
+		List nodesChildren = (List) childrenField.get(node);
 		for (Object runtimeDepObj : runtimeDeps) {
 		    DependencyNode runtimeDep = (DependencyNode) runtimeDepObj;
 		    Artifact artifact = runtimeDep.getArtifact();
@@ -694,6 +702,7 @@ public class DependencyTreeBuilder {
 			    localRepository, childRuntime
 				    .getRemoteRepositories(), source, filter,
 			    listeners, true);
+		    nodesChildren.add(childRuntime);
 		}
 	    }
 	    fireEvent(ResolutionListener.FINISH_PROCESSING_CHILDREN, listeners,
@@ -878,6 +887,10 @@ public class DependencyTreeBuilder {
      * @throws DependencyTreeBuilderException
      * @throws ArtifactMetadataRetrievalException
      * @throws InvalidVersionSpecificationException
+     * @throws NoSuchFieldException 
+     * @throws SecurityException 
+     * @throws IllegalAccessException 
+     * @throws IllegalArgumentException 
      */
     public List<DependencyNode> buildDependencyTree(
 	    ArtifactRepository repository, ArtifactFactory factory,
@@ -885,7 +898,7 @@ public class DependencyTreeBuilder {
 	    MavenProjectDescriptor... projectDescs)
 	    throws DependencyTreeBuilderException,
 	    ArtifactMetadataRetrievalException,
-	    InvalidVersionSpecificationException {
+	    InvalidVersionSpecificationException, SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
 	ArtifactFilter filter = new ScopeArtifactFilter();
 	DependencyTreeResolutionListener listener = new DependencyTreeResolutionListener(
 		filter);
