@@ -107,7 +107,13 @@ public class UaalDecoupleTestMojo extends AbstractMojo {
 		BufferedReader br;
 		try {
 			br = new BufferedReader( new FileReader(f));
-			return lookForLinesWith(br, ".*package.*").get(0);
+			ArrayList<String > r = lookForLinesWith(br, ".*package.*");
+			if (r.size() > 0) {
+				return r.get(0);
+			}
+			else {
+				System.out.println("no package found for " + f.getName()); System.out.flush();
+			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -160,7 +166,7 @@ public class UaalDecoupleTestMojo extends AbstractMojo {
 		protected void handleFile(File file, int depth, Collection results)
 				throws IOException {
 			//System.out.println("testing: " + file.getAbsolutePath());
-			if (! passTest(file)) {
+			if ( file.getName().endsWith("java") && !passTest(file)) {
 				results.add(file);
 			}
 		}}
