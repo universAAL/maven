@@ -35,7 +35,7 @@ public abstract class FilteringVisitorSupport {
      * @param artifact
      * @return
      */
-    protected String stringify(Artifact artifact) {
+    public static String stringify(Artifact artifact) {
 	if (artifact.getVersion() == null) {
 	    throw new RuntimeException(
 		    "Artifact version and version range is null: " + artifact);

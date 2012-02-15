@@ -42,18 +42,21 @@ import org.apache.maven.artifact.resolver.ResolutionListenerForDepMgmt;
 import org.apache.maven.artifact.resolver.ResolutionNode;
 import org.apache.maven.artifact.resolver.filter.AndArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
+import org.apache.maven.artifact.resolver.filter.ExcludesArtifactFilter;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.artifact.versioning.ManagedVersionMap;
 import org.apache.maven.artifact.versioning.OverConstrainedVersionException;
 import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Exclusion;
 import org.apache.maven.model.Profile;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
+import org.universAAL.maven.FilteringVisitorSupport;
 
 /**
  * Class builds one big dependency tree for given list of artifacts. Each
@@ -268,6 +271,51 @@ public class DependencyTreeBuilder {
 	}
     }
 
+    private ResolutionNode getParent(ResolutionNode node) {
+	try {
+	    Field parentsField = node.getClass().getDeclaredField("parent");
+	    parentsField.setAccessible(true);
+	    return (ResolutionNode) parentsField.get(node);
+	} catch (Exception ex) {
+	    throw new RuntimeException(ex);
+	}
+    }
+
+    /**
+     * Helper method which prints (to string) all parents of given node in a
+     * form of tree.
+     * 
+     * @param node
+     *            which parents are printed
+     * @return string containing printed tree of parents
+     */
+    private String printNodeParentsTree(ResolutionNode node) {
+	List<String> parents = new ArrayList<String>();
+	parents.add(0, FilteringVisitorSupport.stringify(node.getArtifact()));
+	ResolutionNode parent = node;
+	while ((parent = getParent(parent)) != null) {
+	    parents.add(0, FilteringVisitorSupport.stringify(parent
+		    .getArtifact()));
+	}
+	StringBuilder msg = null;
+	int indentCounter = 2;
+	for (String parentStr : parents) {
+	    if (msg == null) {
+		msg = new StringBuilder();
+		msg.append("  " + parentStr);
+	    } else {
+		msg.append("\n");
+		for (int i = 0; i < indentCounter; i++) {
+		    msg.append(" ");
+		}
+		msg.append(parentStr);
+	    }
+	    indentCounter += 2;
+	}
+	msg.append("\n");
+	return msg.toString();
+    }
+
     /**
      * Method resolves provided node with the use of provided
      * ArtifactMetadataSource and taking into account ManagedVersionMap. Output
@@ -442,6 +490,8 @@ public class DependencyTreeBuilder {
 		artifact.setDependencyTrail(parentNode.getDependencyTrail());
 		throw e;
 	    }
+	} else {
+	    return true;
 	}
 	return false;
     }
@@ -481,10 +531,10 @@ public class DependencyTreeBuilder {
      * @throws ArtifactResolutionException
      * @throws OverConstrainedVersionException
      * @throws ArtifactMetadataRetrievalException
-     * @throws NoSuchFieldException 
-     * @throws SecurityException 
-     * @throws IllegalAccessException 
-     * @throws IllegalArgumentException 
+     * @throws NoSuchFieldException
+     * @throws SecurityException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
      */
     private void recurse(Artifact originatingArtifact, ResolutionNode node,
 	    Map resolvedArtifacts, ManagedVersionMap managedVersions,
@@ -492,221 +542,254 @@ public class DependencyTreeBuilder {
 	    ArtifactMetadataSource source, ArtifactFilter filter,
 	    List listeners, boolean transitive)
 	    throws CyclicDependencyException, ArtifactResolutionException,
-	    OverConstrainedVersionException, ArtifactMetadataRetrievalException, SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-	fireEvent(ResolutionListener.TEST_ARTIFACT, listeners, node);
-	Object key = node.getKey();
+	    OverConstrainedVersionException,
+	    ArtifactMetadataRetrievalException, SecurityException,
+	    NoSuchFieldException, IllegalArgumentException,
+	    IllegalAccessException {
+	try {
 
-	// TODO: Does this check need to happen here? Had to add the same call
-	// below when we iterate on child nodes -- will that suffice?
-	if (managedVersions.containsKey(key)) {
-	    manageArtifact(node, managedVersions);
-	}
+	    fireEvent(ResolutionListener.TEST_ARTIFACT, listeners, node);
+	    Object key = node.getKey();
 
-	List previousNodes = (List) resolvedArtifacts.get(key);
-	if (previousNodes != null) {
-	    for (Iterator i = previousNodes.iterator(); i.hasNext();) {
-		ResolutionNode previous = (ResolutionNode) i.next();
+	    // TODO: Does this check need to happen here? Had to add the same
+	    // call
+	    // below when we iterate on child nodes -- will that suffice?
+	    if (managedVersions.containsKey(key)) {
+		manageArtifact(node, managedVersions);
+	    }
 
-		if (previous.isActive()) {
-		    // Version mediation
-		    VersionRange previousRange = previous.getArtifact()
-			    .getVersionRange();
-		    VersionRange currentRange = node.getArtifact()
-			    .getVersionRange();
+	    List previousNodes = (List) resolvedArtifacts.get(key);
+	    if (previousNodes != null) {
+		for (Iterator i = previousNodes.iterator(); i.hasNext();) {
+		    ResolutionNode previous = (ResolutionNode) i.next();
 
-		    if (previousRange != null && currentRange != null) {
-			// TODO: shouldn't need to double up on this work, only
-			// done for simplicity of handling recommended
-			// version but the restriction is identical
-			VersionRange newRange = previousRange
-				.restrict(currentRange);
-			// TODO: ick. this forces the OCE that should have come
-			// from the previous call. It is still correct
-			if (newRange.isSelectedVersionKnown(previous
-				.getArtifact())) {
-			    fireEvent(ResolutionListener.RESTRICT_RANGE,
-				    listeners, node, previous.getArtifact(),
-				    newRange);
-			}
-			previous.getArtifact().setVersionRange(newRange);
-			node.getArtifact().setVersionRange(
-				currentRange.restrict(previousRange));
+		    if (previous.isActive()) {
+			// Version mediation
+			VersionRange previousRange = previous.getArtifact()
+				.getVersionRange();
+			VersionRange currentRange = node.getArtifact()
+				.getVersionRange();
 
-			// Select an appropriate available version from the (now
-			// restricted) range
-			// Note this version was selected before to get the
-			// appropriate POM
-			// But it was reset by the call to setVersionRange on
-			// restricting the version
-			ResolutionNode[] resetNodes = { previous, node };
-			for (int j = 0; j < 2; j++) {
-			    Artifact resetArtifact = resetNodes[j]
-				    .getArtifact();
+			if (previousRange != null && currentRange != null) {
+			    // TODO: shouldn't need to double up on this work,
+			    // only
+			    // done for simplicity of handling recommended
+			    // version but the restriction is identical
+			    VersionRange newRange = previousRange
+				    .restrict(currentRange);
+			    // TODO: ick. this forces the OCE that should have
+			    // come
+			    // from the previous call. It is still correct
+			    if (newRange.isSelectedVersionKnown(previous
+				    .getArtifact())) {
+				fireEvent(ResolutionListener.RESTRICT_RANGE,
+					listeners, node,
+					previous.getArtifact(), newRange);
+			    }
+			    previous.getArtifact().setVersionRange(newRange);
+			    node.getArtifact().setVersionRange(
+				    currentRange.restrict(previousRange));
 
-			    // MNG-2123: if the previous node was not a range,
-			    // then it wouldn't have any available
-			    // versions. We just clobbered the selected version
-			    // above. (why? i have no idea.)
-			    // So since we are here and this is ranges we must
-			    // go figure out the version (for a third time...)
-			    if (resetArtifact.getVersion() == null
-				    && resetArtifact.getVersionRange() != null) {
+			    // Select an appropriate available version from the
+			    // (now
+			    // restricted) range
+			    // Note this version was selected before to get the
+			    // appropriate POM
+			    // But it was reset by the call to setVersionRange
+			    // on
+			    // restricting the version
+			    ResolutionNode[] resetNodes = { previous, node };
+			    for (int j = 0; j < 2; j++) {
+				Artifact resetArtifact = resetNodes[j]
+					.getArtifact();
 
-				// go find the version. This is a total hack.
-				// See previous comment.
-				List versions = resetArtifact
-					.getAvailableVersions();
-				if (versions == null) {
-				    try {
-					versions = source
-						.retrieveAvailableVersions(
-							resetArtifact,
-							localRepository,
-							remoteRepositories);
-					resetArtifact
-						.setAvailableVersions(versions);
-				    } catch (ArtifactMetadataRetrievalException e) {
-					resetArtifact.setDependencyTrail(node
-						.getDependencyTrail());
-					throw e;
+				// MNG-2123: if the previous node was not a
+				// range,
+				// then it wouldn't have any available
+				// versions. We just clobbered the selected
+				// version
+				// above. (why? i have no idea.)
+				// So since we are here and this is ranges we
+				// must
+				// go figure out the version (for a third
+				// time...)
+				if (resetArtifact.getVersion() == null
+					&& resetArtifact.getVersionRange() != null) {
+
+				    // go find the version. This is a total
+				    // hack.
+				    // See previous comment.
+				    List versions = resetArtifact
+					    .getAvailableVersions();
+				    if (versions == null) {
+					try {
+					    versions = source
+						    .retrieveAvailableVersions(
+							    resetArtifact,
+							    localRepository,
+							    remoteRepositories);
+					    resetArtifact
+						    .setAvailableVersions(versions);
+					} catch (ArtifactMetadataRetrievalException e) {
+					    resetArtifact
+						    .setDependencyTrail(node
+							    .getDependencyTrail());
+					    throw e;
+					}
 				    }
-				}
-				// end hack
+				    // end hack
 
-				// MNG-2861: match version can return null
-				ArtifactVersion selectedVersion = resetArtifact
-					.getVersionRange()
-					.matchVersion(
-						resetArtifact
-							.getAvailableVersions());
-				if (selectedVersion != null) {
-				    resetArtifact.selectVersion(selectedVersion
-					    .toString());
-				} else {
-				    throw new OverConstrainedVersionException(
-					    " Unable to find a version in "
-						    + resetArtifact
-							    .getAvailableVersions()
-						    + " to match the range "
-						    + resetArtifact
-							    .getVersionRange(),
-					    resetArtifact);
+				    // MNG-2861: match version can return null
+				    ArtifactVersion selectedVersion = resetArtifact
+					    .getVersionRange()
+					    .matchVersion(
+						    resetArtifact
+							    .getAvailableVersions());
+				    if (selectedVersion != null) {
+					resetArtifact
+						.selectVersion(selectedVersion
+							.toString());
+				    } else {
+					throw new OverConstrainedVersionException(
+						" Unable to find a version in "
+							+ resetArtifact
+								.getAvailableVersions()
+							+ " to match the range "
+							+ resetArtifact
+								.getVersionRange(),
+						resetArtifact);
+				    }
+				    fireEvent(
+					    ResolutionListener.SELECT_VERSION_FROM_RANGE,
+					    listeners, resetNodes[j]);
 				}
-				fireEvent(
-					ResolutionListener.SELECT_VERSION_FROM_RANGE,
-					listeners, resetNodes[j]);
 			    }
 			}
-		    }
 
-		    // Conflict Resolution
-		    // TODO: use as conflict resolver(s), chain
+			// Conflict Resolution
+			// TODO: use as conflict resolver(s), chain
 
-		    // TODO: should this be part of mediation?
-		    // previous one is more dominant
-		    ResolutionNode nearest;
-		    ResolutionNode farthest;
-		    if (previous.getDepth() <= node.getDepth()) {
-			nearest = previous;
-			farthest = node;
-		    } else {
-			nearest = node;
-			farthest = previous;
-		    }
+			// TODO: should this be part of mediation?
+			// previous one is more dominant
+			ResolutionNode nearest;
+			ResolutionNode farthest;
+			if (previous.getDepth() <= node.getDepth()) {
+			    nearest = previous;
+			    farthest = node;
+			} else {
+			    nearest = node;
+			    farthest = previous;
+			}
 
-		    if (checkScopeUpdate(farthest, nearest, listeners)) {
-			// if we need to update scope of nearest to use farthest
-			// scope, use the nearest version, but farthest scope
-			nearest.disable();
-			farthest.getArtifact().setVersion(
-				nearest.getArtifact().getVersion());
-			fireEvent(ResolutionListener.OMIT_FOR_NEARER,
-				listeners, nearest, farthest.getArtifact());
-		    } else {
-			farthest.disable();
-			fireEvent(ResolutionListener.OMIT_FOR_NEARER,
-				listeners, farthest, nearest.getArtifact());
-		    }
-		}
-	    }
-	} else {
-	    previousNodes = new ArrayList();
-	    resolvedArtifacts.put(key, previousNodes);
-	}
-	previousNodes.add(node);
-
-	if (node.isActive()) {
-	    fireEvent(ResolutionListener.INCLUDE_ARTIFACT, listeners, node);
-	}
-
-	// don't pull in the transitive deps of a system-scoped dependency.
-	if (node.isActive()
-		&& !Artifact.SCOPE_SYSTEM.equals(node.getArtifact().getScope())) {
-	    fireEvent(ResolutionListener.PROCESS_CHILDREN, listeners, node);
-	    if (transitive) {
-		Artifact parentArtifact = node.getArtifact();
-
-		for (Iterator i = node.getChildrenIterator(); i.hasNext();) {
-		    ResolutionNode child = (ResolutionNode) i.next();
-		    if (!filter.include(child.getArtifact())) {
-			continue;
-		    }
-		    /*
-		     * rotgier: In case of regular dependencies provided scope
-		     * is simply ignored (artifact versions specified there
-		     * conflict with the ones of runtime deps)
-		     */
-		    if (Artifact.SCOPE_PROVIDED.equals(child.getArtifact()
-			    .getScope())) {
-			continue;
-		    }
-		    boolean isContinue = resolveChildNode(node, child, filter,
-			    managedVersions, listeners, source, parentArtifact);
-		    if (isContinue) {
-			continue;
-		    }
-		    recurse(originatingArtifact, child, resolvedArtifacts,
-			    managedVersions, localRepository, child
-				    .getRemoteRepositories(), source, filter,
-			    listeners, true);
-		}
-		List runtimeDeps = getRuntimeDeps(node.getArtifact(),
-			managedVersions, remoteRepositories);
-		Field childrenField = node.getClass().getDeclaredField("children");
-		childrenField.setAccessible(true);
-		List nodesChildren = (List) childrenField.get(node);
-		for (Object runtimeDepObj : runtimeDeps) {
-		    DependencyNode runtimeDep = (DependencyNode) runtimeDepObj;
-		    Artifact artifact = runtimeDep.getArtifact();
-		    ResolutionNode childRuntime = new ResolutionNode(artifact,
-			    node.getRemoteRepositories(), node);
-		    /*
-		     * rotgier: In case of runtime dependencies provided scope
-		     * should be allowed
-		     */
-		    if (!filter.include(childRuntime.getArtifact())) {
-
-			if (!Artifact.SCOPE_PROVIDED
-				.equals(artifact.getScope())) {
-			    continue;
+			if (checkScopeUpdate(farthest, nearest, listeners)) {
+			    // if we need to update scope of nearest to use
+			    // farthest
+			    // scope, use the nearest version, but farthest
+			    // scope
+			    nearest.disable();
+			    farthest.getArtifact().setVersion(
+				    nearest.getArtifact().getVersion());
+			    fireEvent(ResolutionListener.OMIT_FOR_NEARER,
+				    listeners, nearest, farthest.getArtifact());
+			} else {
+			    farthest.disable();
+			    fireEvent(ResolutionListener.OMIT_FOR_NEARER,
+				    listeners, farthest, nearest.getArtifact());
 			}
 		    }
-		    boolean isContinue = resolveChildNode(node, childRuntime,
-			    filter, managedVersions, listeners, source,
-			    parentArtifact);
-		    if (isContinue) {
-			continue;
-		    }
-		    recurse(originatingArtifact, childRuntime,
-			    resolvedArtifacts, managedVersions,
-			    localRepository, childRuntime
-				    .getRemoteRepositories(), source, filter,
-			    listeners, true);
-		    nodesChildren.add(childRuntime);
 		}
+	    } else {
+		previousNodes = new ArrayList();
+		resolvedArtifacts.put(key, previousNodes);
 	    }
-	    fireEvent(ResolutionListener.FINISH_PROCESSING_CHILDREN, listeners,
-		    node);
+	    previousNodes.add(node);
+
+	    if (node.isActive()) {
+		fireEvent(ResolutionListener.INCLUDE_ARTIFACT, listeners, node);
+	    }
+
+	    // don't pull in the transitive deps of a system-scoped dependency.
+	    if (node.isActive()
+		    && !Artifact.SCOPE_SYSTEM.equals(node.getArtifact()
+			    .getScope())) {
+		fireEvent(ResolutionListener.PROCESS_CHILDREN, listeners, node);
+		if (transitive) {
+		    Artifact parentArtifact = node.getArtifact();
+		    for (Iterator i = node.getChildrenIterator(); i.hasNext();) {
+			ResolutionNode child = (ResolutionNode) i.next();
+			if (!filter.include(child.getArtifact())) {
+			    continue;
+			}
+			/*
+			 * rotgier: In case of regular dependencies provided
+			 * scope is simply ignored (artifact versions specified
+			 * there conflict with the ones of runtime deps)
+			 */
+			if (Artifact.SCOPE_PROVIDED.equals(child.getArtifact()
+				.getScope())) {
+			    continue;
+			}
+			boolean isContinue = resolveChildNode(node, child,
+				filter, managedVersions, listeners, source,
+				parentArtifact);
+			if (isContinue) {
+			    continue;
+			}
+			recurse(originatingArtifact, child, resolvedArtifacts,
+				managedVersions, localRepository, child
+					.getRemoteRepositories(), source,
+				filter, listeners, true);
+		    }
+		    List runtimeDeps = getRuntimeDeps(node.getArtifact(),
+			    managedVersions, remoteRepositories);
+		    Field childrenField = node.getClass().getDeclaredField(
+			    "children");
+		    childrenField.setAccessible(true);
+		    List nodesChildren = (List) childrenField.get(node);
+		    for (Object runtimeDepObj : runtimeDeps) {
+			DependencyNode runtimeDep = (DependencyNode) runtimeDepObj;
+			Artifact artifact = runtimeDep.getArtifact();
+			ResolutionNode childRuntime = new ResolutionNode(
+				artifact, node.getRemoteRepositories(), node);
+			/*
+			 * rotgier: In case of runtime dependencies provided
+			 * scope should be allowed
+			 */
+			if (!filter.include(childRuntime.getArtifact())) {
+
+			    if (!Artifact.SCOPE_PROVIDED.equals(artifact
+				    .getScope())) {
+				continue;
+			    }
+			}
+			boolean isContinue = resolveChildNode(node,
+				childRuntime, filter, managedVersions,
+				listeners, source, parentArtifact);
+			if (isContinue) {
+			    continue;
+			}
+			recurse(originatingArtifact, childRuntime,
+				resolvedArtifacts, managedVersions,
+				localRepository, childRuntime
+					.getRemoteRepositories(), source,
+				filter, listeners, true);
+			nodesChildren.add(childRuntime);
+		    }
+		}
+		fireEvent(ResolutionListener.FINISH_PROCESSING_CHILDREN,
+			listeners, node);
+	    }
+	} catch (Exception ex) {
+	    StringBuilder msg = new StringBuilder();
+	    msg
+		    .append(String
+			    .format(
+				    "\nUnpredicted exception during dependency tree recursion at node %s",
+				    FilteringVisitorSupport.stringify(node
+					    .getArtifact())));
+	    msg.append("\nNode's parent tree:\n");
+	    msg.append(printNodeParentsTree(node));
+	    throw new IllegalStateException(msg.toString(), ex);
 	}
     }
 
@@ -887,10 +970,10 @@ public class DependencyTreeBuilder {
      * @throws DependencyTreeBuilderException
      * @throws ArtifactMetadataRetrievalException
      * @throws InvalidVersionSpecificationException
-     * @throws NoSuchFieldException 
-     * @throws SecurityException 
-     * @throws IllegalAccessException 
-     * @throws IllegalArgumentException 
+     * @throws NoSuchFieldException
+     * @throws SecurityException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
      */
     public List<DependencyNode> buildDependencyTree(
 	    ArtifactRepository repository, ArtifactFactory factory,
@@ -898,7 +981,9 @@ public class DependencyTreeBuilder {
 	    MavenProjectDescriptor... projectDescs)
 	    throws DependencyTreeBuilderException,
 	    ArtifactMetadataRetrievalException,
-	    InvalidVersionSpecificationException, SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+	    InvalidVersionSpecificationException, SecurityException,
+	    NoSuchFieldException, IllegalArgumentException,
+	    IllegalAccessException {
 	ArtifactFilter filter = new ScopeArtifactFilter();
 	DependencyTreeResolutionListener listener = new DependencyTreeResolutionListener(
 		filter);
@@ -948,6 +1033,20 @@ public class DependencyTreeBuilder {
 					    dep.getArtifactId(), versionRange,
 					    dep.getType(), dep.getClassifier(),
 					    dep.getScope());
+			    if (dep.getExclusions() != null) {
+				if (!dep.getExclusions().isEmpty()) {
+				    List<String> patterns = new ArrayList<String>();
+				    for (Exclusion exclusion : dep
+					    .getExclusions()) {
+					patterns.add(exclusion.getGroupId()
+						+ ":"
+						+ exclusion.getArtifactId());
+				    }
+				    dependencyArtifact
+					    .setDependencyFilter(new ExcludesArtifactFilter(
+						    patterns));
+				}
+			    }
 			    dependencyArtifacts.add(dependencyArtifact);
 			}
 		    }
