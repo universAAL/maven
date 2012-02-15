@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011 Universidad PolitÃ©cnica de Madrid
+ * Copyright 2011 Universidad Politécnica de Madrid
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,11 @@ import org.apache.maven.plugin.MojoFailureException;
 public class DecoupleCheckMojo extends AbstractMojo {
 
 	static private String OSGI_MATCH = ".*osgi.*";
+	
+	/**
+	 * @parameter expression="${svn-check.failOnMissMatch}" default-value="false"
+	 */
+	private boolean failOnMissMatch;
 
 	/** @parameter default-value="${project}" */
 	private org.apache.maven.project.MavenProject mavenProject;
@@ -64,8 +69,13 @@ public class DecoupleCheckMojo extends AbstractMojo {
 					+ " unless the package that contains them has explicitly \"osgi\" in it's name.";
 			m += System.getProperty("line.separator")
 			+ System.getProperty("line.separator");
-			throw new MojoFailureException(conflicted,
-					"Non-decoupled files found.", m);
+			if (failOnMissMatch) {
+				throw new MojoFailureException(conflicted,
+						"Non-decoupled files found.", m);
+			}
+			else {
+				getLog().warn(m);
+			}
 		}
 	}
 
