@@ -88,7 +88,7 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 	this.throwExceptionOnConflict = throwExceptionOnConflict;
 	this.artifactResolver = artifactResolver;
 	if (dontResolve != null) {
-	    this.artifactDontResolve = stringify(dontResolve);
+	    this.artifactDontResolve = FilteringVisitorSupport.stringify(dontResolve);
 	}
     }
 
@@ -218,7 +218,7 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 				    + node.getArtifact());
 		}
 		DependencyNode keptNode = (DependencyNode) nodesByArtifactId
-			.get(stringify(keptArtifact));
+			.get(FilteringVisitorSupport.stringify(keptArtifact));
 		if (keptNode == null) {
 		    /*
 		     * keptNode can be null if dependency was conflicted and was

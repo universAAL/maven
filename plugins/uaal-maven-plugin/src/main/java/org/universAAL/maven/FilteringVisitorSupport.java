@@ -53,7 +53,7 @@ public abstract class FilteringVisitorSupport {
      * @return
      */
     protected String stringify(DependencyNode node) {
-	return stringify(node.getArtifact());
+	return FilteringVisitorSupport.stringify(node.getArtifact());
     }
 
     /**
