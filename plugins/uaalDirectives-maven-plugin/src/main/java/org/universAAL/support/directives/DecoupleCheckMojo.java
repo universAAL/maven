@@ -21,13 +21,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 
-import org.apache.commons.io.DirectoryWalker;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.universAAL.support.directives.util.SourceChecker;
+import org.universAAL.support.directives.util.SourceExplorer;
 
 /**
  * This Mojo will test whether the uAAL projects are being properly decoupled
@@ -37,12 +37,12 @@ import org.apache.maven.plugin.MojoFailureException;
  * 
  * @goal decouple-check
  */
-public class DecoupleCheckMojo extends AbstractMojo {
+public class DecoupleCheckMojo extends AbstractMojo implements SourceChecker{
 
 	static private String OSGI_MATCH = ".*osgi.*";
 	
 	/**
-	 * @parameter expression="${svn-check.failOnMissMatch}" default-value="false"
+	 * @parameter expression="${failOnMissMatch}" default-value="false"
 	 */
 	private boolean failOnMissMatch;
 
@@ -53,7 +53,7 @@ public class DecoupleCheckMojo extends AbstractMojo {
 	 * {@inheritDoc}
 	 */
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		SourceExplorer se = new SourceExplorer();
+		SourceExplorer se = new SourceExplorer(this);
 		ArrayList<File> conflicted = se.walk(mavenProject.getBasedir()
 				+ "/src/main/java/");
 		if (conflicted.size() > 0) {
@@ -79,7 +79,7 @@ public class DecoupleCheckMojo extends AbstractMojo {
 		}
 	}
 
-	protected boolean passTest(File f) {
+	public boolean passesTest(File f) {
 		String pack = readPackage(f);
 		if (!pack.matches(OSGI_MATCH)) {
 			/*
@@ -105,7 +105,7 @@ public class DecoupleCheckMojo extends AbstractMojo {
 
 	}
 
-	private ArrayList<String> readImports(File f) {
+	private static ArrayList<String> readImports(File f) {
 		BufferedReader br;
 		try {
 			br = new BufferedReader(new FileReader(f));
@@ -117,7 +117,7 @@ public class DecoupleCheckMojo extends AbstractMojo {
 		return null;
 	}
 
-	private String readPackage(File f) {
+	private static String readPackage(File f) {
 		BufferedReader br;
 		try {
 			br = new BufferedReader(new FileReader(f));
@@ -135,7 +135,7 @@ public class DecoupleCheckMojo extends AbstractMojo {
 		return null;
 	}
 
-	private ArrayList<String> lookForLinesWith(BufferedReader f, String regExp) {
+	private static ArrayList<String> lookForLinesWith(BufferedReader f, String regExp) {
 		ArrayList<String> matches = new ArrayList<String>();
 		String s;
 		try {
@@ -149,41 +149,6 @@ public class DecoupleCheckMojo extends AbstractMojo {
 			e.printStackTrace();
 		}
 		return matches;
-	}
-
-	private class SourceExplorer extends DirectoryWalker {
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		protected boolean handleDirectory(File directory, int depth,
-				Collection results) throws IOException {
-			return !directory.getName().matches(".*\\.svn");
-		}
-
-		public ArrayList<File> walk(String startDir) {
-			ArrayList<File> conflicted = new ArrayList<File>();
-			try {
-				this.walk(new File(startDir), conflicted);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return conflicted;
-
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		protected void handleFile(File file, int depth, Collection results)
-				throws IOException {
-			// System.out.println("testing: " + file.getAbsolutePath());
-			if (file.getName().endsWith("java") && !passTest(file)) {
-				results.add(file);
-			}
-		}
 	}
 
 }

@@ -55,12 +55,12 @@ public class SVNCheckMojo extends AbstractMojo {
 			+ System.getProperty("line.separator") + "\n";
 
 	/**
-	 * @parameter expression="${svn-check.failOnMissMatch}" default-value="false"
+	 * @parameter expression="${failOnMissMatch}" default-value="false"
 	 */
 	private boolean failOnMissMatch;
 
 	/**
-	 * @parameter expression="${svn-check.fixSCM}" default-value="false"
+	 * @parameter expression="${directive.fix}" default-value="false"
 	 */
 	private boolean fixSCM;
 
