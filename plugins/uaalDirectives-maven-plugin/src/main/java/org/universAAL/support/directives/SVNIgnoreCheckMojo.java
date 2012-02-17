@@ -39,8 +39,12 @@ public class SVNIgnoreCheckMojo extends AbstractMojo {
 			+ "It seems the current Directory includes files that should be ingored.\n "
 			+ "Remember to ignore these files with your svn client before you commit:\n";
 
-	private String[] ignores = { ".project", ".settings", "target",
-			".classpath", };
+	/**
+	 * @parameter alias="ignores"
+	 */
+	private String[] ignores;
+	
+	private static String[] DEFAULT_IGNORES = {".project", ".settings", "target", ".classpath"};
 	/**
 	 * @parameter expression="${failOnMissMatch}"
 	 *            default-value="false"
@@ -55,6 +59,10 @@ public class SVNIgnoreCheckMojo extends AbstractMojo {
 	private org.apache.maven.project.MavenProject mavenProject;
 
 	public SVNIgnoreCheckMojo() {
+		if (ignores == null
+				|| ignores.length <= 0) {
+			ignores = DEFAULT_IGNORES;
+		}
 		for (int i = 0; i < ignores.length; i++) {
 			NO_IGNORES += ignores[i] + "\n";
 		}
