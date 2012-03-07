@@ -746,6 +746,11 @@ public class DependencyTreeBuilder {
 			    "children");
 		    childrenField.setAccessible(true);
 		    List nodesChildren = (List) childrenField.get(node);
+		    /* nodesChildren can be empty when dealing with parent POMs */
+		    if (nodesChildren == Collections.EMPTY_LIST) {
+			nodesChildren = new ArrayList();
+			childrenField.set(node, nodesChildren);
+		    }
 		    for (Object runtimeDepObj : runtimeDeps) {
 			DependencyNode runtimeDep = (DependencyNode) runtimeDepObj;
 			Artifact artifact = runtimeDep.getArtifact();

@@ -1,8 +1,13 @@
 package org.universAAL.maven;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
@@ -15,7 +20,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
-import org.universAAL.itests.conf.IntegrationTestConsts;
 import org.universAAL.maven.treebuilder.ExecutionListCreator;
 
 /**
@@ -93,36 +97,63 @@ public class UaalCompositeMojo extends AbstractMojo {
     private File baseDirectory;
 
     private static final String MAIN_COMPOSITE = "target/artifact.composite";
+    
+    private BufferedWriter createOutputWriter() throws FileNotFoundException {
+	File targetDir = new File(baseDirectory, "target");
+	targetDir.mkdirs();
+	File generatedCompositeFile = new File(baseDirectory, MAIN_COMPOSITE);
+	return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+		generatedCompositeFile, false)));
+    }
 
     public void execute() throws MojoExecutionException, MojoFailureException {
 	try {
-	    getLog()
-		    .info(
-			    System.getProperty("line.separator")
-				    + System.getProperty("line.separator")
-				    + "Creating MAIN composite file - output generated in "
-				    + MAIN_COMPOSITE
-				    + System.getProperty("line.separator")
-				    + System.getProperty("line.separator"));
-	    ExecutionListCreator execListCreator = new ExecutionListCreator(
-		    getLog(), artifactMetadataSource, artifactFactory,
-		    mavenProjectBuilder, localRepository, remoteRepositories,
-		    artifactResolver, throwExceptionOnConflictStr);
-	    List mvnUrls = execListCreator.createArtifactExecutionList(project);
-	    // File baseDirFile = new File(basedir);
-	    File targetDir = new File(baseDirectory, "target");
-	    targetDir.mkdirs();
-	    File generatedCompositeFile = new File(baseDirectory,
-		    MAIN_COMPOSITE);
-	    BufferedWriter compositeWriter = new BufferedWriter(
-		    new OutputStreamWriter(new FileOutputStream(
-			    generatedCompositeFile, false)));
-	    for (Object mvnUrl : mvnUrls) {
-		String mvnUrlStr = (String) mvnUrl;
-		compositeWriter.write("scan-bundle:" + mvnUrlStr
-			+ System.getProperty("line.separator"));
+	    File manualArtifactComposite = new File(baseDirectory, "artifact.composite");
+	    if (manualArtifactComposite.exists()) {
+		getLog()
+			.info(
+				System.getProperty("line.separator")
+					+ System.getProperty("line.separator")
+					+ "Since artifact.composite exists in the base directory composite generation is abandoned."
+					+ System.getProperty("line.separator")
+					+ "Instead artifact.composite from basedir is simply copied to"
+					+ MAIN_COMPOSITE
+					+ System.getProperty("line.separator")
+					+ System.getProperty("line.separator"));
+		BufferedReader compositeReader = new BufferedReader(new InputStreamReader(
+			new FileInputStream(manualArtifactComposite)));
+		BufferedWriter compositeWriter = createOutputWriter();
+		String line = null;
+		while ((line = compositeReader.readLine())!= null) {
+		    compositeWriter.write(line + System.getProperty("line.separator"));
+		}
+		compositeWriter.close();
+		compositeReader.close();
+	    } else {
+		getLog()
+			.info(
+				System.getProperty("line.separator")
+					+ System.getProperty("line.separator")
+					+ "Creating MAIN composite file - output generated in "
+					+ MAIN_COMPOSITE
+					+ System.getProperty("line.separator")
+					+ System.getProperty("line.separator"));
+		ExecutionListCreator execListCreator = new ExecutionListCreator(
+			getLog(), artifactMetadataSource, artifactFactory,
+			mavenProjectBuilder, localRepository,
+			remoteRepositories, artifactResolver,
+			throwExceptionOnConflictStr);
+		List mvnUrls = execListCreator
+			.createArtifactExecutionList(project);
+
+		BufferedWriter compositeWriter = createOutputWriter();
+		for (Object mvnUrl : mvnUrls) {
+		    String mvnUrlStr = (String) mvnUrl;
+		    compositeWriter.write("scan-bundle:" + mvnUrlStr
+			    + System.getProperty("line.separator"));
+		}
+		compositeWriter.close();
 	    }
-	    compositeWriter.close();
 	} catch (Exception e) {
 	    getLog().error(e);
 	    throw new RuntimeException(e);

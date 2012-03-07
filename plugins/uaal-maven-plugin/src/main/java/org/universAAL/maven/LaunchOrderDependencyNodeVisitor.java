@@ -267,7 +267,9 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 		case DependencyNode.OMITTED_FOR_CONFLICT:
 		    break;
 		default:
-		    addNode(node);
+		    if (!"pom".equals(node.getArtifact().getType())) {
+			addNode(node);
+		    }
 		}
 	    }
 	}
