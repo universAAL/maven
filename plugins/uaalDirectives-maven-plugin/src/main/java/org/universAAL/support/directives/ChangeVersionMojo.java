@@ -44,14 +44,6 @@ public class ChangeVersionMojo extends AbstractMojo implements PomFixer{
     
     /** {@inheritDoc} */
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		// Tag last SNAPSHOT
-		// Change ALL versions to nextReleaseVersion
-		// use versions:update-children-modules to set parentPOM version
-		// Fix DependencyManagement
-		// Tag Working Copy
-		// Deploy
-		// Change ALL version to nextDevelopmentVersion(nextReleaseVersion)
-		// 
 		try {
 			getLog().info("Changing version from: " + mavenProject.getVersion() + " to: " + newVersion);
 			new PomWriter(this, mavenProject).fix();
