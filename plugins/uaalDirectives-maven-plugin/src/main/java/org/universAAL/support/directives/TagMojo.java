@@ -15,8 +15,7 @@
  ******************************************************************************/
 package org.universAAL.support.directives;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.File;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -25,7 +24,6 @@ import org.apache.maven.project.MavenProject;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNProperties;
 import org.tmatesoft.svn.core.SVNURL;
-import org.tmatesoft.svn.core.internal.util.SVNURLUtil;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNCopySource;
 import org.tmatesoft.svn.core.wc.SVNRevision;
@@ -53,43 +51,76 @@ public class TagMojo extends AbstractMojo {
     /** @parameter default-value="${project}" */
     private MavenProject mavenProject;
     
+    /**
+     * @parameter expression="${tagWorkingCopy}" default-value="false"
+     */
+    private boolean tagWorkingCopy;
     /** {@inheritDoc} */
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		getLog().info(getTagURL());
+		String url = mavenProject.getScm().getDeveloperConnection();
+		String tagUrl = getTagURL(mavenProject);
+		getLog().info("Tagging: " + url + "  ->  " + tagUrl);
+		if (!tagWorkingCopy) {
+			if (!performTag(url, tagUrl, "Automatic tag of " 
+					+ mavenProject.getArtifactId() + " version: " + mavenProject.getVersion())) {
+				throw new MojoFailureException(NOT_TAGGED);
+			}			
+		}
+		else {
+			if (!performWCTag(mavenProject.getBasedir(), tagUrl, "Automatic tag of " 
+					+ mavenProject.getArtifactId() + " version: " + mavenProject.getVersion())) {
+				throw new MojoFailureException(NOT_TAGGED);
+			}
+		}
 	}
 	
 	/**
 	 * parses the scm url to generate an appropiate tag URL, in concordance to T2.3 Directives
 	 * @return
 	 */
-	public String getTagURL() {
+	public static String getTagURL(MavenProject mavenProject) {
 		String scmUrl = mavenProject.getScm().getDeveloperConnection();
 		scmUrl = scmUrl.replace("scm:", "");
 		scmUrl = scmUrl.replace("svn:", "");
 		String tagUrl = scmUrl.split("trunk")[0];
 		tagUrl += "tags/";
-		getLog().debug("tagUrl1 :" +tagUrl);
 		if (DirectiveCheckMojo.isSnapshot(mavenProject)) {
 			tagUrl += "SNAPSHOT/" + mavenProject.getArtifactId() + "-" + mavenProject.getVersion();
 		}
 		else {
 			tagUrl += mavenProject.getVersion()+ "/" + mavenProject.getArtifactId();
 		}
-		getLog().debug(tagUrl);
 		return tagUrl;		
 	}
 	
-	public void performTag(String url, String tagUrl, String msg) {
-		SVNClientManager cli = SVNClientManager.newInstance();
+	public static boolean performTag(String url, String tagUrl, String msg) {
 		try {
 			SVNCopySource source = new SVNCopySource(SVNRevision.HEAD, SVNRevision.HEAD, SVNURL.parseURIDecoded(url));
-			cli.getCopyClient().doCopy(new SVNCopySource[]{ source},
-					SVNURL.parseURIDecoded(tagUrl),
-					false, true, true, msg, new SVNProperties());
+			return doTag(source, tagUrl, msg);
 		} catch (SVNException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return false;
 		}
 	}
+	
+	private static boolean doTag(SVNCopySource source, String tagUrl, String msg) throws SVNException {
+		SVNClientManager cli = SVNClientManager.newInstance();
+		cli.getCopyClient().doCopy(new SVNCopySource[]{ source},
+				SVNURL.parseURIDecoded(tagUrl),
+				false, true, true, msg, new SVNProperties());
+		return true;
+	}
+	
+	public static boolean performWCTag(File wd, String tagUrl, String msg) {
+		try {
+			SVNCopySource source = new SVNCopySource(SVNRevision.HEAD, SVNRevision.HEAD, wd);
+			return doTag(source, tagUrl, msg);
+		} catch (SVNException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	
 
 }
