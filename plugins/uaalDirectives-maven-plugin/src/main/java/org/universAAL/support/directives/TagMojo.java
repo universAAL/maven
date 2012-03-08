@@ -85,7 +85,7 @@ public class TagMojo extends AbstractMojo{
 			tagUrl += "SNAPSHOT/" + mavenProject.getArtifactId() + "-" + mavenProject.getVersion();
 		}
 		else {
-			tagUrl += mavenProject.getVersion()+ "/" + mavenProject.getArtifactId();
+			tagUrl += mavenProject.getVersion()+ "/" + scmUrl.split("trunk")[1];
 		}
 		return tagUrl;		
 	}
