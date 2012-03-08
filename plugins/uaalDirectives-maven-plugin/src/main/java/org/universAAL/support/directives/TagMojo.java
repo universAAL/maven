@@ -22,7 +22,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.tmatesoft.svn.core.SVNException;
-import org.tmatesoft.svn.core.SVNProperties;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNCopySource;
@@ -36,7 +35,7 @@ import org.tmatesoft.svn.core.wc.SVNRevision;
  * 
  * @requiresDirectInvocation 
  */
-public class TagMojo extends AbstractMojo {
+public class TagMojo extends AbstractMojo{
 
     /**
      * Message content when tag fails
@@ -46,7 +45,6 @@ public class TagMojo extends AbstractMojo {
 	    + "\n"
 	    + "Failed Trying to tag the project try again manually.\n"
 	    + System.getProperty("line.separator") + "\n";
-
 
     /** @parameter default-value="${project}" */
     private MavenProject mavenProject;
@@ -93,7 +91,7 @@ public class TagMojo extends AbstractMojo {
 		return tagUrl;		
 	}
 	
-	public static boolean performTag(String url, String tagUrl, String msg) {
+	public boolean performTag(String url, String tagUrl, String msg) {
 		try {
 			SVNCopySource source = new SVNCopySource(SVNRevision.HEAD, SVNRevision.HEAD, SVNURL.parseURIDecoded(url));
 			return doTag(source, tagUrl, msg);
@@ -107,20 +105,17 @@ public class TagMojo extends AbstractMojo {
 		SVNClientManager cli = SVNClientManager.newInstance();
 		cli.getCopyClient().doCopy(new SVNCopySource[]{ source},
 				SVNURL.parseURIDecoded(tagUrl),
-				false, true, true, msg, new SVNProperties());
+				false, true, true, msg, null);
 		return true;
 	}
 	
-	public static boolean performWCTag(File wd, String tagUrl, String msg) {
+	public boolean performWCTag(File wd, String tagUrl, String msg) {
 		try {
-			SVNCopySource source = new SVNCopySource(SVNRevision.WORKING, SVNRevision.WORKING, wd);
+			SVNCopySource source = new SVNCopySource(SVNRevision.WORKING, SVNRevision.WORKING, wd);			
 			return doTag(source, tagUrl, msg);
 		} catch (SVNException e) {
 			e.printStackTrace();
 			return false;
 		}
 	}
-	
-	
-
 }
