@@ -113,7 +113,7 @@ public class TagMojo extends AbstractMojo {
 	
 	public static boolean performWCTag(File wd, String tagUrl, String msg) {
 		try {
-			SVNCopySource source = new SVNCopySource(SVNRevision.HEAD, SVNRevision.HEAD, wd);
+			SVNCopySource source = new SVNCopySource(SVNRevision.WORKING, SVNRevision.WORKING, wd);
 			return doTag(source, tagUrl, msg);
 		} catch (SVNException e) {
 			e.printStackTrace();
