@@ -52,6 +52,13 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
      * Stringified representation of artifact which should not be resolved.
      */
     private String artifactDontResolve;
+    
+    /**
+     * If this is true than it means that the execution list is created on
+     * behalf of pom (e.g. parent pom). In such case elements of the list should
+     * not be resolver.
+     */
+    private boolean visitingOnPomBehalf = false;    
 
     /**
      * After finishing the visit this list contains mvnUrls in launch order of
@@ -89,6 +96,9 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 	this.artifactResolver = artifactResolver;
 	if (dontResolve != null) {
 	    this.artifactDontResolve = FilteringVisitorSupport.stringify(dontResolve);
+	    if ("pom".equals(dontResolve.getType())) {
+		visitingOnPomBehalf = true;
+	    }
 	}
     }
 
@@ -159,6 +169,9 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 		    if (artifactDontResolve.equals(nodeStr)) {
 			shouldResolve = false;
 		    }
+		}
+		if (visitingOnPomBehalf) {
+		    shouldResolve = false;
 		}
 		String mvnUrl = String.format("mvn:%s/%s/%s", artifact
 			.getGroupId(), artifact.getArtifactId(), artifact
@@ -268,7 +281,9 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 		    break;
 		default:
 		    if (!"pom".equals(node.getArtifact().getType())) {
-			addNode(node);
+			if (!node.getArtifact().getArtifactId().endsWith("composite")) {
+			    addNode(node);
+			}
 		    }
 		}
 	    }

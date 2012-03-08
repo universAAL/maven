@@ -96,36 +96,48 @@ public class UaalTestMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
 	try {
-	    getLog()
-		    .info(
-			    System.getProperty("line.separator")
-				    + System.getProperty("line.separator")
-				    + "Creating composite file for itests - output generated in "
-				    + IntegrationTestConsts.TEST_COMPOSITE
-				    + System.getProperty("line.separator")
-				    + System.getProperty("line.separator"));
-	    ExecutionListCreator execListCreator = new ExecutionListCreator(
-		    getLog(), artifactMetadataSource, artifactFactory,
-		    mavenProjectBuilder, localRepository, remoteRepositories,
-		    artifactResolver, throwExceptionOnConflictStr);
-	    List mvnUrls = execListCreator.createArtifactExecutionList(project);
-	    File targetDir = new File(baseDirectory, "target");
-	    targetDir.mkdirs();
-	    File generatedCompositeFile = new File(baseDirectory,
-		    IntegrationTestConsts.TEST_COMPOSITE);
-	    BufferedWriter compositeWriter = new BufferedWriter(
-		    new OutputStreamWriter(new FileOutputStream(
-			    generatedCompositeFile, false)));
-	    for (Object mvnUrl : mvnUrls) {
-		String mvnUrlStr = (String) mvnUrl;
-		compositeWriter.write("scan-bundle:" + mvnUrlStr
-			+ System.getProperty("line.separator"));
+	    if ("pom".equals(project.getArtifact().getType())) {
+		getLog()
+			.info(
+				System.getProperty("line.separator")
+					+ System.getProperty("line.separator")
+					+ "Since this is a parent POM creating composite file for itests is abandoned"
+					+ System.getProperty("line.separator")
+					+ System.getProperty("line.separator"));
+	    } else {
+		getLog()
+			.info(
+				System.getProperty("line.separator")
+					+ System.getProperty("line.separator")
+					+ "Creating composite file for itests - output generated in "
+					+ IntegrationTestConsts.TEST_COMPOSITE
+					+ System.getProperty("line.separator")
+					+ System.getProperty("line.separator"));
+		ExecutionListCreator execListCreator = new ExecutionListCreator(
+			getLog(), artifactMetadataSource, artifactFactory,
+			mavenProjectBuilder, localRepository,
+			remoteRepositories, artifactResolver,
+			throwExceptionOnConflictStr);
+		List mvnUrls = execListCreator
+			.createArtifactExecutionList(project);
+		File targetDir = new File(baseDirectory, "target");
+		targetDir.mkdirs();
+		File generatedCompositeFile = new File(baseDirectory,
+			IntegrationTestConsts.TEST_COMPOSITE);
+		BufferedWriter compositeWriter = new BufferedWriter(
+			new OutputStreamWriter(new FileOutputStream(
+				generatedCompositeFile, false)));
+		for (Object mvnUrl : mvnUrls) {
+		    String mvnUrlStr = (String) mvnUrl;
+		    compositeWriter.write("scan-bundle:" + mvnUrlStr
+			    + System.getProperty("line.separator"));
+		}
+		compositeWriter.close();
+		Artifact runDirArtifact = execListCreator
+			.parseMvnUrlWithType(IntegrationTestConsts.RUN_DIR_MVN_URL);
+		artifactResolver.resolve(runDirArtifact, remoteRepositories,
+			localRepository);
 	    }
-	    compositeWriter.close();
-	    Artifact runDirArtifact = execListCreator
-		    .parseMvnUrlWithType(IntegrationTestConsts.RUN_DIR_MVN_URL);
-	    artifactResolver.resolve(runDirArtifact, remoteRepositories,
-		    localRepository);
 	} catch (Exception e) {
 	    getLog().error(e);
 	    throw new RuntimeException(e);

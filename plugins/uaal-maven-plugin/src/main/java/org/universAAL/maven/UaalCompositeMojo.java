@@ -116,7 +116,7 @@ public class UaalCompositeMojo extends AbstractMojo {
 					+ System.getProperty("line.separator")
 					+ "Since artifact.composite exists in the base directory composite generation is abandoned."
 					+ System.getProperty("line.separator")
-					+ "Instead artifact.composite from basedir is simply copied to"
+					+ "Instead artifact.composite from basedir is simply copied to "
 					+ MAIN_COMPOSITE
 					+ System.getProperty("line.separator")
 					+ System.getProperty("line.separator"));
@@ -130,29 +130,45 @@ public class UaalCompositeMojo extends AbstractMojo {
 		compositeWriter.close();
 		compositeReader.close();
 	    } else {
-		getLog()
-			.info(
-				System.getProperty("line.separator")
-					+ System.getProperty("line.separator")
-					+ "Creating MAIN composite file - output generated in "
-					+ MAIN_COMPOSITE
-					+ System.getProperty("line.separator")
-					+ System.getProperty("line.separator"));
-		ExecutionListCreator execListCreator = new ExecutionListCreator(
-			getLog(), artifactMetadataSource, artifactFactory,
-			mavenProjectBuilder, localRepository,
-			remoteRepositories, artifactResolver,
-			throwExceptionOnConflictStr);
-		List mvnUrls = execListCreator
-			.createArtifactExecutionList(project);
+		if ("pom".equals(project.getArtifact().getType())) {
+		    getLog()
+			    .info(
+				    System.getProperty("line.separator")
+					    + System
+						    .getProperty("line.separator")
+					    + "Since this is a parent POM creating MAIN composite file is abandoned"
+					    + System
+						    .getProperty("line.separator")
+					    + System
+						    .getProperty("line.separator"));
+		} else {
+		    getLog()
+			    .info(
+				    System.getProperty("line.separator")
+					    + System
+						    .getProperty("line.separator")
+					    + "Creating MAIN composite file - output generated in "
+					    + MAIN_COMPOSITE
+					    + System
+						    .getProperty("line.separator")
+					    + System
+						    .getProperty("line.separator"));
+		    ExecutionListCreator execListCreator = new ExecutionListCreator(
+			    getLog(), artifactMetadataSource, artifactFactory,
+			    mavenProjectBuilder, localRepository,
+			    remoteRepositories, artifactResolver,
+			    throwExceptionOnConflictStr);
+		    List mvnUrls = execListCreator
+			    .createArtifactExecutionList(project);
 
-		BufferedWriter compositeWriter = createOutputWriter();
-		for (Object mvnUrl : mvnUrls) {
-		    String mvnUrlStr = (String) mvnUrl;
-		    compositeWriter.write("scan-bundle:" + mvnUrlStr
-			    + System.getProperty("line.separator"));
+		    BufferedWriter compositeWriter = createOutputWriter();
+		    for (Object mvnUrl : mvnUrls) {
+			String mvnUrlStr = (String) mvnUrl;
+			compositeWriter.write("scan-bundle:" + mvnUrlStr
+				+ System.getProperty("line.separator"));
+		    }
+		    compositeWriter.close();
 		}
-		compositeWriter.close();
 	    }
 	} catch (Exception e) {
 	    getLog().error(e);
