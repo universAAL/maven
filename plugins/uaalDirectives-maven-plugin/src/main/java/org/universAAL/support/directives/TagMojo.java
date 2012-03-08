@@ -78,8 +78,7 @@ public class TagMojo extends AbstractMojo{
 	 */
 	public static String getTagURL(MavenProject mavenProject) {
 		String scmUrl = mavenProject.getScm().getDeveloperConnection();
-		scmUrl = scmUrl.replace("scm:", "");
-		scmUrl = scmUrl.replace("svn:", "");
+		scmUrl = scmUrl.replace("scm:", "").replace("svn:", "");
 		String tagUrl = scmUrl.split("trunk")[0];
 		tagUrl += "tags/";
 		if (DirectiveCheckMojo.isSnapshot(mavenProject)) {
