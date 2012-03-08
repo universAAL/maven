@@ -103,7 +103,7 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
 				VERSIONS_NOT_CONFIGURED_ROOT 
 				: VERSIONS_NOT_CONFIGURED;
 		if (!toBeFixed.isEmpty()) {
-			for (Iterator iterator = toBeFixed.keySet().iterator(); iterator.hasNext();) {
+			for (Iterator<String> iterator = toBeFixed.keySet().iterator(); iterator.hasNext();) {
 				String dep =  (String) iterator.next();
 				err += "\n" + dep 
 						+ ", version should be : " + toBeFixed.get(dep) ;
@@ -147,9 +147,9 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
 	private boolean passRootCheck(MavenProject mavenProject2) {
 		HashMap<String,String> versionMap = getActualVersions(mavenProject2);
 		List<Dependency> lod = mavenProject.getDependencyManagement().getDependencies();
-		for (Iterator iterator = lod.iterator(); iterator.hasNext();) {
+		for (Iterator<Dependency> iterator = lod.iterator(); iterator.hasNext();) {
 			Dependency dependency = (Dependency) iterator.next();
-			String realVersion = versionMap.get(dependency.getGroupId() + dependency.getArtifactId());
+			String realVersion = versionMap.get(dependency.getGroupId() + ":" +  dependency.getArtifactId());
 			if ( dependency != null &&
 					! dependency.getVersion()
 					.equals(realVersion)
@@ -157,17 +157,23 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
 				toBeFixed.put(dependency.getGroupId() + ":" + dependency.getArtifactId(), realVersion);
 			}
 		}
+		for (Iterator<?> iterator = versionMap.entrySet().iterator(); iterator.hasNext();) {
+			String key = (String) iterator.next();
+			if (!lod.contains(key)) {
+				toBeFixed.put(key, versionMap.get(key));
+			}
+		}
 		return toBeFixed.isEmpty();
 	}
 
 	private HashMap<String, String> getActualVersions(MavenProject mavenProject2) {
 		HashMap<String,String> versionMap = new HashMap<String, String>();
-		for (Iterator iterator = reactorProjects.iterator(); iterator.hasNext();) {
+		for (Iterator<MavenProject> iterator = reactorProjects.iterator(); iterator.hasNext();) {
 			MavenProject mavenProject = (MavenProject) iterator.next();
 			if (mavenProject.getVersion() != null) {
-				versionMap.put(mavenProject.getGroupId()+mavenProject.getArtifactId()
+				versionMap.put(mavenProject.getGroupId()+ ":" + mavenProject.getArtifactId()
 						,mavenProject.getVersion());
-				getLog().debug("added to ActualVersions: " + mavenProject.getGroupId()+mavenProject.getArtifactId()
+				getLog().debug("added to ActualVersions: " + mavenProject.getGroupId() + ":" + mavenProject.getArtifactId()
 						+ mavenProject.getVersion());
 			}
 		}
@@ -178,15 +184,25 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
 		List<Dependency> dep = model.getDependencyManagement().getDependencies();
 		List<Dependency> newDep = new ArrayList<Dependency>();
 		getLog().debug(Integer.toString(dep.size())+"\n");
-		for (Iterator iterator = dep.iterator(); iterator.hasNext();) {
+		for (Iterator<Dependency> iterator = dep.iterator(); iterator.hasNext();) {
 			Dependency dependency = (Dependency) iterator.next();
 			String key = dependency.getGroupId() + ":" + dependency.getArtifactId();
 			if (toBeFixed.containsKey(key)) {
 				dependency.setVersion(toBeFixed.get(key));
 				getLog().info("Fixing: " + dependency.getGroupId() + ":" + dependency.getArtifactId()
 						+ " to: " + toBeFixed.get(key));
+				toBeFixed.remove(key);
 			}
 			newDep.add(dependency);
+		}
+		for (Iterator<String> iterator = toBeFixed.keySet().iterator(); iterator.hasNext();) {
+			String depIDs = (String) iterator.next();
+			Dependency d = new Dependency();
+			String[] ids = depIDs.split("\\:");
+			d.setArtifactId(ids[0]);
+			d.setGroupId(ids[1]);
+			d.setVersion(toBeFixed.get(depIDs));
+			newDep.add(d);
 		}
 		model.getDependencyManagement().setDependencies(newDep);		
 	}
