@@ -130,18 +130,18 @@ public class UaalCompositeMojo extends AbstractMojo {
 		compositeWriter.close();
 		compositeReader.close();
 	    } else {
-		if ("pom".equals(project.getArtifact().getType())) {
-		    getLog()
-			    .info(
-				    System.getProperty("line.separator")
-					    + System
-						    .getProperty("line.separator")
-					    + "Since this is a parent POM creating MAIN composite file is abandoned"
-					    + System
-						    .getProperty("line.separator")
-					    + System
-						    .getProperty("line.separator"));
-		} else {
+//		if ("pom".equals(project.getArtifact().getType())) {
+//		    getLog()
+//			    .info(
+//				    System.getProperty("line.separator")
+//					    + System
+//						    .getProperty("line.separator")
+//					    + "Since this is a parent POM creating MAIN composite file is abandoned"
+//					    + System
+//						    .getProperty("line.separator")
+//					    + System
+//						    .getProperty("line.separator"));
+//		} else {
 		    getLog()
 			    .info(
 				    System.getProperty("line.separator")
@@ -168,7 +168,7 @@ public class UaalCompositeMojo extends AbstractMojo {
 				+ System.getProperty("line.separator"));
 		    }
 		    compositeWriter.close();
-		}
+//		}
 	    }
 	} catch (Exception e) {
 	    getLog().error(e);
