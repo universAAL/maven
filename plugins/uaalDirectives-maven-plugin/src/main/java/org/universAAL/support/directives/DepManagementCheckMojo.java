@@ -157,7 +157,7 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
 				toBeFixed.put(dependency.getGroupId() + ":" + dependency.getArtifactId(), realVersion);
 			}
 		}
-		for (Iterator<?> iterator = versionMap.entrySet().iterator(); iterator.hasNext();) {
+		for (Iterator<?> iterator = versionMap.keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
 			if (!lod.contains(key)) {
 				toBeFixed.put(key, versionMap.get(key));
@@ -170,7 +170,9 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
 		HashMap<String,String> versionMap = new HashMap<String, String>();
 		for (Iterator<MavenProject> iterator = reactorProjects.iterator(); iterator.hasNext();) {
 			MavenProject mavenProject = (MavenProject) iterator.next();
-			if (mavenProject.getVersion() != null) {
+			if (mavenProject.getVersion() != null 
+					&& !mavenProject.getPackaging().equals("pom")) {
+				// Check if its a pom, add it if not!
 				versionMap.put(mavenProject.getGroupId()+ ":" + mavenProject.getArtifactId()
 						,mavenProject.getVersion());
 				getLog().debug("added to ActualVersions: " + mavenProject.getGroupId() + ":" + mavenProject.getArtifactId()
