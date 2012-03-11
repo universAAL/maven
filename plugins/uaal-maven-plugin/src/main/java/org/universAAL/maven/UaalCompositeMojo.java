@@ -162,10 +162,15 @@ public class UaalCompositeMojo extends AbstractMojo {
 			    .createArtifactExecutionList(project);
 
 		    BufferedWriter compositeWriter = createOutputWriter();
+		    boolean hasWrittenSth = false;
 		    for (Object mvnUrl : mvnUrls) {
+			hasWrittenSth = true;
 			String mvnUrlStr = (String) mvnUrl;
 			compositeWriter.write("scan-bundle:" + mvnUrlStr
 				+ System.getProperty("line.separator"));
+		    }
+		    if (!hasWrittenSth) {
+			compositeWriter.write("This is an empty dummy line in order to make this file possible to deploy. Don't use this file at any time.");
 		    }
 		    compositeWriter.close();
 //		}
