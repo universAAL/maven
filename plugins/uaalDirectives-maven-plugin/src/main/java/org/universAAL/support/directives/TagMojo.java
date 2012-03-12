@@ -52,13 +52,13 @@ public class TagMojo extends AbstractMojo{
     /**
      * @parameter expression="${tagWorkingCopy}" default-value="false"
      */
-    private boolean tagWorkingCopy;
+    private boolean tagRemoteHead;
     /** {@inheritDoc} */
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		String url = mavenProject.getScm().getDeveloperConnection();
 		String tagUrl = getTagURL(mavenProject);
 		getLog().info("Tagging: " + url + "  ->  " + tagUrl);
-		if (!tagWorkingCopy) {
+		if (tagRemoteHead) {
 			if (!performTag(url, tagUrl, "Automatic tag of " 
 					+ mavenProject.getArtifactId() + " version: " + mavenProject.getVersion())) {
 				throw new MojoFailureException(NOT_TAGGED);
