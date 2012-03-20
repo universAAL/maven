@@ -11,7 +11,7 @@
 	<packaging>maven-plugin</packaging>
 	<groupId>org.universAAL.support</groupId>
 	<artifactId>uaal-maven-plugin</artifactId>
-	<version>1.1.0</version>
+	<version>1.1.1-SNAPSHOT</version>
 	<name>uAAL Maven Plugin</name>
 	<description>Maven plugin for resolution and running uAAL artifacts</description>
 	<url />
