@@ -2,20 +2,20 @@ package org.universAAL.maven;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.artifact.resolver.ResolutionNode;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.apache.maven.shared.dependency.tree.traversal.DependencyNodeVisitor;
@@ -52,13 +52,13 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
      * Stringified representation of artifact which should not be resolved.
      */
     private String artifactDontResolve;
-    
+
     /**
      * If this is true than it means that the execution list is created on
      * behalf of pom (e.g. parent pom). In such case elements of the list should
      * not be resolver.
      */
-    private boolean visitingOnPomBehalf = false;    
+    private boolean visitingOnPomBehalf = false;
 
     /**
      * After finishing the visit this list contains mvnUrls in launch order of
@@ -78,6 +78,8 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
      */
     private Map versionsByArtifactId = new HashMap();
 
+    private Set<String> stringifiedExcludedCoreArtifacts;
+
     /**
      * Whether exception should be thrown in case of conflict in artifact
      * version.
@@ -95,7 +97,8 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 	this.throwExceptionOnConflict = throwExceptionOnConflict;
 	this.artifactResolver = artifactResolver;
 	if (dontResolve != null) {
-	    this.artifactDontResolve = FilteringVisitorSupport.stringify(dontResolve);
+	    this.artifactDontResolve = FilteringVisitorSupport
+		    .stringify(dontResolve);
 	    if ("pom".equals(dontResolve.getType())) {
 		visitingOnPomBehalf = true;
 	    }
@@ -161,7 +164,12 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 
     protected void addNode(DependencyNode node) {
 	try {
-	    if (!wasVisited(node)) {
+	    if (!wasVisited(node)
+	    /*
+	     * Here all core artifacts which were detected at each RootNode are
+	     * excluded.
+	     */
+	    && (!stringifiedExcludedCoreArtifacts.contains(stringify(node)))) {
 		boolean shouldResolve = true;
 		Artifact artifact = node.getArtifact();
 		String nodeStr = stringify(node);
@@ -281,7 +289,8 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 		    break;
 		default:
 		    if (!"pom".equals(node.getArtifact().getType())) {
-			if (!node.getArtifact().getArtifactId().endsWith("composite")) {
+			if (!node.getArtifact().getArtifactId().endsWith(
+				"composite")) {
 			    addNode(node);
 			}
 		    }
@@ -297,6 +306,15 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 
     public void setRemoteRepositories(List remoteRepositories) {
 	this.remoteRepositories = remoteRepositories;
+    }
+
+    public void setExcludedCoreArtifacts(
+	    List<ResolutionNode> excludedCoreArtifacts) {
+	stringifiedExcludedCoreArtifacts = new HashSet<String>();
+	for (ResolutionNode resolutionNode : excludedCoreArtifacts) {
+	    stringifiedExcludedCoreArtifacts.add(stringify(resolutionNode
+		    .getArtifact()));
+	}
     }
 
 }

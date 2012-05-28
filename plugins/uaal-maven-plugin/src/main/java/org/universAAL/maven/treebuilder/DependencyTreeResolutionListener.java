@@ -32,6 +32,7 @@ import java.util.Stack;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ResolutionListener;
 import org.apache.maven.artifact.resolver.ResolutionListenerForDepMgmt;
+import org.apache.maven.artifact.resolver.ResolutionNode;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.shared.dependency.tree.DependencyNode;
@@ -69,7 +70,9 @@ public class DependencyTreeResolutionListener implements ResolutionListener,
     /**
      * The root dependency node of the computed dependency tree.
      */
-    private List rootNodes;
+    private List<RootNode> rootNodes;
+    
+    private RootNode currentRootNode;
 
     /**
      * The dependency node currently being processed by this listener.
@@ -102,7 +105,6 @@ public class DependencyTreeResolutionListener implements ResolutionListener,
 	parentNodes = new Stack();
 	nodesByArtifact = new IdentityHashMap();
 	rootNodes = new ArrayList();
-	;
 	currentNode = null;
     }
 
@@ -224,7 +226,7 @@ public class DependencyTreeResolutionListener implements ResolutionListener,
 		currentNode = omittedNode;
 
 		if (omittedNode.getDepth() == 0) {
-		    rootNodes.add(omittedNode);
+		    rootNodes.add(new RootNode(omittedNode));
 		}
 	    }
 
@@ -435,7 +437,7 @@ public class DependencyTreeResolutionListener implements ResolutionListener,
      * 
      * @return the root node
      */
-    public List getRootNodes() {
+    public List<RootNode> getRootNodes() {
 	return rootNodes;
     }
 
@@ -504,7 +506,8 @@ public class DependencyTreeResolutionListener implements ResolutionListener,
 
 	int depth = node.getDepth();
 	if (depth == 0) {
-	    rootNodes.add(node);
+	    currentRootNode = new RootNode(node);
+	    rootNodes.add(currentRootNode);
 	}
 
 	currentNode = node;
@@ -593,6 +596,10 @@ public class DependencyTreeResolutionListener implements ResolutionListener,
 
     public Map getNodesByArtifact() {
 	return nodesByArtifact;
+    }
+    
+    public void addExcludedCoreArtifact(ResolutionNode node) {
+	currentRootNode.excludedCoreArtifacts.add(node);
     }
 
 }

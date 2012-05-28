@@ -22,11 +22,13 @@ package org.universAAL.maven.treebuilder;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
@@ -86,6 +88,8 @@ public class DependencyTreeBuilder {
 
     public static final String UAAL_RUNTIME_PROFILE = "uAAL-Runtime";
 
+    public static final String PROP_SEPARATED_GROUP_IDS = "separatedGroupIds";
+
     private ArtifactFactory artifactFactory;
 
     private MavenProjectBuilder mavenProjectBuilder;
@@ -100,81 +104,78 @@ public class DependencyTreeBuilder {
 	this.localRepository = localRepository;
     }
 
-    private void fireEvent(int event, List listeners, ResolutionNode node) {
-	fireEvent(event, listeners, node, null);
+    private void fireEvent(int event,
+	    DependencyTreeResolutionListener listener, ResolutionNode node) {
+	fireEvent(event, listener, node, null);
     }
 
-    private void fireEvent(int event, List listeners, ResolutionNode node,
+    private void fireEvent(int event,
+	    DependencyTreeResolutionListener listener, ResolutionNode node,
 	    Artifact replacement) {
-	fireEvent(event, listeners, node, replacement, null);
+	fireEvent(event, listener, node, replacement, null);
     }
 
     /**
      * fireEvent methods are used for sending events related resolution process
      * to the listeners passed as arguments.
      */
-    private void fireEvent(int event, List listeners, ResolutionNode node,
+    private void fireEvent(int event,
+	    DependencyTreeResolutionListener listener, ResolutionNode node,
 	    Artifact replacement, VersionRange newRange) {
-	for (Iterator i = listeners.iterator(); i.hasNext();) {
-	    ResolutionListener listener = (ResolutionListener) i.next();
-
-	    switch (event) {
-	    case ResolutionListener.TEST_ARTIFACT:
-		listener.testArtifact(node.getArtifact());
-		break;
-	    case ResolutionListener.PROCESS_CHILDREN:
-		listener.startProcessChildren(node.getArtifact());
-		break;
-	    case ResolutionListener.FINISH_PROCESSING_CHILDREN:
-		listener.endProcessChildren(node.getArtifact());
-		break;
-	    case ResolutionListener.INCLUDE_ARTIFACT:
-		listener.includeArtifact(node.getArtifact());
-		break;
-	    case ResolutionListener.OMIT_FOR_NEARER:
-		listener.omitForNearer(node.getArtifact(), replacement);
-		break;
-	    case ResolutionListener.OMIT_FOR_CYCLE:
-		listener.omitForCycle(node.getArtifact());
-		break;
-	    case ResolutionListener.UPDATE_SCOPE:
-		listener
-			.updateScope(node.getArtifact(), replacement.getScope());
-		break;
-	    case ResolutionListener.UPDATE_SCOPE_CURRENT_POM:
-		listener.updateScopeCurrentPom(node.getArtifact(), replacement
-			.getScope());
-		break;
-	    case ResolutionListener.MANAGE_ARTIFACT_VERSION:
-		if (listener instanceof ResolutionListenerForDepMgmt) {
-		    ResolutionListenerForDepMgmt asImpl = (ResolutionListenerForDepMgmt) listener;
-		    asImpl.manageArtifactVersion(node.getArtifact(),
-			    replacement);
-		} else {
-		    listener.manageArtifact(node.getArtifact(), replacement);
-		}
-		break;
-	    case ResolutionListener.MANAGE_ARTIFACT_SCOPE:
-		if (listener instanceof ResolutionListenerForDepMgmt) {
-		    ResolutionListenerForDepMgmt asImpl = (ResolutionListenerForDepMgmt) listener;
-		    asImpl.manageArtifactScope(node.getArtifact(), replacement);
-		} else {
-		    listener.manageArtifact(node.getArtifact(), replacement);
-		}
-		break;
-	    case ResolutionListener.SELECT_VERSION_FROM_RANGE:
-		listener.selectVersionFromRange(node.getArtifact());
-		break;
-	    case ResolutionListener.RESTRICT_RANGE:
-		if (node.getArtifact().getVersionRange().hasRestrictions()
-			|| replacement.getVersionRange().hasRestrictions()) {
-		    listener.restrictRange(node.getArtifact(), replacement,
-			    newRange);
-		}
-		break;
-	    default:
-		throw new IllegalStateException("Unknown event: " + event);
+	switch (event) {
+	case ResolutionListener.TEST_ARTIFACT:
+	    listener.testArtifact(node.getArtifact());
+	    break;
+	case ResolutionListener.PROCESS_CHILDREN:
+	    listener.startProcessChildren(node.getArtifact());
+	    break;
+	case ResolutionListener.FINISH_PROCESSING_CHILDREN:
+	    listener.endProcessChildren(node.getArtifact());
+	    break;
+	case ResolutionListener.INCLUDE_ARTIFACT:
+	    listener.includeArtifact(node.getArtifact());
+	    break;
+	case ResolutionListener.OMIT_FOR_NEARER:
+	    listener.omitForNearer(node.getArtifact(), replacement);
+	    break;
+	case ResolutionListener.OMIT_FOR_CYCLE:
+	    listener.omitForCycle(node.getArtifact());
+	    break;
+	case ResolutionListener.UPDATE_SCOPE:
+	    listener.updateScope(node.getArtifact(), replacement.getScope());
+	    break;
+	case ResolutionListener.UPDATE_SCOPE_CURRENT_POM:
+	    listener.updateScopeCurrentPom(node.getArtifact(), replacement
+		    .getScope());
+	    break;
+	case ResolutionListener.MANAGE_ARTIFACT_VERSION:
+	    if (listener instanceof ResolutionListenerForDepMgmt) {
+		ResolutionListenerForDepMgmt asImpl = (ResolutionListenerForDepMgmt) listener;
+		asImpl.manageArtifactVersion(node.getArtifact(), replacement);
+	    } else {
+		listener.manageArtifact(node.getArtifact(), replacement);
 	    }
+	    break;
+	case ResolutionListener.MANAGE_ARTIFACT_SCOPE:
+	    if (listener instanceof ResolutionListenerForDepMgmt) {
+		ResolutionListenerForDepMgmt asImpl = (ResolutionListenerForDepMgmt) listener;
+		asImpl.manageArtifactScope(node.getArtifact(), replacement);
+	    } else {
+		listener.manageArtifact(node.getArtifact(), replacement);
+	    }
+	    break;
+	case ResolutionListener.SELECT_VERSION_FROM_RANGE:
+	    listener.selectVersionFromRange(node.getArtifact());
+	    break;
+	case ResolutionListener.RESTRICT_RANGE:
+	    if (node.getArtifact().getVersionRange().hasRestrictions()
+		    || replacement.getVersionRange().hasRestrictions()) {
+		listener.restrictRange(node.getArtifact(), replacement,
+			newRange);
+	    }
+	    break;
+	default:
+	    throw new IllegalStateException("Unknown event: " + event);
 	}
     }
 
@@ -193,7 +194,7 @@ public class DependencyTreeBuilder {
      * @return Returns true if scope was updated.
      */
     private boolean checkScopeUpdate(ResolutionNode farthest,
-	    ResolutionNode nearest, List listeners) {
+	    ResolutionNode nearest, DependencyTreeResolutionListener listener) {
 	boolean updateScope = false;
 	Artifact farthestArtifact = farthest.getArtifact();
 	Artifact nearestArtifact = nearest.getArtifact();
@@ -332,7 +333,8 @@ public class DependencyTreeBuilder {
      */
     private boolean resolveChildNode(ResolutionNode parentNode,
 	    ResolutionNode child, ArtifactFilter filter,
-	    ManagedVersionMap managedVersions, List listeners,
+	    ManagedVersionMap managedVersions,
+	    DependencyTreeResolutionListener listener,
 	    ArtifactMetadataSource source, Artifact parentArtifact)
 	    throws OverConstrainedVersionException,
 	    ArtifactMetadataRetrievalException {
@@ -434,7 +436,7 @@ public class DependencyTreeBuilder {
 			// we can't get a null here.
 			artifact.selectVersion(version.toString());
 			fireEvent(ResolutionListener.SELECT_VERSION_FROM_RANGE,
-				listeners, child);
+				listener, child);
 		    }
 
 		    // rotgier: it is not compatible with maven 3
@@ -483,7 +485,7 @@ public class DependencyTreeBuilder {
 		// would like to throw this, but we have crappy stuff in
 		// the repo
 
-		fireEvent(ResolutionListener.OMIT_FOR_CYCLE, listeners,
+		fireEvent(ResolutionListener.OMIT_FOR_CYCLE, listener,
 			new ResolutionNode(e.getArtifact(),
 				childRemoteRepositories, child));
 	    } catch (ArtifactMetadataRetrievalException e) {
@@ -494,6 +496,72 @@ public class DependencyTreeBuilder {
 	    return true;
 	}
 	return false;
+    }
+
+    private String changeCoreSuffixToOsgi(String artifactId) {
+	return artifactId.substring(0, artifactId.length() - 5) + ".osgi";
+    }
+
+    /**
+     * Method checks if passed child artifact has one of groupIds specified in
+     * separatedGroupIds Set. If so its artifactId is checked, if the ending
+     * suffix is ".core". It this is true then there are two cases:
+     * <ul>
+     * <li>the parent and the child have the same groupId and they artifactIds
+     * are different only in suffix (.core != .osgi). In such case method does
+     * not change anything, however it checks if versions of the parent and the
+     * child are the same. If not an exception is thrown.
+     * <li>if the previous does not apply then the suffix of child's artifactId
+     * is changed from ".core" to ".osgi.
+     * </ul>
+     * 
+     * @param child
+     * @param separatedGroupIds
+     */
+    private void changeArtifactCoreToOsgi(ResolutionNode parentNode,
+	    ResolutionNode childNode, Set<String> separatedGroupIds,
+	    DependencyTreeResolutionListener listener) {
+	Artifact parent = parentNode.getArtifact();
+	Artifact child = childNode.getArtifact();
+	if (separatedGroupIds.contains(child.getGroupId())) {
+	    String childArtifactId = child.getArtifactId();
+	    if (childArtifactId.endsWith(".core")) {
+		if (child.getGroupId().equals(parent.getGroupId())) {
+		    if (parent.getArtifactId().endsWith(".osgi")) {
+			if (changeCoreSuffixToOsgi(childArtifactId).equals(
+				parent.getArtifactId())) {
+			    /*
+			     * rotgier: In this case artifact cannot be changed
+			     * because cyclic dependency will be created and
+			     * TreeBuilder will miss the actual dependencies of
+			     * the .core artifact.
+			     * 
+			     * However the version check is performed.
+			     */
+			    if (child.getVersion() != null) {
+				if (!parent.getVersion().equals(
+					child.getVersion())) {
+				    throw new IllegalStateException(
+					    "Versions of parent and child are different");
+				}
+			    } else {
+				throw new IllegalStateException(
+					"Child version is not present");
+			    }
+			    listener.addExcludedCoreArtifact(childNode);
+			    return;
+			}
+		    }
+		}
+		/*
+		 * rotgier: Otherwise the artifactId suffix has to be changed
+		 * from .core to .osgi to follow the actual dependencies of the
+		 * .osgi branch.
+		 */
+		childArtifactId = changeCoreSuffixToOsgi(childArtifactId);
+		child.setArtifactId(childArtifactId);
+	    }
+	}
     }
 
     /**
@@ -521,7 +589,7 @@ public class DependencyTreeBuilder {
      * @param filter
      *            is used for unfiltering artifacts which should not be included
      *            in the dependency tree.
-     * @param listeners
+     * @param listener
      *            are used for providing the output of the resolve process.
      * @param transitive
      *            If this parameter is false than the children of current node
@@ -540,15 +608,15 @@ public class DependencyTreeBuilder {
 	    Map resolvedArtifacts, ManagedVersionMap managedVersions,
 	    ArtifactRepository localRepository, List remoteRepositories,
 	    ArtifactMetadataSource source, ArtifactFilter filter,
-	    List listeners, boolean transitive)
-	    throws CyclicDependencyException, ArtifactResolutionException,
-	    OverConstrainedVersionException,
+	    DependencyTreeResolutionListener listener, boolean transitive,
+	    Set<String> separatedGroupIds) throws CyclicDependencyException,
+	    ArtifactResolutionException, OverConstrainedVersionException,
 	    ArtifactMetadataRetrievalException, SecurityException,
 	    NoSuchFieldException, IllegalArgumentException,
 	    IllegalAccessException {
 	try {
 
-	    fireEvent(ResolutionListener.TEST_ARTIFACT, listeners, node);
+	    fireEvent(ResolutionListener.TEST_ARTIFACT, listener, node);
 	    Object key = node.getKey();
 
 	    // TODO: Does this check need to happen here? Had to add the same
@@ -583,8 +651,8 @@ public class DependencyTreeBuilder {
 			    if (newRange.isSelectedVersionKnown(previous
 				    .getArtifact())) {
 				fireEvent(ResolutionListener.RESTRICT_RANGE,
-					listeners, node,
-					previous.getArtifact(), newRange);
+					listener, node, previous.getArtifact(),
+					newRange);
 			    }
 			    previous.getArtifact().setVersionRange(newRange);
 			    node.getArtifact().setVersionRange(
@@ -661,7 +729,7 @@ public class DependencyTreeBuilder {
 				    }
 				    fireEvent(
 					    ResolutionListener.SELECT_VERSION_FROM_RANGE,
-					    listeners, resetNodes[j]);
+					    listener, resetNodes[j]);
 				}
 			    }
 			}
@@ -681,7 +749,7 @@ public class DependencyTreeBuilder {
 			    farthest = previous;
 			}
 
-			if (checkScopeUpdate(farthest, nearest, listeners)) {
+			if (checkScopeUpdate(farthest, nearest, listener)) {
 			    // if we need to update scope of nearest to use
 			    // farthest
 			    // scope, use the nearest version, but farthest
@@ -690,11 +758,11 @@ public class DependencyTreeBuilder {
 			    farthest.getArtifact().setVersion(
 				    nearest.getArtifact().getVersion());
 			    fireEvent(ResolutionListener.OMIT_FOR_NEARER,
-				    listeners, nearest, farthest.getArtifact());
+				    listener, nearest, farthest.getArtifact());
 			} else {
 			    farthest.disable();
 			    fireEvent(ResolutionListener.OMIT_FOR_NEARER,
-				    listeners, farthest, nearest.getArtifact());
+				    listener, farthest, nearest.getArtifact());
 			}
 		    }
 		}
@@ -705,14 +773,14 @@ public class DependencyTreeBuilder {
 	    previousNodes.add(node);
 
 	    if (node.isActive()) {
-		fireEvent(ResolutionListener.INCLUDE_ARTIFACT, listeners, node);
+		fireEvent(ResolutionListener.INCLUDE_ARTIFACT, listener, node);
 	    }
 
 	    // don't pull in the transitive deps of a system-scoped dependency.
 	    if (node.isActive()
 		    && !Artifact.SCOPE_SYSTEM.equals(node.getArtifact()
 			    .getScope())) {
-		fireEvent(ResolutionListener.PROCESS_CHILDREN, listeners, node);
+		fireEvent(ResolutionListener.PROCESS_CHILDREN, listener, node);
 		if (transitive) {
 		    Artifact parentArtifact = node.getArtifact();
 		    for (Iterator i = node.getChildrenIterator(); i.hasNext();) {
@@ -729,16 +797,25 @@ public class DependencyTreeBuilder {
 				.getScope())) {
 			    continue;
 			}
+			changeArtifactCoreToOsgi(node, child,
+				separatedGroupIds, listener);
 			boolean isContinue = resolveChildNode(node, child,
-				filter, managedVersions, listeners, source,
+				filter, managedVersions, listener, source,
 				parentArtifact);
 			if (isContinue) {
 			    continue;
 			}
+			List<String> extractedSeparatedGroupIds = extractSeparatedGroupIds(
+				child.getArtifact(), remoteRepositories);
+			Set<String> combinedSeparatedGroupIds = new HashSet<String>(
+				separatedGroupIds);
+			combinedSeparatedGroupIds
+				.addAll(extractedSeparatedGroupIds);
 			recurse(originatingArtifact, child, resolvedArtifacts,
 				managedVersions, localRepository, child
 					.getRemoteRepositories(), source,
-				filter, listeners, true);
+				filter, listener, true,
+				combinedSeparatedGroupIds);
 		    }
 		    List runtimeDeps = getRuntimeDeps(node.getArtifact(),
 			    managedVersions, remoteRepositories);
@@ -767,22 +844,31 @@ public class DependencyTreeBuilder {
 				continue;
 			    }
 			}
+			changeArtifactCoreToOsgi(node, childRuntime,
+				separatedGroupIds, listener);
 			boolean isContinue = resolveChildNode(node,
 				childRuntime, filter, managedVersions,
-				listeners, source, parentArtifact);
+				listener, source, parentArtifact);
 			if (isContinue) {
 			    continue;
 			}
+			List<String> extractedSeparatedGroupIds = extractSeparatedGroupIds(
+				childRuntime.getArtifact(), remoteRepositories);
+			Set<String> combinedSeparatedGroupIds = new HashSet<String>(
+				separatedGroupIds);
+			combinedSeparatedGroupIds
+				.addAll(extractedSeparatedGroupIds);
 			recurse(originatingArtifact, childRuntime,
 				resolvedArtifacts, managedVersions,
 				localRepository, childRuntime
 					.getRemoteRepositories(), source,
-				filter, listeners, true);
+				filter, listener, true,
+				combinedSeparatedGroupIds);
 			nodesChildren.add(childRuntime);
 		    }
 		}
 		fireEvent(ResolutionListener.FINISH_PROCESSING_CHILDREN,
-			listeners, node);
+			listener, node);
 	    }
 	} catch (Exception ex) {
 	    StringBuilder msg = new StringBuilder();
@@ -863,6 +949,77 @@ public class DependencyTreeBuilder {
 	    sb.append(dep.getClassifier());
 	}
 	return sb.toString();
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param artifactFactory
+     * @param mavenProjectBuilder
+     * @param localRepository
+     * @param separatedGroupIds
+     *            list of Maven groupIds which artifacts are treated in a
+     *            special way during tree recursion. It is assumed that
+     *            artifacts with these groupIds are separated into two artifacts
+     *            (two parts): one with "core" suffix; one with "osgi" suffix.
+     *            Each one is later referred to as the counterpart of the other
+     *            one. Artifact with "core" suffix not always has to be present.
+     *            It is assumed that if artifact with "osgi" suffix has a "core"
+     *            counterpart than it is always specified as its direct
+     *            dependency. When an artifact with separatedGroupId is
+     *            encountered it is treated in the recurse method in the
+     *            following way:
+     *            <ul>
+     *            <li>if it is "core" artifact and it is beginning of the method
+     *            than Exception is thrown ("core" artifact of separatedGroupId
+     *            should be never passed for recursion).
+     *            <li>if it is "osgi" artifact and it has its "core"
+     *            counterpart, then this "core" is simply ignored (it's not
+     *            needed because the contents of "core" are embedded into its
+     *            "osgi" counterpart)
+     *            <li>
+     *            if it is "osgi" artifact and it has a dependency to artifact
+     *            with separatedGroupId and a "core" suffix, then such depedency
+     *            is changed to its "osgi" counterpart WITH THE SAME VERSION
+     *            NUMBER. Therefore there is a strong assumption that a
+     *            separated artifact has always its "osgi" and "core" parts in
+     *            the same version!!!!
+     *            </ul>
+     * 
+     * 
+     *            When tree is built, all dependencies referring to the "core"
+     *            artifact are changed into dependencies referring to the "osgi"
+     *            artifact.
+     * 
+     * 
+     */
+    public List<String> extractSeparatedGroupIds(MavenProject project) {
+	List<String> separatedGroupIds = new ArrayList<String>();
+	Properties properties = project.getProperties();
+	if (properties != null) {
+	    String separatedGroupIdsStr = properties
+		    .getProperty(PROP_SEPARATED_GROUP_IDS);
+	    if (separatedGroupIdsStr != null) {
+		for (String groupId : separatedGroupIdsStr.split(",")) {
+		    separatedGroupIds.add(groupId.trim());
+		}
+	    }
+	}
+	return separatedGroupIds;
+    }
+
+    public List<String> extractSeparatedGroupIds(Artifact artifact,
+	    List remoteRepositories) {
+	try {
+	    Artifact pomArtifact = artifactFactory.createArtifact(artifact
+		    .getGroupId(), artifact.getArtifactId(), artifact
+		    .getVersion(), "", "pom");
+	    MavenProject pomProject = mavenProjectBuilder.buildFromRepository(
+		    pomArtifact, remoteRepositories, localRepository);
+	    return extractSeparatedGroupIds(pomProject);
+	} catch (ProjectBuildingException e) {
+	    throw new RuntimeException(e);
+	}
     }
 
     /**
@@ -980,9 +1137,8 @@ public class DependencyTreeBuilder {
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      */
-    public List<DependencyNode> buildDependencyTree(
-	    ArtifactRepository repository, ArtifactFactory factory,
-	    ArtifactMetadataSource metadataSource,
+    public List<RootNode> buildDependencyTree(ArtifactRepository repository,
+	    ArtifactFactory factory, ArtifactMetadataSource metadataSource,
 	    MavenProjectDescriptor... projectDescs)
 	    throws DependencyTreeBuilderException,
 	    ArtifactMetadataRetrievalException,
@@ -996,6 +1152,8 @@ public class DependencyTreeBuilder {
 	for (MavenProjectDescriptor projectDesc : projectDescs) {
 	    MavenProject project = projectDesc.project;
 	    try {
+		List<String> separatedGroupId = extractSeparatedGroupIds(project);
+
 		// Tutaj wystarczy dodaæ tworzenie nowej listy
 		List remoteRepositories = projectDesc.remoteRepositories;
 
@@ -1079,9 +1237,9 @@ public class DependencyTreeBuilder {
 
 		recurse(originatingArtifact, root, resolvedArtifacts,
 			versionMap, localRepository, remoteRepositories,
-			metadataSource, filter, Collections
-				.singletonList(listener),
-			projectDesc.transitive);
+			metadataSource, filter, listener,
+			projectDesc.transitive, new HashSet<String>(
+				separatedGroupId));
 	    } catch (ArtifactResolutionException exception) {
 		throw new DependencyTreeBuilderException(
 			"Cannot build project dependency tree", exception);

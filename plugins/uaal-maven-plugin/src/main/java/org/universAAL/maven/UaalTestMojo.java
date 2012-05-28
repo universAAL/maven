@@ -113,6 +113,7 @@ public class UaalTestMojo extends AbstractMojo {
 					+ IntegrationTestConsts.TEST_COMPOSITE
 					+ System.getProperty("line.separator")
 					+ System.getProperty("line.separator"));
+		
 		ExecutionListCreator execListCreator = new ExecutionListCreator(
 			getLog(), artifactMetadataSource, artifactFactory,
 			mavenProjectBuilder, localRepository,

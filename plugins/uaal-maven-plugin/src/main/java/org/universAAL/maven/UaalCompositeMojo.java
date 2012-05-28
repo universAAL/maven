@@ -95,7 +95,7 @@ public class UaalCompositeMojo extends AbstractMojo {
      * @required
      */
     private File baseDirectory;
-
+    
     private static final String MAIN_COMPOSITE = "target/artifact.composite";
     
     private BufferedWriter createOutputWriter() throws FileNotFoundException {
@@ -173,7 +173,7 @@ public class UaalCompositeMojo extends AbstractMojo {
 			compositeWriter.write("This is an empty dummy line in order to make this file possible to deploy. Don't use this file at any time.");
 		    }
 		    compositeWriter.close();
-//		}
+		// }
 	    }
 	} catch (Exception e) {
 	    getLog().error(e);

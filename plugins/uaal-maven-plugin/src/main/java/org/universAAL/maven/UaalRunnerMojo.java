@@ -130,6 +130,11 @@ public class UaalRunnerMojo extends AbstractMojo implements Contextualizable {
      */
     private String transitive;
 
+    /**
+     * @parameter expression="${separatedGroupIds}"
+     */
+    private String[] separatedGroupIds;
+
     private PlexusContainer container;
 
     public void contextualize(Context context) throws ContextException {
