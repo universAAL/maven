@@ -974,9 +974,10 @@ public class DependencyTreeBuilder {
      *            than Exception is thrown ("core" artifact of separatedGroupId
      *            should be never passed for recursion).
      *            <li>if it is "osgi" artifact and it has its "core"
-     *            counterpart, then this "core" is simply ignored (it's not
-     *            needed because the contents of "core" are embedded into its
-     *            "osgi" counterpart)
+     *            counterpart, then this "core" is simply recursed further but
+     *            its also remember as artifact which will be removed from final
+     *            composite just before writing its contents to
+     *            target\artifact.composite
      *            <li>
      *            if it is "osgi" artifact and it has a dependency to artifact
      *            with separatedGroupId and a "core" suffix, then such depedency
