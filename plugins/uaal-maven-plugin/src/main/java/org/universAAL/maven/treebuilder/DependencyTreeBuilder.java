@@ -37,6 +37,9 @@ import org.apache.maven.artifact.metadata.ArtifactMetadataRetrievalException;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.metadata.ResolutionGroup;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.repository.ArtifactRepositoryPolicy;
+import org.apache.maven.artifact.repository.DefaultArtifactRepository;
+import org.apache.maven.artifact.repository.layout.DefaultRepositoryLayout;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.CyclicDependencyException;
 import org.apache.maven.artifact.resolver.ResolutionListener;
@@ -53,6 +56,8 @@ import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Exclusion;
 import org.apache.maven.model.Profile;
+import org.apache.maven.model.Repository;
+import org.apache.maven.model.RepositoryPolicy;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
@@ -335,7 +340,7 @@ public class DependencyTreeBuilder {
 	    ResolutionNode child, ArtifactFilter filter,
 	    ManagedVersionMap managedVersions,
 	    DependencyTreeResolutionListener listener,
-	    ArtifactMetadataSource source, Artifact parentArtifact)
+	    ArtifactMetadataSource source, Artifact parentArtifact, List remoteRepositories)
 	    throws OverConstrainedVersionException,
 	    ArtifactMetadataRetrievalException {
 	// We leave in optional ones, but don't pick up its dependencies
@@ -345,7 +350,7 @@ public class DependencyTreeBuilder {
 	    Artifact artifact = child.getArtifact();
 	    artifact.setDependencyTrail(parentNode.getDependencyTrail());
 
-	    List childRemoteRepositories = child.getRemoteRepositories();
+	    List childRemoteRepositories = enrichRemoteRepositories(child.getRemoteRepositories(), remoteRepositories) ;
 	    try {
 		Object childKey;
 		do {
@@ -564,6 +569,57 @@ public class DependencyTreeBuilder {
 	}
     }
 
+    private List enrichRemoteRepositories(
+	    List<ArtifactRepository> currentRemoteRepositories,
+	    List newRemoteRepositories) {
+	List<ArtifactRepository> finalRemoteRepositories = new ArrayList<ArtifactRepository>(
+		currentRemoteRepositories);
+	Set<String> currentReposUrls = new HashSet<String>();
+	for (ArtifactRepository currentRepo : currentRemoteRepositories) {
+	    currentReposUrls.add(currentRepo.getUrl());
+	}
+	if (newRemoteRepositories != null) {
+	    for (Object newRepoObj : newRemoteRepositories) {
+		if (newRepoObj instanceof ArtifactRepository) {
+		    ArtifactRepository newRepo = (ArtifactRepository) newRepoObj;
+		    if (!currentReposUrls.contains(newRepo.getUrl())) {
+			finalRemoteRepositories.add(newRepo);
+		    }
+		}
+		if (newRepoObj instanceof Repository) {
+		    Repository newRepo = (Repository) newRepoObj;
+		    if (!currentReposUrls.contains(newRepo.getUrl())) {
+			ArtifactRepositoryPolicy snapshotPolicyDst = null;
+			RepositoryPolicy snapshotPolicySrc = newRepo
+				.getSnapshots();
+			if (snapshotPolicySrc != null) {
+			    snapshotPolicyDst = new ArtifactRepositoryPolicy(
+				    snapshotPolicySrc.isEnabled(),
+				    snapshotPolicySrc.getUpdatePolicy(),
+				    snapshotPolicySrc.getChecksumPolicy());
+			}
+			ArtifactRepositoryPolicy releasePolicyDst = null;
+			RepositoryPolicy releasePolicySrc = newRepo
+				.getReleases();
+			if (releasePolicySrc != null) {
+			    releasePolicyDst = new ArtifactRepositoryPolicy(
+				    newRepo.getReleases().isEnabled(), newRepo
+					    .getReleases().getUpdatePolicy(),
+				    newRepo.getReleases().getChecksumPolicy());
+			}
+			ArtifactRepository newRepoTranslated = new DefaultArtifactRepository(
+				newRepo.getId(), newRepo.getUrl(),
+				new DefaultRepositoryLayout(),
+				snapshotPolicyDst, releasePolicyDst);
+
+			finalRemoteRepositories.add(newRepoTranslated);
+		    }
+		}
+	    }
+	}
+	return finalRemoteRepositories;
+    }
+
     /**
      * The heart of the tree builder. Recursively resolves provided artifact.
      * Output is passed to listeners, passed as argument, which are notified
@@ -615,6 +671,14 @@ public class DependencyTreeBuilder {
 	    NoSuchFieldException, IllegalArgumentException,
 	    IllegalAccessException {
 	try {
+	    Artifact pomArtifact = artifactFactory.createArtifact(node
+		    .getArtifact().getGroupId(), node.getArtifact()
+		    .getArtifactId(), node.getArtifact().getVersion(), "",
+		    "pom");
+	    MavenProject pomProject = mavenProjectBuilder.buildFromRepository(
+		    pomArtifact, remoteRepositories, localRepository);
+	    remoteRepositories = enrichRemoteRepositories(remoteRepositories,
+		    pomProject.getRepositories());
 
 	    fireEvent(ResolutionListener.TEST_ARTIFACT, listener, node);
 	    Object key = node.getKey();
@@ -801,7 +865,7 @@ public class DependencyTreeBuilder {
 				separatedGroupIds, listener);
 			boolean isContinue = resolveChildNode(node, child,
 				filter, managedVersions, listener, source,
-				parentArtifact);
+				parentArtifact, remoteRepositories);
 			if (isContinue) {
 			    continue;
 			}
@@ -832,7 +896,7 @@ public class DependencyTreeBuilder {
 			DependencyNode runtimeDep = (DependencyNode) runtimeDepObj;
 			Artifact artifact = runtimeDep.getArtifact();
 			ResolutionNode childRuntime = new ResolutionNode(
-				artifact, node.getRemoteRepositories(), node);
+				artifact, remoteRepositories, node);
 			/*
 			 * rotgier: In case of runtime dependencies provided
 			 * scope should be allowed
@@ -848,7 +912,7 @@ public class DependencyTreeBuilder {
 				separatedGroupIds, listener);
 			boolean isContinue = resolveChildNode(node,
 				childRuntime, filter, managedVersions,
-				listener, source, parentArtifact);
+				listener, source, parentArtifact, remoteRepositories);
 			if (isContinue) {
 			    continue;
 			}
