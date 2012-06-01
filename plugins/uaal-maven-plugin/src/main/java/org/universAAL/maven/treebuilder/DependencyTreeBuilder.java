@@ -111,7 +111,7 @@ public class DependencyTreeBuilder {
 
     private void fireEvent(int event,
 	    DependencyTreeResolutionListener listener, ResolutionNode node,
-	    Artifact replacement) {
+	    ResolutionNode replacement) {
 	fireEvent(event, listener, node, replacement, null);
     }
 
@@ -121,7 +121,7 @@ public class DependencyTreeBuilder {
      */
     private void fireEvent(int event,
 	    DependencyTreeResolutionListener listener, ResolutionNode node,
-	    Artifact replacement, VersionRange newRange) {
+	    ResolutionNode replacement, VersionRange newRange) {
 	switch (event) {
 	case ResolutionListener.TEST_ARTIFACT:
 	    listener.testArtifact(node.getArtifact());
@@ -133,35 +133,35 @@ public class DependencyTreeBuilder {
 	    listener.endProcessChildren(node.getArtifact());
 	    break;
 	case ResolutionListener.INCLUDE_ARTIFACT:
-	    listener.includeArtifact(node.getArtifact());
+	    listener.includeArtifact(node);
 	    break;
 	case ResolutionListener.OMIT_FOR_NEARER:
-	    listener.omitForNearer(node.getArtifact(), replacement);
+	    listener.omitForNearer(node, replacement);
 	    break;
 	case ResolutionListener.OMIT_FOR_CYCLE:
-	    listener.omitForCycle(node.getArtifact());
+	    listener.omitForCycle(node);
 	    break;
 	case ResolutionListener.UPDATE_SCOPE:
-	    listener.updateScope(node.getArtifact(), replacement.getScope());
+	    listener.updateScope(node, replacement.getArtifact().getScope());
 	    break;
 	case ResolutionListener.UPDATE_SCOPE_CURRENT_POM:
-	    listener.updateScopeCurrentPom(node.getArtifact(), replacement
+	    listener.updateScopeCurrentPom(node, replacement.getArtifact()
 		    .getScope());
 	    break;
 	case ResolutionListener.MANAGE_ARTIFACT_VERSION:
 	    if (listener instanceof ResolutionListenerForDepMgmt) {
 		ResolutionListenerForDepMgmt asImpl = (ResolutionListenerForDepMgmt) listener;
-		asImpl.manageArtifactVersion(node.getArtifact(), replacement);
+		asImpl.manageArtifactVersion(node.getArtifact(), replacement.getArtifact());
 	    } else {
-		listener.manageArtifact(node.getArtifact(), replacement);
+		listener.manageArtifact(node.getArtifact(), replacement.getArtifact());
 	    }
 	    break;
 	case ResolutionListener.MANAGE_ARTIFACT_SCOPE:
 	    if (listener instanceof ResolutionListenerForDepMgmt) {
 		ResolutionListenerForDepMgmt asImpl = (ResolutionListenerForDepMgmt) listener;
-		asImpl.manageArtifactScope(node.getArtifact(), replacement);
+		asImpl.manageArtifactScope(node.getArtifact(), replacement.getArtifact());
 	    } else {
-		listener.manageArtifact(node.getArtifact(), replacement);
+		listener.manageArtifact(node.getArtifact(), replacement.getArtifact());
 	    }
 	    break;
 	case ResolutionListener.SELECT_VERSION_FROM_RANGE:
@@ -169,8 +169,8 @@ public class DependencyTreeBuilder {
 	    break;
 	case ResolutionListener.RESTRICT_RANGE:
 	    if (node.getArtifact().getVersionRange().hasRestrictions()
-		    || replacement.getVersionRange().hasRestrictions()) {
-		listener.restrictRange(node.getArtifact(), replacement,
+		    || replacement.getArtifact().getVersionRange().hasRestrictions()) {
+		listener.restrictRange(node.getArtifact(), replacement.getArtifact(),
 			newRange);
 	    }
 	    break;
@@ -477,7 +477,6 @@ public class DependencyTreeBuilder {
 		    // excluded, no need to add and recurse further
 		    return true;
 		}
-
 		child.addDependencies(rGroup.getArtifacts(), rGroup
 			.getResolutionRepositories(), filter);
 
@@ -651,7 +650,7 @@ public class DependencyTreeBuilder {
 			    if (newRange.isSelectedVersionKnown(previous
 				    .getArtifact())) {
 				fireEvent(ResolutionListener.RESTRICT_RANGE,
-					listener, node, previous.getArtifact(),
+					listener, node, previous,
 					newRange);
 			    }
 			    previous.getArtifact().setVersionRange(newRange);
@@ -758,11 +757,11 @@ public class DependencyTreeBuilder {
 			    farthest.getArtifact().setVersion(
 				    nearest.getArtifact().getVersion());
 			    fireEvent(ResolutionListener.OMIT_FOR_NEARER,
-				    listener, nearest, farthest.getArtifact());
+				    listener, nearest, farthest);
 			} else {
 			    farthest.disable();
 			    fireEvent(ResolutionListener.OMIT_FOR_NEARER,
-				    listener, farthest, nearest.getArtifact());
+				    listener, farthest, nearest);
 			}
 		    }
 		}

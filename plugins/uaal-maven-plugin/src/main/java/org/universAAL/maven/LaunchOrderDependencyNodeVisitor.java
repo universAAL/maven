@@ -19,6 +19,7 @@ import org.apache.maven.artifact.resolver.ResolutionNode;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.apache.maven.shared.dependency.tree.traversal.DependencyNodeVisitor;
+import org.universAAL.maven.treebuilder.MyDependencyNode;
 
 /**
  * This DepepdencyVistor traverses depedency tree in depth-first manner. Visitor
@@ -185,7 +186,8 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 			.getGroupId(), artifact.getArtifactId(), artifact
 			.getVersion());
 		if (shouldResolve) {
-		    artifactResolver.resolve(artifact, remoteRepositories,
+		    MyDependencyNode myNode = (MyDependencyNode) node;
+		    artifactResolver.resolve(artifact, myNode.getRemoteRepositories(),
 			    localRepository);
 		    File localRepoBaseDir = new File(localRepository
 			    .getBasedir());
