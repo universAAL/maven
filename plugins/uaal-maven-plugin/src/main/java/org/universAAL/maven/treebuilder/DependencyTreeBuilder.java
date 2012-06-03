@@ -96,6 +96,15 @@ public class DependencyTreeBuilder {
 
     private ArtifactRepository localRepository;
 
+    /**
+     * If the root artifact has one of separatedGroupIds then this list will
+     * contain its .core dependencies. For now It will be only one .core
+     * dependency.
+     */
+    private List<ResolutionNode> separatedArtifactDepsOfRoot = new ArrayList<ResolutionNode>();
+
+    private String stringifiedRoot = null;
+
     public DependencyTreeBuilder(ArtifactFactory artifactFactory,
 	    MavenProjectBuilder mavenProjectBuilder,
 	    ArtifactRepository localRepository) {
@@ -151,17 +160,21 @@ public class DependencyTreeBuilder {
 	case ResolutionListener.MANAGE_ARTIFACT_VERSION:
 	    if (listener instanceof ResolutionListenerForDepMgmt) {
 		ResolutionListenerForDepMgmt asImpl = (ResolutionListenerForDepMgmt) listener;
-		asImpl.manageArtifactVersion(node.getArtifact(), replacement.getArtifact());
+		asImpl.manageArtifactVersion(node.getArtifact(), replacement
+			.getArtifact());
 	    } else {
-		listener.manageArtifact(node.getArtifact(), replacement.getArtifact());
+		listener.manageArtifact(node.getArtifact(), replacement
+			.getArtifact());
 	    }
 	    break;
 	case ResolutionListener.MANAGE_ARTIFACT_SCOPE:
 	    if (listener instanceof ResolutionListenerForDepMgmt) {
 		ResolutionListenerForDepMgmt asImpl = (ResolutionListenerForDepMgmt) listener;
-		asImpl.manageArtifactScope(node.getArtifact(), replacement.getArtifact());
+		asImpl.manageArtifactScope(node.getArtifact(), replacement
+			.getArtifact());
 	    } else {
-		listener.manageArtifact(node.getArtifact(), replacement.getArtifact());
+		listener.manageArtifact(node.getArtifact(), replacement
+			.getArtifact());
 	    }
 	    break;
 	case ResolutionListener.SELECT_VERSION_FROM_RANGE:
@@ -169,9 +182,10 @@ public class DependencyTreeBuilder {
 	    break;
 	case ResolutionListener.RESTRICT_RANGE:
 	    if (node.getArtifact().getVersionRange().hasRestrictions()
-		    || replacement.getArtifact().getVersionRange().hasRestrictions()) {
-		listener.restrictRange(node.getArtifact(), replacement.getArtifact(),
-			newRange);
+		    || replacement.getArtifact().getVersionRange()
+			    .hasRestrictions()) {
+		listener.restrictRange(node.getArtifact(), replacement
+			.getArtifact(), newRange);
 	    }
 	    break;
 	default:
@@ -547,6 +561,11 @@ public class DependencyTreeBuilder {
 				throw new IllegalStateException(
 					"Child version is not present");
 			    }
+			    if (this.stringifiedRoot
+				    .equals(FilteringVisitorSupport
+					    .stringify(parent))) {
+				this.separatedArtifactDepsOfRoot.add(childNode);
+			    }
 			    listener.addExcludedCoreArtifact(childNode);
 			    return;
 			}
@@ -650,8 +669,7 @@ public class DependencyTreeBuilder {
 			    if (newRange.isSelectedVersionKnown(previous
 				    .getArtifact())) {
 				fireEvent(ResolutionListener.RESTRICT_RANGE,
-					listener, node, previous,
-					newRange);
+					listener, node, previous, newRange);
 			    }
 			    previous.getArtifact().setVersionRange(newRange);
 			    node.getArtifact().setVersionRange(
@@ -993,7 +1011,7 @@ public class DependencyTreeBuilder {
      * 
      * 
      */
-    public List<String> extractSeparatedGroupIds(MavenProject project) {
+    private List<String> extractSeparatedGroupIds(MavenProject project) {
 	List<String> separatedGroupIds = new ArrayList<String>();
 	Properties properties = project.getProperties();
 	if (properties != null) {
@@ -1008,7 +1026,7 @@ public class DependencyTreeBuilder {
 	return separatedGroupIds;
     }
 
-    public List<String> extractSeparatedGroupIds(Artifact artifact,
+    private List<String> extractSeparatedGroupIds(Artifact artifact,
 	    List remoteRepositories) {
 	try {
 	    Artifact pomArtifact = artifactFactory.createArtifact(artifact
@@ -1163,6 +1181,8 @@ public class DependencyTreeBuilder {
 		// specified as a dependency, because in the
 		// dependency there is only jar type specified.
 		Artifact originatingArtifact = project.getArtifact();
+		this.stringifiedRoot = FilteringVisitorSupport
+			.stringify(originatingArtifact);
 		if ("bundle".equals(originatingArtifact.getType())) {
 		    Artifact changeArtifact = artifactFactory.createArtifact(
 			    originatingArtifact.getGroupId(),
@@ -1247,4 +1267,9 @@ public class DependencyTreeBuilder {
 	}
 	return listener.getRootNodes();
     }
+
+    public List<ResolutionNode> getSeparatedArtifactDepsOfRoot() {
+	return separatedArtifactDepsOfRoot;
+    }
+
 }

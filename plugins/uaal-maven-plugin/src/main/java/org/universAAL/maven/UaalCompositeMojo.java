@@ -6,9 +6,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.maven.artifact.factory.ArtifactFactory;
@@ -159,7 +159,7 @@ public class UaalCompositeMojo extends AbstractMojo {
 			    remoteRepositories, artifactResolver,
 			    throwExceptionOnConflictStr);
 		    List mvnUrls = execListCreator
-			    .createArtifactExecutionList(project);
+			    .createArtifactExecutionList(project, new HashSet<String>());
 
 		    BufferedWriter compositeWriter = createOutputWriter();
 		    boolean hasWrittenSth = false;

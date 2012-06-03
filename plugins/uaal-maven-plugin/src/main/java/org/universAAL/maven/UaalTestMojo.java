@@ -4,7 +4,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
@@ -113,16 +115,19 @@ public class UaalTestMojo extends AbstractMojo {
 					+ IntegrationTestConsts.TEST_COMPOSITE
 					+ System.getProperty("line.separator")
 					+ System.getProperty("line.separator"));
-		
+
 		ExecutionListCreator execListCreator = new ExecutionListCreator(
 			getLog(), artifactMetadataSource, artifactFactory,
 			mavenProjectBuilder, localRepository,
 			remoteRepositories, artifactResolver,
 			throwExceptionOnConflictStr);
-		List mvnUrls = execListCreator
-			.createArtifactExecutionList(project);
+		Set<String> separatedArtifactDepsOfRoot = new HashSet<String>();
+		List mvnUrls = execListCreator.createArtifactExecutionList(
+			project, separatedArtifactDepsOfRoot);
+
 		File targetDir = new File(baseDirectory, "target");
 		targetDir.mkdirs();
+
 		File generatedCompositeFile = new File(baseDirectory,
 			IntegrationTestConsts.TEST_COMPOSITE);
 		BufferedWriter compositeWriter = new BufferedWriter(
@@ -134,6 +139,21 @@ public class UaalTestMojo extends AbstractMojo {
 			    + System.getProperty("line.separator"));
 		}
 		compositeWriter.close();
+
+		if (!separatedArtifactDepsOfRoot.isEmpty()) {
+		    File separatedArtifactDepsFile = new File(baseDirectory,
+			    IntegrationTestConsts.SEPARATED_ARTIFACT_DEPS);
+		    BufferedWriter separatedArtifactDepsWriter = new BufferedWriter(
+			    new OutputStreamWriter(new FileOutputStream(
+				    separatedArtifactDepsFile, false)));
+		    for (String separatedArtifactMvnUrl : separatedArtifactDepsOfRoot) {
+			separatedArtifactDepsWriter
+				.write(separatedArtifactMvnUrl
+					+ System.getProperty("line.separator"));
+		    }
+		    separatedArtifactDepsWriter.close();
+		}
+
 		Artifact runDirArtifact = execListCreator
 			.parseMvnUrlWithType(IntegrationTestConsts.RUN_DIR_MVN_URL);
 		artifactResolver.resolve(runDirArtifact, remoteRepositories,

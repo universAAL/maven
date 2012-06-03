@@ -3,6 +3,7 @@ package org.universAAL.maven.treebuilder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
@@ -12,12 +13,12 @@ import org.apache.maven.artifact.repository.ArtifactRepositoryPolicy;
 import org.apache.maven.artifact.repository.DefaultArtifactRepository;
 import org.apache.maven.artifact.repository.layout.DefaultRepositoryLayout;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.artifact.resolver.ResolutionNode;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
-import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.universAAL.maven.IndexingDependencyNodeVisitor;
 import org.universAAL.maven.LaunchOrderDependencyNodeVisitor;
 
@@ -296,8 +297,8 @@ public class ExecutionListCreator {
      * @throws MojoExecutionException
      * @throws MojoFailureException
      */
-    public List createArtifactExecutionList(MavenProject mavenProject)
-	    throws Exception {
+    public List createArtifactExecutionList(MavenProject mavenProject,
+	    Set<String> separatedArtifactDepsOfRootMvnUrls) throws Exception {
 	DependencyTreeBuilder treeBuilder = new DependencyTreeBuilder(
 		artifactFactory, mavenProjectBuilder, localRepository);
 	List<ArtifactRepository> finalRemoteRpositories = addMissingRepositories(mavenProject
@@ -306,6 +307,14 @@ public class ExecutionListCreator {
 		localRepository, artifactFactory, artifactMetadataSource,
 		new MavenProjectDescriptor(mavenProject,
 			finalRemoteRpositories, true));
+	List<ResolutionNode> separatedArtifactDepsOfRoot = treeBuilder
+		.getSeparatedArtifactDepsOfRoot();
+	for (ResolutionNode separatedRootDep : separatedArtifactDepsOfRoot) {
+	    Artifact artifact = separatedRootDep.getArtifact();
+	    separatedArtifactDepsOfRootMvnUrls.add(String.format(
+		    "mvn:%s/%s/%s", artifact.getGroupId(), artifact
+			    .getArtifactId(), artifact.getVersion()));
+	}
 	if (rootNodes.size() != 1) {
 	    throw new IllegalStateException("rootNodes.size() != 1");
 	}
