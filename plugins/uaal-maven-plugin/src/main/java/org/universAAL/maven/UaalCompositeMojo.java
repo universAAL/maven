@@ -6,8 +6,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -20,6 +22,8 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
+import org.universAAL.itests.conf.IntegrationTestConsts;
+import org.universAAL.maven.treebuilder.DependencyTreeBuilder;
 import org.universAAL.maven.treebuilder.ExecutionListCreator;
 
 /**
@@ -95,20 +99,41 @@ public class UaalCompositeMojo extends AbstractMojo {
      * @required
      */
     private File baseDirectory;
-    
+
     private static final String MAIN_COMPOSITE = "target/artifact.composite";
-    
-    private BufferedWriter createOutputWriter() throws FileNotFoundException {
+
+    private static final String MAIN_DEPS = "target/artifact.deps";
+
+    private BufferedWriter createOutputWriter(String fileName)
+	    throws FileNotFoundException {
 	File targetDir = new File(baseDirectory, "target");
 	targetDir.mkdirs();
-	File generatedCompositeFile = new File(baseDirectory, MAIN_COMPOSITE);
+	File generatedCompositeFile = new File(baseDirectory, fileName);
 	return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
 		generatedCompositeFile, false)));
     }
 
+    private void writeListToFile(List mvnUrls, String fileName)
+	    throws IOException {
+	BufferedWriter compositeWriter = createOutputWriter(fileName);
+	boolean hasWrittenSth = false;
+	for (Object mvnUrl : mvnUrls) {
+	    hasWrittenSth = true;
+	    String mvnUrlStr = (String) mvnUrl;
+	    compositeWriter.write("scan-bundle:" + mvnUrlStr
+		    + System.getProperty("line.separator"));
+	}
+	if (!hasWrittenSth) {
+	    compositeWriter
+		    .write("This is an empty dummy line in order to make this file possible to deploy. Don't use this file at any time.");
+	}
+	compositeWriter.close();
+    }
+
     public void execute() throws MojoExecutionException, MojoFailureException {
 	try {
-	    File manualArtifactComposite = new File(baseDirectory, "artifact.composite");
+	    File manualArtifactComposite = new File(baseDirectory,
+		    "artifact.composite");
 	    if (manualArtifactComposite.exists()) {
 		getLog()
 			.info(
@@ -120,60 +145,59 @@ public class UaalCompositeMojo extends AbstractMojo {
 					+ MAIN_COMPOSITE
 					+ System.getProperty("line.separator")
 					+ System.getProperty("line.separator"));
-		BufferedReader compositeReader = new BufferedReader(new InputStreamReader(
-			new FileInputStream(manualArtifactComposite)));
-		BufferedWriter compositeWriter = createOutputWriter();
+		BufferedReader compositeReader = new BufferedReader(
+			new InputStreamReader(new FileInputStream(
+				manualArtifactComposite)));
+		BufferedWriter compositeWriter = createOutputWriter(MAIN_COMPOSITE);
 		String line = null;
-		while ((line = compositeReader.readLine())!= null) {
-		    compositeWriter.write(line + System.getProperty("line.separator"));
+		while ((line = compositeReader.readLine()) != null) {
+		    compositeWriter.write(line
+			    + System.getProperty("line.separator"));
 		}
 		compositeWriter.close();
 		compositeReader.close();
 	    } else {
-//		if ("pom".equals(project.getArtifact().getType())) {
-//		    getLog()
-//			    .info(
-//				    System.getProperty("line.separator")
-//					    + System
-//						    .getProperty("line.separator")
-//					    + "Since this is a parent POM creating MAIN composite file is abandoned"
-//					    + System
-//						    .getProperty("line.separator")
-//					    + System
-//						    .getProperty("line.separator"));
-//		} else {
-		    getLog()
-			    .info(
-				    System.getProperty("line.separator")
-					    + System
-						    .getProperty("line.separator")
-					    + "Creating MAIN composite file - output generated in "
-					    + MAIN_COMPOSITE
-					    + System
-						    .getProperty("line.separator")
-					    + System
-						    .getProperty("line.separator"));
-		    ExecutionListCreator execListCreator = new ExecutionListCreator(
-			    getLog(), artifactMetadataSource, artifactFactory,
-			    mavenProjectBuilder, localRepository,
-			    remoteRepositories, artifactResolver,
-			    throwExceptionOnConflictStr);
-		    List mvnUrls = execListCreator
-			    .createArtifactExecutionList(project, new HashSet<String>());
+		getLog()
+			.info(
+				System.getProperty("line.separator")
+					+ System.getProperty("line.separator")
+					+ "Creating MAIN composite file - output generated in "
+					+ MAIN_COMPOSITE + " and " + MAIN_DEPS
+					+ System.getProperty("line.separator")
+					+ System.getProperty("line.separator"));
+		ExecutionListCreator execListCreator = new ExecutionListCreator(
+			getLog(), artifactMetadataSource, artifactFactory,
+			mavenProjectBuilder, localRepository,
+			remoteRepositories, artifactResolver,
+			throwExceptionOnConflictStr);
+		List<String> mvnUrls = execListCreator
+			.createArtifactExecutionList(project,
+				new HashSet<String>(), false);
+		writeListToFile(mvnUrls, MAIN_COMPOSITE);
 
-		    BufferedWriter compositeWriter = createOutputWriter();
-		    boolean hasWrittenSth = false;
-		    for (Object mvnUrl : mvnUrls) {
-			hasWrittenSth = true;
-			String mvnUrlStr = (String) mvnUrl;
-			compositeWriter.write("scan-bundle:" + mvnUrlStr
-				+ System.getProperty("line.separator"));
-		    }
-		    if (!hasWrittenSth) {
-			compositeWriter.write("This is an empty dummy line in order to make this file possible to deploy. Don't use this file at any time.");
-		    }
-		    compositeWriter.close();
-		// }
+		List<String> mvnUrlsOnlyDeps = new ArrayList<String>(mvnUrls);
+		if (!mvnUrlsOnlyDeps.isEmpty()) {
+		    mvnUrlsOnlyDeps.remove(mvnUrlsOnlyDeps.size() - 1);
+		}
+		writeListToFile(mvnUrlsOnlyDeps, MAIN_DEPS);
+
+		getLog().info("");
+		getLog().info(MAIN_COMPOSITE + ":");
+		getLog().info("");
+		int x = 1;
+		for (String mvnUrl : mvnUrls) {
+		    getLog().info(String.format("%2d. %s", x++, mvnUrl));
+		}
+
+		getLog().info("");
+		getLog().info("");
+		getLog().info(MAIN_DEPS + ":");
+		getLog().info("");
+		x = 1;
+		for (String mvnUrl : mvnUrlsOnlyDeps) {
+		    getLog().info(String.format("%2d. %s", x++, mvnUrl));
+		}
+
 	    }
 	} catch (Exception e) {
 	    getLog().error(e);

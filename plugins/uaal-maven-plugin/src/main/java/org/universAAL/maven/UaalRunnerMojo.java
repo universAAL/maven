@@ -153,7 +153,7 @@ public class UaalRunnerMojo extends AbstractMojo implements Contextualizable {
 		defaultTransitive = false;
 	    }
 	    List mvnUrls = execListCreator.createArtifactExecutionList(
-		    provision, defaultTransitive);
+		    provision, defaultTransitive, false);
 
 	    Element[] mvnUrlElems = new Element[mvnUrls.size()];
 	    int i = 0;

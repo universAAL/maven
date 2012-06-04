@@ -224,12 +224,6 @@ public class ExecutionListCreator {
 	}
 
 	List<String> mvnUrls = visitor.getMvnUrls();
-	log.info("Final ordered execution list:");
-	int x = 1;
-	for (String mvnUrl : mvnUrls) {
-	    log.info(String.format("%2d. %s", x++, mvnUrl));
-	}
-
 	return mvnUrls;
     }
 
@@ -298,9 +292,11 @@ public class ExecutionListCreator {
      * @throws MojoFailureException
      */
     public List createArtifactExecutionList(MavenProject mavenProject,
-	    Set<String> separatedArtifactDepsOfRootMvnUrls) throws Exception {
+	    Set<String> separatedArtifactDepsOfRootMvnUrls,
+	    boolean includeTestRuntimes) throws Exception {
 	DependencyTreeBuilder treeBuilder = new DependencyTreeBuilder(
-		artifactFactory, mavenProjectBuilder, localRepository);
+		artifactFactory, mavenProjectBuilder, localRepository,
+		includeTestRuntimes);
 	List<ArtifactRepository> finalRemoteRpositories = addMissingRepositories(mavenProject
 		.getRemoteArtifactRepositories());
 	List<RootNode> rootNodes = treeBuilder.buildDependencyTree(
@@ -352,9 +348,11 @@ public class ExecutionListCreator {
      * @throws MojoFailureException
      */
     public List createArtifactExecutionList(String[] provisions,
-	    boolean defaultTransitive) throws Exception {
+	    boolean defaultTransitive, boolean includeTestRuntimes)
+	    throws Exception {
 	DependencyTreeBuilder treeBuilder = new DependencyTreeBuilder(
-		artifactFactory, mavenProjectBuilder, localRepository);
+		artifactFactory, mavenProjectBuilder, localRepository,
+		includeTestRuntimes);
 	List<RootNode> rootNodes = parseProvisionsAndBuiltTree(provisions,
 		defaultTransitive, treeBuilder);
 	return processTreeIntoFlatList(rootNodes, null);

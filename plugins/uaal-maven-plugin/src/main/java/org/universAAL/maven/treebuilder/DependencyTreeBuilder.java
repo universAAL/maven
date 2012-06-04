@@ -88,6 +88,8 @@ public class DependencyTreeBuilder {
 
     public static final String UAAL_RUNTIME_PROFILE = "uAAL-Runtime";
 
+    public static final String UAAL_TEST_RUNTIME_PROFILE = "uAAL-Test-Runtime";
+
     public static final String PROP_SEPARATED_GROUP_IDS = "separatedGroupIds";
 
     private ArtifactFactory artifactFactory;
@@ -95,6 +97,8 @@ public class DependencyTreeBuilder {
     private MavenProjectBuilder mavenProjectBuilder;
 
     private ArtifactRepository localRepository;
+
+    private boolean includeTestRuntimes = false;
 
     /**
      * If the root artifact has one of separatedGroupIds then this list will
@@ -107,10 +111,11 @@ public class DependencyTreeBuilder {
 
     public DependencyTreeBuilder(ArtifactFactory artifactFactory,
 	    MavenProjectBuilder mavenProjectBuilder,
-	    ArtifactRepository localRepository) {
+	    ArtifactRepository localRepository, boolean includeTestRuntimes) {
 	this.artifactFactory = artifactFactory;
 	this.mavenProjectBuilder = mavenProjectBuilder;
 	this.localRepository = localRepository;
+	this.includeTestRuntimes = includeTestRuntimes;
     }
 
     private void fireEvent(int event,
@@ -1040,6 +1045,50 @@ public class DependencyTreeBuilder {
 	}
     }
 
+    private void extractDepsFromProfile(List deps, List runtimeDeps,
+	    ManagedVersionMap managedVersions) {
+	if (deps != null) {
+	    for (Object depObj : deps) {
+		Dependency dep = (Dependency) depObj;
+		String depKey = calculateDepKey(dep);
+
+		String depVersion = dep.getVersion();
+		String depScope = dep.getScope();
+
+		VersionRange versionRange = null;
+		if (managedVersions.containsKey(depKey)) {
+		    Artifact managedArtifact = (Artifact) managedVersions
+			    .get(depKey);
+		    if (managedArtifact.getVersion() != null
+			    && (depVersion == null)) {
+			depVersion = managedArtifact.getVersion();
+		    } else if (managedArtifact.getVersionRange() != null
+			    && (depVersion == null)) {
+			versionRange = managedArtifact.getVersionRange();
+		    }
+		    if (managedArtifact.getScope() != null
+			    && (depScope == null)) {
+			depScope = managedArtifact.getScope();
+		    }
+		}
+		Artifact runtimeArtifact = null;
+		if (versionRange == null) {
+		    runtimeArtifact = artifactFactory.createArtifact(dep
+			    .getGroupId(), dep.getArtifactId(), depVersion,
+			    depScope, dep.getType());
+		} else {
+		    runtimeArtifact = artifactFactory.createDependencyArtifact(
+			    dep.getGroupId(), dep.getArtifactId(),
+			    versionRange, dep.getType(), dep.getClassifier(),
+			    depScope);
+		}
+		DependencyNode runtimeDepNode = new DependencyNode(
+			runtimeArtifact);
+		runtimeDeps.add(runtimeDepNode);
+	    }
+	}
+    }
+
     /**
      * Resolves runtime dependencies of given artifact. It is assumed that
      * runtime dependencies are enclosed in a "uAAL-Runtime" maven profile.
@@ -1068,53 +1117,17 @@ public class DependencyTreeBuilder {
 		    Profile profile = (Profile) profileObj;
 		    if (UAAL_RUNTIME_PROFILE.equals(profile.getId())) {
 			List deps = profile.getDependencies();
-			if (deps != null) {
-			    for (Object depObj : deps) {
-				Dependency dep = (Dependency) depObj;
-				String depKey = calculateDepKey(dep);
-
-				String depVersion = dep.getVersion();
-				String depScope = dep.getScope();
-
-				VersionRange versionRange = null;
-				if (managedVersions.containsKey(depKey)) {
-				    Artifact managedArtifact = (Artifact) managedVersions
-					    .get(depKey);
-				    if (managedArtifact.getVersion() != null
-					    && (depVersion == null)) {
-					depVersion = managedArtifact
-						.getVersion();
-				    } else if (managedArtifact
-					    .getVersionRange() != null
-					    && (depVersion == null)) {
-					versionRange = managedArtifact
-						.getVersionRange();
-				    }
-				    if (managedArtifact.getScope() != null
-					    && (depScope == null)) {
-					depScope = managedArtifact.getScope();
-				    }
-				}
-				Artifact runtimeArtifact = null;
-				if (versionRange == null) {
-				    runtimeArtifact = artifactFactory
-					    .createArtifact(dep.getGroupId(),
-						    dep.getArtifactId(),
-						    depVersion, depScope, dep
-							    .getType());
-				} else {
-				    runtimeArtifact = artifactFactory
-					    .createDependencyArtifact(dep
-						    .getGroupId(), dep
-						    .getArtifactId(),
-						    versionRange,
-						    dep.getType(), dep
-							    .getClassifier(),
-						    depScope);
-				}
-				DependencyNode runtimeDepNode = new DependencyNode(
-					runtimeArtifact);
-				runtimeDeps.add(runtimeDepNode);
+			extractDepsFromProfile(deps, runtimeDeps,
+				managedVersions);
+		    }
+		    if (this.includeTestRuntimes) {
+			if (this.stringifiedRoot.equals(FilteringVisitorSupport
+				.stringify(nodeArtifact))) {
+			    if (UAAL_TEST_RUNTIME_PROFILE.equals(profile
+				    .getId())) {
+				List deps = profile.getDependencies();
+				extractDepsFromProfile(deps, runtimeDeps,
+					managedVersions);
 			    }
 			}
 		    }
