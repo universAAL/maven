@@ -39,11 +39,13 @@
 					<url>http://depot.universaal.org/maven-repo/thirdparty/</url>
 				</repository>
 				<repository>
-					<id>iks-repository</id>
-					<name>Redirection</name>
-					<url>http://depot.universaal.org/maven-repo/thirdparty/</url>
+					<id>uaal-thirdparty-snapshots</id>
+					<name>universAAL ThirdParty Repositories</name>
+					<url>http://depot.universaal.org/maven-repo/thirdparty-snapshots/</url>
+					<releases>
+						<enabled>false</enabled>
+					</releases>
 				</repository>
-			</repositories>
 		</profile>
 	</profiles>
 
@@ -58,7 +60,7 @@
 	</proxies -->
 
 	<servers>
-		<server>
+		<!--<server>
 			<id>releases</id>
 			<username>deployment</username>
 			<password>uaal_49_nexus</password>
@@ -67,9 +69,14 @@
 			<id>snapshots</id>
 			<username>deployment</username>
 			<password>uaal_49_nexus</password>
-		</server><!--
+		</server>
 		<server>
-			<id>thirdparty</id>
+			<id>uaal-thirdparty</id>
+			<username>pdepl</username>
+			<password>dirtypond</password>
+		</server>
+		<server>
+			<id>uaal-thirdparty-snapshots</id>
 			<username>pdepl</username>
 			<password>dirtypond</password>
 		</server> -->
