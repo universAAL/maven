@@ -46,6 +46,7 @@
 						<enabled>false</enabled>
 					</releases>
 				</repository>
+			</repositories>
 		</profile>
 	</profiles>
 
@@ -59,8 +60,9 @@
 		</proxy>
 	</proxies -->
 
+<!--
 	<servers>
-		<!--<server>
+		<server>
 			<id>releases</id>
 			<username>deployment</username>
 			<password>uaal_49_nexus</password>
@@ -79,7 +81,7 @@
 			<id>uaal-thirdparty-snapshots</id>
 			<username>pdepl</username>
 			<password>dirtypond</password>
-		</server> -->
+		</server> 
 	</servers>
-	
+	-->
 </settings>
