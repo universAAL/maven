@@ -271,15 +271,20 @@ public class ExecutionListCreator {
 	}
 	mvnurl = mvnurl.substring("mvn:".length());
 	String[] provisionElements = mvnurl.split("/");
-	if (provisionElements.length != 4) {
+	Artifact pomArtifact = null;
+	if (provisionElements.length == 3) {
+	    pomArtifact = artifactFactory.createArtifact(provisionElements[0],
+		    provisionElements[1], provisionElements[2], "", "jar");
+	} else if (provisionElements.length != 4) {
 	    throw new IllegalArgumentException(
 		    "The URL "
 			    + mvnurl
-			    + "does not contain exactly three slashes \"/\". The URL is expected to provide groupId/artifactId/version/type");
+			    + " does not contain exactly three slashes \"/\". The URL is expected to provide groupId/artifactId/version/type");
+	} else {
+	    pomArtifact = artifactFactory.createArtifact(provisionElements[0],
+		    provisionElements[1], provisionElements[2], "",
+		    provisionElements[3]);
 	}
-	Artifact pomArtifact = artifactFactory.createArtifact(
-		provisionElements[0], provisionElements[1],
-		provisionElements[2], "", provisionElements[3]);
 	return pomArtifact;
     }
 
