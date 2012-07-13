@@ -59,7 +59,7 @@ public class SourceExplorer extends DirectoryWalker {
 	protected void handleFile(File file, int depth, Collection results)
 			throws IOException {
 		// System.out.println("testing: " + file.getAbsolutePath());
-		if (file.getName().endsWith("java") && sc.passesTest(file)) {
+		if (file.getName().endsWith("java") && !sc.passesTest(file)) {
 			results.add(file);
 		}
 	}

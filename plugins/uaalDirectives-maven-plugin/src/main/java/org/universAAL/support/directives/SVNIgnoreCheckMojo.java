@@ -15,11 +15,16 @@
  ******************************************************************************/
 package org.universAAL.support.directives;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNProperty;
+import org.tmatesoft.svn.core.SVNPropertyValue;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNPropertyData;
 import org.tmatesoft.svn.core.wc.SVNRevision;
@@ -98,7 +103,11 @@ public class SVNIgnoreCheckMojo extends AbstractMojo {
 					getLog().warn(NO_IGNORES);
 				}
 				if (fixSCM) {
-
+					SVNPropertyValue propValue = SVNPropertyValue.create(SVNProperty.IGNORE, prop.getBytes());
+					Collection<String> cl = new ArrayList<String>();
+					cl.add("added ignore list");
+					wcCli.doSetProperty(mavenProject.getBasedir(), SVNProperty.IGNORE, propValue, false, SVNDepth.IMMEDIATES, null, cl );
+					getLog().info("Fixing");
 				}
 			}
 		} catch (SVNException e) {
