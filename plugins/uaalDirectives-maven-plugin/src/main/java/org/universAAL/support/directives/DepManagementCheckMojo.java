@@ -147,9 +147,15 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
 	private boolean passRootCheck(MavenProject mavenProject2) {
 		HashMap<String,String> versionMap = getActualVersions(mavenProject2);
 		List<Dependency> lod = mavenProject.getDependencyManagement().getDependencies();
+		HashMap<String,String> lodVersionMap = new HashMap<String,String>();
+		
+		// test if the version in DependencyManagement corresponds to the version of the actual artefact
 		for (Iterator<Dependency> iterator = lod.iterator(); iterator.hasNext();) {
 			Dependency dependency = (Dependency) iterator.next();
-			String realVersion = versionMap.get(dependency.getGroupId() + ":" +  dependency.getArtifactId());
+			String artefact = dependency.getGroupId() + ":" +  dependency.getArtifactId();
+			String realVersion = versionMap.get(artefact);
+			lodVersionMap.put(artefact, dependency.getVersion());
+			//System.out.println("***1 ." + dependency.getGroupId() + ":" +  dependency.getArtifactId() + " - " + realVersion);
 			if ( dependency != null &&
 					! dependency.getVersion()
 					.equals(realVersion)
@@ -157,10 +163,13 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
 				toBeFixed.put(dependency.getGroupId() + ":" + dependency.getArtifactId(), realVersion);
 			}
 		}
+		
+		// test that every real artefact has an entry in the DependencyManagement
 		for (Iterator<?> iterator = versionMap.keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
-			if (!lod.contains(key)) {
+			if (!lodVersionMap.containsKey(key)) {
 				toBeFixed.put(key, versionMap.get(key));
+				//System.out.println("***2 ." + key + ". - ." + versionMap.get(key) + ".");
 			}
 		}
 		return toBeFixed.isEmpty();
