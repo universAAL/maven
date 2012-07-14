@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011 Universidad Politécnica de Madrid
+ * Copyright 2011 Universidad Politï¿½cnica de Madrid
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -126,7 +126,12 @@ public class SVNIgnoreCheckMojo extends AbstractMojo {
 			getLog().debug("No Match: " + files[i] + " with " + string);
 			i++;
 		}
-		return files[i].endsWith(string.replace("*", ""));
+		if (i < files.length) {
+			return files[i].endsWith(string.replace("*", ""));
+		} 
+		else {
+			return false;
+		}
 	}
 
 }
