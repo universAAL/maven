@@ -1,0 +1,6 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+/Panic Button|http://www.tsb.upv.es|http://ontology.aal-persona.org/tta.owl${symbol_pound}Panic
+/Take me Home|http://www.tsb.upv.es|http://ontology.aal-persona.org/tta.owl${symbol_pound}TakeHome
+/Form Tests|http://www.tsb.upv.es|http://ontology.aal-persona.org/Tests.owl${symbol_pound}Forms
