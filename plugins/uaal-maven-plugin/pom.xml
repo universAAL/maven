@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>org.universAAL</groupId>
 		<artifactId>uAAL.pom</artifactId>
-		<version>1.1.0</version>
+		<version>1.2.0</version>
 		<relativePath>../uAAL.pom/pom.xml</relativePath>
 	</parent>
 	<packaging>maven-plugin</packaging>
 	<groupId>org.universAAL.support</groupId>
 	<artifactId>uaal-maven-plugin</artifactId>
-	<version>1.1.3-SNAPSHOT</version>
+	<version>1.2.0</version>
 	<name>uAAL Maven Plugin</name>
 	<description>Maven plugin for resolution and running uAAL artifacts</description>
 	<url />
@@ -71,7 +71,7 @@
         <dependency>
         	<groupId>org.universAAL.support</groupId>
         	<artifactId>itests-conf</artifactId>
-        	<version>1.1.3-SNAPSHOT</version>
+        	<version>1.2.0</version>
         </dependency>
 	</dependencies>
 </project>
