@@ -9,7 +9,8 @@ public class MyDependencyNode extends DependencyNode {
 
     private List remoteRepositories;
 
-    public MyDependencyNode(Artifact artifact, List remoteRepositories) {
+    public MyDependencyNode(final Artifact artifact,
+	    final List remoteRepositories) {
 	super(artifact);
 	this.remoteRepositories = remoteRepositories;
     }

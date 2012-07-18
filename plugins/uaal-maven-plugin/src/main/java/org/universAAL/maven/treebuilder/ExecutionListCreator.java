@@ -56,13 +56,14 @@ public class ExecutionListCreator {
 
     private boolean throwExceptionOnConflict;
 
-    public ExecutionListCreator(Log log,
-	    ArtifactMetadataSource artifactMetadataSource,
-	    ArtifactFactory artifactFactory,
-	    MavenProjectBuilder mavenProjectBuilder,
-	    ArtifactRepository localRepository, List remoteRepositories,
-	    ArtifactResolver artifactResolver,
-	    String throwExceptionOnConflictStr) {
+    public ExecutionListCreator(final Log log,
+	    final ArtifactMetadataSource artifactMetadataSource,
+	    final ArtifactFactory artifactFactory,
+	    final MavenProjectBuilder mavenProjectBuilder,
+	    final ArtifactRepository localRepository,
+	    final List remoteRepositories,
+	    final ArtifactResolver artifactResolver,
+	    final String throwExceptionOnConflictStr) {
 	this.log = log;
 	this.artifactMetadataSource = artifactMetadataSource;
 	this.artifactFactory = artifactFactory;
@@ -84,7 +85,7 @@ public class ExecutionListCreator {
      * @return
      */
     private List<ArtifactRepository> addMissingRepositories(
-	    List<ArtifactRepository> remoteRepositories) {
+	    final List<ArtifactRepository> remoteRepositories) {
 	List<ArtifactRepository> modifiedRemoteRepositories = new ArrayList<ArtifactRepository>(
 		remoteRepositories);
 	boolean paxRunnerPresent = false;
@@ -128,9 +129,9 @@ public class ExecutionListCreator {
      * @return a dependency tree as a list of rootnodes (instances of RootNode
      *         class) which contain their own subtrees.
      */
-    private List<RootNode> parseProvisionsAndBuiltTree(String[] provisions,
-	    boolean transitive, DependencyTreeBuilder treeBuilder)
-	    throws Exception {
+    private List<RootNode> parseProvisionsAndBuiltTree(
+	    final String[] provisions, final boolean transitive,
+	    final DependencyTreeBuilder treeBuilder) throws Exception {
 	MavenProjectDescriptor[] projectDescs = new MavenProjectDescriptor[provisions.length];
 	int i = 0;
 	List<List> listOfRemoteRepositories = new ArrayList<List>();
@@ -191,8 +192,8 @@ public class ExecutionListCreator {
      * @return execution list - list of strings representing mvnUrls of bundles
      *         which should be launched
      */
-    private List processTreeIntoFlatList(List<RootNode> rootNodes,
-	    Artifact dontResolve) {
+    private List processTreeIntoFlatList(final List<RootNode> rootNodes,
+	    final Artifact dontResolve) {
 	Iterator<RootNode> rootNodesIterator = rootNodes.iterator();
 	int i = 0;
 	while (rootNodesIterator.hasNext()) {
@@ -296,9 +297,9 @@ public class ExecutionListCreator {
      * @throws MojoExecutionException
      * @throws MojoFailureException
      */
-    public List createArtifactExecutionList(MavenProject mavenProject,
-	    Set<String> separatedArtifactDepsOfRootMvnUrls,
-	    boolean includeTestRuntimes) throws Exception {
+    public List createArtifactExecutionList(final MavenProject mavenProject,
+	    final Set<String> separatedArtifactDepsOfRootMvnUrls,
+	    final boolean includeTestRuntimes) throws Exception {
 	DependencyTreeBuilder treeBuilder = new DependencyTreeBuilder(
 		artifactFactory, mavenProjectBuilder, localRepository,
 		includeTestRuntimes);
@@ -352,8 +353,8 @@ public class ExecutionListCreator {
      * @throws MojoExecutionException
      * @throws MojoFailureException
      */
-    public List createArtifactExecutionList(String[] provisions,
-	    boolean defaultTransitive, boolean includeTestRuntimes)
+    public List createArtifactExecutionList(final String[] provisions,
+	    final boolean defaultTransitive, final boolean includeTestRuntimes)
 	    throws Exception {
 	DependencyTreeBuilder treeBuilder = new DependencyTreeBuilder(
 		artifactFactory, mavenProjectBuilder, localRepository,

@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.resolver.ResolutionListener;
 import org.apache.maven.artifact.resolver.ResolutionListenerForDepMgmt;
 import org.apache.maven.artifact.resolver.ResolutionNode;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
@@ -53,7 +52,8 @@ import org.apache.maven.shared.dependency.tree.traversal.CollectingDependencyNod
  * @version $Id: DependencyTreeResolutionListener.java 576969 2007-09-18
  *          16:11:29Z markh $
  */
-public class DependencyTreeResolutionListener implements ResolutionListenerForDepMgmt {
+public class DependencyTreeResolutionListener implements
+	ResolutionListenerForDepMgmt {
     // fields -----------------------------------------------------------------
 
     /**
@@ -99,7 +99,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
      * @param logger
      *            the log to write debug messages to
      */
-    public DependencyTreeResolutionListener(ArtifactFilter artifactFilter) {
+    public DependencyTreeResolutionListener(final ArtifactFilter artifactFilter) {
 	this.artifactFilter = artifactFilter;
 	parentNodes = new Stack();
 	nodesByArtifact = new IdentityHashMap();
@@ -114,7 +114,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
      * org.apache.maven.artifact.resolver.ResolutionListener#testArtifact(org
      * .apache.maven.artifact.Artifact)
      */
-    public void testArtifact(Artifact artifact) {
+    public void testArtifact(final Artifact artifact) {
 	log("testArtifact: artifact=" + artifact);
     }
 
@@ -123,7 +123,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
      * org.apache.maven.artifact.resolver.ResolutionListener#startProcessChildren
      * (org.apache.maven.artifact.Artifact)
      */
-    public void startProcessChildren(Artifact artifact) {
+    public void startProcessChildren(final Artifact artifact) {
 	if (!artifactFilter.include(artifact)) {
 	    return;
 	}
@@ -142,7 +142,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
      * org.apache.maven.artifact.resolver.ResolutionListener#endProcessChildren
      * (org.apache.maven.artifact.Artifact)
      */
-    public void endProcessChildren(Artifact artifact) {
+    public void endProcessChildren(final Artifact artifact) {
 	if (!artifactFilter.include(artifact)) {
 	    return;
 	}
@@ -166,7 +166,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
      * org.apache.maven.artifact.resolver.ResolutionListener#includeArtifact
      * (org.apache.maven.artifact.Artifact)
      */
-    public void includeArtifact(ResolutionNode resolutionNode) {
+    public void includeArtifact(final ResolutionNode resolutionNode) {
 	if (!artifactFilter.include(resolutionNode.getArtifact())) {
 	    return;
 	}
@@ -196,20 +196,23 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
      * org.apache.maven.artifact.resolver.ResolutionListener#omitForNearer(org
      * .apache.maven.artifact.Artifact, org.apache.maven.artifact.Artifact)
      */
-    public void omitForNearer(ResolutionNode omittedNode, ResolutionNode keptNode) {
+    public void omitForNearer(final ResolutionNode omittedNode,
+	    final ResolutionNode keptNode) {
 	if (!artifactFilter.include(omittedNode.getArtifact())) {
 	    return;
 	}
 	// if (1==1) {
 	// return;
 	// }
-	log("omitForNearer: omitted=" + omittedNode.getArtifact() + " kept=" + keptNode.getArtifact());
+	log("omitForNearer: omitted=" + omittedNode.getArtifact() + " kept="
+		+ keptNode.getArtifact());
 
 	if (!omittedNode.getArtifact().getDependencyConflictId().equals(
 		keptNode.getArtifact().getDependencyConflictId())) {
 	    throw new IllegalArgumentException(
 		    "Omitted artifact dependency conflict id "
-			    + omittedNode.getArtifact().getDependencyConflictId()
+			    + omittedNode.getArtifact()
+				    .getDependencyConflictId()
 			    + " differs from kept artifact dependency conflict id "
 			    + keptNode.getArtifact().getDependencyConflictId());
 	}
@@ -251,11 +254,13 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
      * org.apache.maven.artifact.resolver.ResolutionListener#updateScope(org
      * .apache.maven.artifact.Artifact, java.lang.String)
      */
-    public void updateScope(ResolutionNode resolutionNode, String scope) {
+    public void updateScope(final ResolutionNode resolutionNode,
+	    final String scope) {
 	if (!artifactFilter.include(resolutionNode.getArtifact())) {
 	    return;
 	}
-	log("updateScope: artifact=" + resolutionNode.getArtifact() + ", scope=" + scope);
+	log("updateScope: artifact=" + resolutionNode.getArtifact()
+		+ ", scope=" + scope);
 
 	DependencyNode node = getNode(resolutionNode.getArtifact());
 
@@ -273,7 +278,8 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
      * org.apache.maven.artifact.resolver.ResolutionListener#manageArtifact(
      * org.apache.maven.artifact.Artifact, org.apache.maven.artifact.Artifact)
      */
-    public void manageArtifact(Artifact artifact, Artifact replacement) {
+    public void manageArtifact(final Artifact artifact,
+	    final Artifact replacement) {
 	if (!artifactFilter.include(artifact)) {
 	    return;
 	}
@@ -297,7 +303,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
      * org.apache.maven.artifact.resolver.ResolutionListener#omitForCycle(org
      * .apache.maven.artifact.Artifact)
      */
-    public void omitForCycle(ResolutionNode resolutionNode) {
+    public void omitForCycle(final ResolutionNode resolutionNode) {
 	if (!artifactFilter.include(resolutionNode.getArtifact())) {
 	    return;
 	}
@@ -315,12 +321,13 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
      * org.apache.maven.artifact.resolver.ResolutionListener#updateScopeCurrentPom
      * (org.apache.maven.artifact.Artifact, java.lang.String)
      */
-    public void updateScopeCurrentPom(ResolutionNode resolutionNode, String scopeIgnored) {
+    public void updateScopeCurrentPom(final ResolutionNode resolutionNode,
+	    final String scopeIgnored) {
 	if (!artifactFilter.include(resolutionNode.getArtifact())) {
 	    return;
 	}
-	log("updateScopeCurrentPom: artifact=" + resolutionNode.getArtifact() + ", scopeIgnored="
-		+ scopeIgnored);
+	log("updateScopeCurrentPom: artifact=" + resolutionNode.getArtifact()
+		+ ", scopeIgnored=" + scopeIgnored);
 
 	DependencyNode node = getNode(resolutionNode.getArtifact());
 
@@ -340,7 +347,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
      * org.apache.maven.artifact.resolver.ResolutionListener#selectVersionFromRange
      * (org.apache.maven.artifact.Artifact)
      */
-    public void selectVersionFromRange(Artifact artifact) {
+    public void selectVersionFromRange(final Artifact artifact) {
 	log("selectVersionFromRange: artifact=" + artifact);
 
 	// TODO: track version selection from range in node (MNG-3093)
@@ -352,8 +359,8 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
      * .apache.maven.artifact.Artifact, org.apache.maven.artifact.Artifact,
      * org.apache.maven.artifact.versioning.VersionRange)
      */
-    public void restrictRange(Artifact artifact, Artifact replacement,
-	    VersionRange versionRange) {
+    public void restrictRange(final Artifact artifact,
+	    final Artifact replacement, final VersionRange versionRange) {
 	log("restrictRange: artifact=" + artifact + ", replacement="
 		+ replacement + ", versionRange=" + versionRange);
 
@@ -367,7 +374,8 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
      * manageArtifactVersion(org.apache.maven.artifact.Artifact,
      * org.apache.maven.artifact.Artifact)
      */
-    public void manageArtifactVersion(Artifact artifact, Artifact replacement) {
+    public void manageArtifactVersion(final Artifact artifact,
+	    final Artifact replacement) {
 	if (!artifactFilter.include(artifact)) {
 	    return;
 	}
@@ -395,7 +403,8 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
      * manageArtifactScope(org.apache.maven.artifact.Artifact,
      * org.apache.maven.artifact.Artifact)
      */
-    public void manageArtifactScope(Artifact artifact, Artifact replacement) {
+    public void manageArtifactScope(final Artifact artifact,
+	    final Artifact replacement) {
 	if (!artifactFilter.include(artifact)) {
 	    return;
 	}
@@ -427,6 +436,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
      * @deprecated As of 1.1, use a {@link CollectingDependencyNodeVisitor} on
      *             the root dependency node
      */
+    @Deprecated
     public Collection getNodes() {
 	return Collections.unmodifiableCollection(nodesByArtifact.values());
     }
@@ -449,7 +459,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
      * @param message
      *            the message to write to the log
      */
-    private void log(String message) {
+    private void log(final String message) {
 	int depth = parentNodes.size();
 
 	StringBuffer buffer = new StringBuffer();
@@ -469,7 +479,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
      *            the attached artifact for the new dependency node
      * @return the new dependency node
      */
-    private DependencyNode createNode(ResolutionNode resolutionNode) {
+    private DependencyNode createNode(final ResolutionNode resolutionNode) {
 	DependencyNode node = new MyDependencyNode(
 		resolutionNode.getArtifact(), resolutionNode
 			.getRemoteRepositories());
@@ -493,7 +503,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
      * @return the new dependency node
      */
     // package protected for unit test
-    DependencyNode addNode(ResolutionNode resolutionNode) {
+    DependencyNode addNode(final ResolutionNode resolutionNode) {
 	DependencyNode node = createNode(resolutionNode);
 
 	DependencyNode previousNode = (DependencyNode) nodesByArtifact.put(node
@@ -525,7 +535,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
      * @return the dependency node, or <code>null</code> if the specified
      *         artifact has no corresponding dependency node
      */
-    private DependencyNode getNode(Artifact artifact) {
+    private DependencyNode getNode(final Artifact artifact) {
 	return (DependencyNode) nodesByArtifact.get(artifact);
     }
 
@@ -536,7 +546,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
      * @param artifact
      *            the artifact to remove the dependency node for
      */
-    private void removeNode(Artifact artifact) {
+    private void removeNode(final Artifact artifact) {
 	DependencyNode node = (DependencyNode) nodesByArtifact.remove(artifact);
 
 	if (!artifact.equals(node.getArtifact())) {
@@ -575,7 +585,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
      * @param node
      *            the node to update
      */
-    private void flushDependencyManagement(DependencyNode node) {
+    private void flushDependencyManagement(final DependencyNode node) {
 	Artifact artifact = node.getArtifact();
 	String premanagedVersion = (String) managedVersions.get(artifact
 		.getId());
@@ -599,7 +609,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
 	return nodesByArtifact;
     }
 
-    public void addExcludedCoreArtifact(ResolutionNode node) {
+    public void addExcludedCoreArtifact(final ResolutionNode node) {
 	currentRootNode.excludedCoreArtifacts.add(node);
     }
 

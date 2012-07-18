@@ -87,10 +87,11 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
      */
     private boolean throwExceptionOnConflict = true;
 
-    public LaunchOrderDependencyNodeVisitor(Log log, Map nodesByArtifactId,
-	    Map versionsByArtifactId, boolean throwExceptionOnConflict,
-	    ArtifactRepository localRepository,
-	    ArtifactResolver artifactResolver, Artifact dontResolve) {
+    public LaunchOrderDependencyNodeVisitor(final Log log,
+	    final Map nodesByArtifactId, final Map versionsByArtifactId,
+	    final boolean throwExceptionOnConflict,
+	    final ArtifactRepository localRepository,
+	    final ArtifactResolver artifactResolver, final Artifact dontResolve) {
 	super(log);
 	this.localRepository = localRepository;
 	this.nodesByArtifactId = nodesByArtifactId;
@@ -114,8 +115,8 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
      * @param keptNode
      * @param msgHeader
      */
-    private void throwConflictException(DependencyNode omittedNode,
-	    DependencyNode keptNode, String msgHeader) {
+    private void throwConflictException(final DependencyNode omittedNode,
+	    final DependencyNode keptNode, final String msgHeader) {
 	if (throwExceptionOnConflict) {
 	    StringBuilder msg = new StringBuilder();
 	    msg.append(String.format("\n" + msgHeader, stringify(keptNode),
@@ -138,7 +139,7 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
      *            which parents are printed
      * @return string containing printed tree of parents
      */
-    private String printNodeParentsTree(DependencyNode node) {
+    private String printNodeParentsTree(final DependencyNode node) {
 	List deps = new ArrayList();
 	DependencyNode parent = node;
 	deps.add(stringify(node));
@@ -163,7 +164,7 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 	return msg.toString();
     }
 
-    protected void addNode(DependencyNode node) {
+    protected void addNode(final DependencyNode node) {
 	try {
 	    if (!wasVisited(node)
 	    /*
@@ -187,8 +188,8 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 			.getVersion());
 		if (shouldResolve) {
 		    MyDependencyNode myNode = (MyDependencyNode) node;
-		    artifactResolver.resolve(artifact, myNode.getRemoteRepositories(),
-			    localRepository);
+		    artifactResolver.resolve(artifact, myNode
+			    .getRemoteRepositories(), localRepository);
 		    File localRepoBaseDir = new File(localRepository
 			    .getBasedir());
 		    File jarPath = new File(localRepoBaseDir, localRepository
@@ -226,7 +227,7 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
      * throwExceptionOnConflict is false, the conflict is resolved as suggested
      * by the tree and kept artifact is finally added to mvnUrls list.
      */
-    public boolean visit(DependencyNode node) {
+    public boolean visit(final DependencyNode node) {
 	if (wasVisited(node)) {
 	    return false;
 	}
@@ -282,7 +283,7 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
      * If node wasn't visited, it is in the scope, and was not omitted then it
      * is added to mvnUrls list.
      */
-    public boolean endVisit(DependencyNode node) {
+    public boolean endVisit(final DependencyNode node) {
 	if (!wasVisited(node)) {
 	    if (isInScope(node)) {
 		switch (node.getState()) {
@@ -306,12 +307,12 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 	return mvnUrls;
     }
 
-    public void setRemoteRepositories(List remoteRepositories) {
+    public void setRemoteRepositories(final List remoteRepositories) {
 	this.remoteRepositories = remoteRepositories;
     }
 
     public void setExcludedCoreArtifacts(
-	    List<ResolutionNode> excludedCoreArtifacts) {
+	    final List<ResolutionNode> excludedCoreArtifacts) {
 	stringifiedExcludedCoreArtifacts = new HashSet<String>();
 	for (ResolutionNode resolutionNode : excludedCoreArtifacts) {
 	    stringifiedExcludedCoreArtifacts.add(stringify(resolutionNode

@@ -19,7 +19,6 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.universAAL.itests.conf.IntegrationTestConsts;
-import org.universAAL.maven.treebuilder.DependencyTreeBuilder;
 import org.universAAL.maven.treebuilder.ExecutionListCreator;
 
 /**
@@ -123,9 +122,10 @@ public class UaalTestMojo extends AbstractMojo {
 			remoteRepositories, artifactResolver,
 			throwExceptionOnConflictStr);
 		Set<String> separatedArtifactDepsOfRoot = new HashSet<String>();
-		List<String> mvnUrls = execListCreator.createArtifactExecutionList(
-			project, separatedArtifactDepsOfRoot, true);
-		getLog().info(IntegrationTestConsts.TEST_COMPOSITE+":");
+		List<String> mvnUrls = execListCreator
+			.createArtifactExecutionList(project,
+				separatedArtifactDepsOfRoot, true);
+		getLog().info(IntegrationTestConsts.TEST_COMPOSITE + ":");
 		int x = 1;
 		for (String mvnUrl : mvnUrls) {
 		    getLog().info(String.format("%2d. %s", x++, mvnUrl));

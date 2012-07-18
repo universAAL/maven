@@ -19,7 +19,7 @@ public abstract class FilteringVisitorSupport {
 
     protected Log log;
 
-    public FilteringVisitorSupport(Log log) {
+    public FilteringVisitorSupport(final Log log) {
 	this.log = log;
     }
 
@@ -35,7 +35,7 @@ public abstract class FilteringVisitorSupport {
      * @param artifact
      * @return
      */
-    public static String stringify(Artifact artifact) {
+    public static String stringify(final Artifact artifact) {
 	if (artifact.getVersion() == null) {
 	    throw new RuntimeException(
 		    "Artifact version and version range is null: " + artifact);
@@ -52,7 +52,7 @@ public abstract class FilteringVisitorSupport {
      * @param artifact
      * @return
      */
-    protected String stringify(DependencyNode node) {
+    protected String stringify(final DependencyNode node) {
 	return FilteringVisitorSupport.stringify(node.getArtifact());
     }
 
@@ -62,7 +62,7 @@ public abstract class FilteringVisitorSupport {
      * @param artifact
      * @return
      */
-    protected String stringifyNoVersion(Artifact artifact) {
+    protected String stringifyNoVersion(final Artifact artifact) {
 	if (artifact.getVersion() == null) {
 	    throw new RuntimeException(
 		    "Artifact version and version range is null: " + artifact);
@@ -79,7 +79,7 @@ public abstract class FilteringVisitorSupport {
      * @param artifact
      * @return
      */
-    protected String stringifyNoVersion(DependencyNode node) {
+    protected String stringifyNoVersion(final DependencyNode node) {
 	return stringifyNoVersion(node.getArtifact());
     }
 
@@ -89,7 +89,7 @@ public abstract class FilteringVisitorSupport {
      * @param node
      * @return
      */
-    protected boolean wasVisited(DependencyNode node) {
+    protected boolean wasVisited(final DependencyNode node) {
 	return visited.contains(stringify(node));
     }
 
@@ -100,7 +100,7 @@ public abstract class FilteringVisitorSupport {
      * @param node
      * @return
      */
-    protected boolean isInScope(DependencyNode node) {
+    protected boolean isInScope(final DependencyNode node) {
 	String scope = node.getArtifact().getScope();
 	if (scope == null) {
 	    log.debug("Null Scope For artifact: "

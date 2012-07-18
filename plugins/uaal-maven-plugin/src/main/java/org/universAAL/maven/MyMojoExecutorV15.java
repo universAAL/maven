@@ -53,14 +53,14 @@ public class MyMojoExecutorV15 {
      * @throws MojoExecutionException
      *             If there are any exceptions locating or executing the mojo
      */
-    public static void executeMojo(Plugin plugin, String goal,
-	    Xpp3Dom configuration, ExecutionEnvironment env)
+    public static void executeMojo(final Plugin plugin, final String goal,
+	    final Xpp3Dom configuration, final ExecutionEnvironment env)
 	    throws MojoExecutionException {
 	env.executeMojo(plugin, goal, configuration);
     }
 
-    public static void executeMojoImpl(Plugin plugin, String goal,
-	    Xpp3Dom configuration, ExecutionEnvironmentM2 env)
+    public static void executeMojoImpl(final Plugin plugin, String goal,
+	    final Xpp3Dom configuration, final ExecutionEnvironmentM2 env)
 	    throws MojoExecutionException {
 	Map<String, PluginExecution> executionMap = null;
 	try {
@@ -133,8 +133,8 @@ public class MyMojoExecutorV15 {
      * @throws MojoExecutionException
      *             If there are any exceptions locating or executing the mojo
      */
-    public static void executeMojoImpl(Plugin plugin, String goal,
-	    Xpp3Dom configuration, ExecutionEnvironmentM3 env)
+    public static void executeMojoImpl(final Plugin plugin, String goal,
+	    final Xpp3Dom configuration, final ExecutionEnvironmentM3 env)
 	    throws MojoExecutionException {
 	if (configuration == null) {
 	    throw new NullPointerException("configuration may not be null");
@@ -207,12 +207,13 @@ public class MyMojoExecutorV15 {
     @SuppressWarnings( { "unchecked" })
     // Maven 2 API isn't generic
     private static Map<String, PluginExecution> getExecutionsAsMap(
-	    Plugin pomPlugin) {
-	return (Map<String, PluginExecution>) pomPlugin.getExecutionsAsMap();
+	    final Plugin pomPlugin) {
+	return pomPlugin.getExecutionsAsMap();
     }
 
-    private static MojoExecution mojoExecution2(MojoDescriptor mojoDescriptor,
-	    String executionId, Xpp3Dom configuration) {
+    private static MojoExecution mojoExecution2(
+	    final MojoDescriptor mojoDescriptor, final String executionId,
+	    final Xpp3Dom configuration) {
 	if (executionId != null) {
 	    return new MojoExecution(mojoDescriptor, executionId);
 	} else {
@@ -220,8 +221,9 @@ public class MyMojoExecutorV15 {
 	}
     }
 
-    private static MojoExecution mojoExecution3(MojoDescriptor mojoDescriptor,
-	    String executionId, Xpp3Dom configuration) {
+    private static MojoExecution mojoExecution3(
+	    final MojoDescriptor mojoDescriptor, final String executionId,
+	    Xpp3Dom configuration) {
 	if (executionId != null) {
 	    return new MojoExecution(mojoDescriptor, executionId);
 	} else {
@@ -243,8 +245,8 @@ public class MyMojoExecutorV15 {
      * @return The execution environment
      */
     public static ExecutionEnvironment executionEnvironment(
-	    MavenProject mavenProject, MavenSession mavenSession,
-	    PluginManager pluginManager) {
+	    final MavenProject mavenProject, final MavenSession mavenSession,
+	    final PluginManager pluginManager) {
 	return new ExecutionEnvironmentM2(mavenProject, mavenSession,
 		pluginManager);
     }
@@ -261,8 +263,8 @@ public class MyMojoExecutorV15 {
      * @return The execution environment
      */
     public static ExecutionEnvironment executionEnvironment(
-	    MavenProject mavenProject, MavenSession mavenSession,
-	    BuildPluginManager pluginManager) {
+	    final MavenProject mavenProject, final MavenSession mavenSession,
+	    final BuildPluginManager pluginManager) {
 	return new ExecutionEnvironmentM3(mavenProject, mavenSession,
 		pluginManager);
     }
@@ -274,7 +276,7 @@ public class MyMojoExecutorV15 {
      *            A list of elements for the configuration section
      * @return The elements transformed into the Maven-native XML format
      */
-    public static Xpp3Dom configuration(Element... elements) {
+    public static Xpp3Dom configuration(final Element... elements) {
 	Xpp3Dom dom = new Xpp3Dom("configuration");
 	for (Element e : elements) {
 	    dom.addChild(e.toDom());
@@ -291,7 +293,7 @@ public class MyMojoExecutorV15 {
      *            The artifact id
      * @return The plugin instance
      */
-    public static Plugin plugin(String groupId, String artifactId) {
+    public static Plugin plugin(final String groupId, final String artifactId) {
 	return plugin(groupId, artifactId, null);
     }
 
@@ -306,8 +308,8 @@ public class MyMojoExecutorV15 {
      *            The plugin version
      * @return The plugin instance
      */
-    public static Plugin plugin(String groupId, String artifactId,
-	    String version) {
+    public static Plugin plugin(final String groupId, final String artifactId,
+	    final String version) {
 	Plugin plugin = new Plugin();
 	plugin.setArtifactId(artifactId);
 	plugin.setGroupId(groupId);
@@ -322,7 +324,7 @@ public class MyMojoExecutorV15 {
      *            The value
      * @return The value
      */
-    public static String groupId(String groupId) {
+    public static String groupId(final String groupId) {
 	return groupId;
     }
 
@@ -333,7 +335,7 @@ public class MyMojoExecutorV15 {
      *            The value
      * @return The value
      */
-    public static String artifactId(String artifactId) {
+    public static String artifactId(final String artifactId) {
 	return artifactId;
     }
 
@@ -344,7 +346,7 @@ public class MyMojoExecutorV15 {
      *            The value
      * @return The value
      */
-    public static String version(String version) {
+    public static String version(final String version) {
 	return version;
     }
 
@@ -355,7 +357,7 @@ public class MyMojoExecutorV15 {
      *            The value
      * @return The value
      */
-    public static String goal(String goal) {
+    public static String goal(final String goal) {
 	return goal;
     }
 
@@ -366,7 +368,7 @@ public class MyMojoExecutorV15 {
      *            The value
      * @return The value
      */
-    public static String name(String name) {
+    public static String name(final String name) {
 	return name;
     }
 
@@ -379,7 +381,7 @@ public class MyMojoExecutorV15 {
      *            The element text value
      * @return The element object
      */
-    public static Element element(String name, String value) {
+    public static Element element(final String name, final String value) {
 	return new Element(name, value);
     }
 
@@ -392,7 +394,7 @@ public class MyMojoExecutorV15 {
      *            The child elements
      * @return The Element object
      */
-    public static Element element(String name, Element... elements) {
+    public static Element element(final String name, final Element... elements) {
 	return new Element(name, elements);
     }
 
@@ -404,11 +406,12 @@ public class MyMojoExecutorV15 {
 	private final String name;
 	private final String text;
 
-	public Element(String name, Element... children) {
+	public Element(final String name, final Element... children) {
 	    this(name, null, children);
 	}
 
-	public Element(String name, String text, Element... children) {
+	public Element(final String name, final String text,
+		final Element... children) {
 	    this.name = name;
 	    this.text = text;
 	    this.children = children;
@@ -433,8 +436,8 @@ public class MyMojoExecutorV15 {
 	private final MavenProject mavenProject;
 	private final MavenSession mavenSession;
 
-	public ExecutionEnvironment(MavenProject mavenProject,
-		MavenSession mavenSession) {
+	public ExecutionEnvironment(final MavenProject mavenProject,
+		final MavenSession mavenSession) {
 	    this.mavenProject = mavenProject;
 	    this.mavenSession = mavenSession;
 	}
@@ -454,8 +457,9 @@ public class MyMojoExecutorV15 {
     public static class ExecutionEnvironmentM2 extends ExecutionEnvironment {
 	private final PluginManager pluginManager;
 
-	public ExecutionEnvironmentM2(MavenProject mavenProject,
-		MavenSession mavenSession, PluginManager pluginManager) {
+	public ExecutionEnvironmentM2(final MavenProject mavenProject,
+		final MavenSession mavenSession,
+		final PluginManager pluginManager) {
 	    super(mavenProject, mavenSession);
 	    this.pluginManager = pluginManager;
 	}
@@ -464,8 +468,9 @@ public class MyMojoExecutorV15 {
 	    return pluginManager;
 	}
 
-	public void executeMojo(Plugin plugin, String goal,
-		Xpp3Dom configuration) throws MojoExecutionException {
+	@Override
+	public void executeMojo(final Plugin plugin, final String goal,
+		final Xpp3Dom configuration) throws MojoExecutionException {
 	    MyMojoExecutorV15
 		    .executeMojoImpl(plugin, goal, configuration, this);
 	}
@@ -474,8 +479,8 @@ public class MyMojoExecutorV15 {
     public static class ExecutionEnvironmentM3 extends ExecutionEnvironment {
 	private final Object buildPluginManager;
 
-	public ExecutionEnvironmentM3(MavenProject mavenProject,
-		MavenSession mavenSession, Object buildPluginManager) {
+	public ExecutionEnvironmentM3(final MavenProject mavenProject,
+		final MavenSession mavenSession, final Object buildPluginManager) {
 	    super(mavenProject, mavenSession);
 	    this.buildPluginManager = buildPluginManager;
 	}
@@ -484,8 +489,9 @@ public class MyMojoExecutorV15 {
 	    return buildPluginManager;
 	}
 
-	public void executeMojo(Plugin plugin, String goal,
-		Xpp3Dom configuration) throws MojoExecutionException {
+	@Override
+	public void executeMojo(final Plugin plugin, final String goal,
+		final Xpp3Dom configuration) throws MojoExecutionException {
 	    MyMojoExecutorV15
 		    .executeMojoImpl(plugin, goal, configuration, this);
 	}

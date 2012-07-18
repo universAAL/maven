@@ -109,23 +109,25 @@ public class DependencyTreeBuilder {
 
     private String stringifiedRoot = null;
 
-    public DependencyTreeBuilder(ArtifactFactory artifactFactory,
-	    MavenProjectBuilder mavenProjectBuilder,
-	    ArtifactRepository localRepository, boolean includeTestRuntimes) {
+    public DependencyTreeBuilder(final ArtifactFactory artifactFactory,
+	    final MavenProjectBuilder mavenProjectBuilder,
+	    final ArtifactRepository localRepository,
+	    final boolean includeTestRuntimes) {
 	this.artifactFactory = artifactFactory;
 	this.mavenProjectBuilder = mavenProjectBuilder;
 	this.localRepository = localRepository;
 	this.includeTestRuntimes = includeTestRuntimes;
     }
 
-    private void fireEvent(int event,
-	    DependencyTreeResolutionListener listener, ResolutionNode node) {
+    private void fireEvent(final int event,
+	    final DependencyTreeResolutionListener listener,
+	    final ResolutionNode node) {
 	fireEvent(event, listener, node, null);
     }
 
-    private void fireEvent(int event,
-	    DependencyTreeResolutionListener listener, ResolutionNode node,
-	    ResolutionNode replacement) {
+    private void fireEvent(final int event,
+	    final DependencyTreeResolutionListener listener,
+	    final ResolutionNode node, final ResolutionNode replacement) {
 	fireEvent(event, listener, node, replacement, null);
     }
 
@@ -133,9 +135,10 @@ public class DependencyTreeBuilder {
      * fireEvent methods are used for sending events related resolution process
      * to the listeners passed as arguments.
      */
-    private void fireEvent(int event,
-	    DependencyTreeResolutionListener listener, ResolutionNode node,
-	    ResolutionNode replacement, VersionRange newRange) {
+    private void fireEvent(final int event,
+	    final DependencyTreeResolutionListener listener,
+	    final ResolutionNode node, final ResolutionNode replacement,
+	    final VersionRange newRange) {
 	switch (event) {
 	case ResolutionListener.TEST_ARTIFACT:
 	    listener.testArtifact(node.getArtifact());
@@ -164,7 +167,7 @@ public class DependencyTreeBuilder {
 	    break;
 	case ResolutionListener.MANAGE_ARTIFACT_VERSION:
 	    if (listener instanceof ResolutionListenerForDepMgmt) {
-		ResolutionListenerForDepMgmt asImpl = (ResolutionListenerForDepMgmt) listener;
+		ResolutionListenerForDepMgmt asImpl = listener;
 		asImpl.manageArtifactVersion(node.getArtifact(), replacement
 			.getArtifact());
 	    } else {
@@ -174,7 +177,7 @@ public class DependencyTreeBuilder {
 	    break;
 	case ResolutionListener.MANAGE_ARTIFACT_SCOPE:
 	    if (listener instanceof ResolutionListenerForDepMgmt) {
-		ResolutionListenerForDepMgmt asImpl = (ResolutionListenerForDepMgmt) listener;
+		ResolutionListenerForDepMgmt asImpl = listener;
 		asImpl.manageArtifactScope(node.getArtifact(), replacement
 			.getArtifact());
 	    } else {
@@ -212,8 +215,9 @@ public class DependencyTreeBuilder {
      *            if both artifacts are on the same level of the subtree).
      * @return Returns true if scope was updated.
      */
-    private boolean checkScopeUpdate(ResolutionNode farthest,
-	    ResolutionNode nearest, DependencyTreeResolutionListener listener) {
+    private boolean checkScopeUpdate(final ResolutionNode farthest,
+	    final ResolutionNode nearest,
+	    final DependencyTreeResolutionListener listener) {
 	boolean updateScope = false;
 	Artifact farthestArtifact = farthest.getArtifact();
 	Artifact nearestArtifact = nearest.getArtifact();
@@ -261,8 +265,8 @@ public class DependencyTreeBuilder {
      * @param node
      * @param managedVersions
      */
-    private void manageArtifact(ResolutionNode node,
-	    ManagedVersionMap managedVersions) {
+    private void manageArtifact(final ResolutionNode node,
+	    final ManagedVersionMap managedVersions) {
 	Artifact artifact = (Artifact) managedVersions.get(node.getKey());
 
 	// Before we update the version of the artifact, we need to know
@@ -291,7 +295,7 @@ public class DependencyTreeBuilder {
 	}
     }
 
-    private ResolutionNode getParent(ResolutionNode node) {
+    private ResolutionNode getParent(final ResolutionNode node) {
 	try {
 	    Field parentsField = node.getClass().getDeclaredField("parent");
 	    parentsField.setAccessible(true);
@@ -309,7 +313,7 @@ public class DependencyTreeBuilder {
      *            which parents are printed
      * @return string containing printed tree of parents
      */
-    private String printNodeParentsTree(ResolutionNode node) {
+    private String printNodeParentsTree(final ResolutionNode node) {
 	List<String> parents = new ArrayList<String>();
 	parents.add(0, FilteringVisitorSupport.stringify(node.getArtifact()));
 	ResolutionNode parent = node;
@@ -350,11 +354,11 @@ public class DependencyTreeBuilder {
      *            parent artifact
      * @return returns true if the child should be recursively resolved.
      */
-    private boolean resolveChildNode(ResolutionNode parentNode,
-	    ResolutionNode child, ArtifactFilter filter,
-	    ManagedVersionMap managedVersions,
-	    DependencyTreeResolutionListener listener,
-	    ArtifactMetadataSource source, Artifact parentArtifact)
+    private boolean resolveChildNode(final ResolutionNode parentNode,
+	    final ResolutionNode child, final ArtifactFilter filter,
+	    final ManagedVersionMap managedVersions,
+	    final DependencyTreeResolutionListener listener,
+	    final ArtifactMetadataSource source, final Artifact parentArtifact)
 	    throws OverConstrainedVersionException,
 	    ArtifactMetadataRetrievalException {
 	// We leave in optional ones, but don't pick up its dependencies
@@ -516,7 +520,7 @@ public class DependencyTreeBuilder {
 	return false;
     }
 
-    private String changeCoreSuffixToOsgi(String artifactId) {
+    private String changeCoreSuffixToOsgi(final String artifactId) {
 	return artifactId.substring(0, artifactId.length() - 5) + ".osgi";
     }
 
@@ -536,9 +540,10 @@ public class DependencyTreeBuilder {
      * @param child
      * @param separatedGroupIds
      */
-    private void changeArtifactCoreToOsgi(ResolutionNode parentNode,
-	    ResolutionNode childNode, Set<String> separatedGroupIds,
-	    DependencyTreeResolutionListener listener) {
+    private void changeArtifactCoreToOsgi(final ResolutionNode parentNode,
+	    final ResolutionNode childNode,
+	    final Set<String> separatedGroupIds,
+	    final DependencyTreeResolutionListener listener) {
 	Artifact parent = parentNode.getArtifact();
 	Artifact child = childNode.getArtifact();
 	if (separatedGroupIds.contains(child.getGroupId())) {
@@ -627,13 +632,16 @@ public class DependencyTreeBuilder {
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      */
-    private void recurse(Artifact originatingArtifact, ResolutionNode node,
-	    Map resolvedArtifacts, ManagedVersionMap managedVersions,
-	    ArtifactRepository localRepository, List remoteRepositories,
-	    ArtifactMetadataSource source, ArtifactFilter filter,
-	    DependencyTreeResolutionListener listener, boolean transitive,
-	    Set<String> separatedGroupIds) throws CyclicDependencyException,
-	    ArtifactResolutionException, OverConstrainedVersionException,
+    private void recurse(final Artifact originatingArtifact,
+	    final ResolutionNode node, final Map resolvedArtifacts,
+	    final ManagedVersionMap managedVersions,
+	    final ArtifactRepository localRepository,
+	    final List remoteRepositories, final ArtifactMetadataSource source,
+	    final ArtifactFilter filter,
+	    final DependencyTreeResolutionListener listener,
+	    final boolean transitive, final Set<String> separatedGroupIds)
+	    throws CyclicDependencyException, ArtifactResolutionException,
+	    OverConstrainedVersionException,
 	    ArtifactMetadataRetrievalException, SecurityException,
 	    NoSuchFieldException, IllegalArgumentException,
 	    IllegalAccessException {
@@ -916,7 +924,7 @@ public class DependencyTreeBuilder {
      *            original managed versions
      */
     private ManagedVersionMap getManagedVersionsMap(
-	    Artifact originatingArtifact, Map managedVersions) {
+	    final Artifact originatingArtifact, final Map managedVersions) {
 	ManagedVersionMap versionMap;
 	if (managedVersions != null
 		&& managedVersions instanceof ManagedVersionMap) {
@@ -959,7 +967,7 @@ public class DependencyTreeBuilder {
      *         groupId:artifactId:type:classifier. Classifier is added only when
      *         it is present.
      */
-    private String calculateDepKey(Dependency dep) {
+    private String calculateDepKey(final Dependency dep) {
 	StringBuffer sb = new StringBuffer();
 	sb.append(dep.getGroupId());
 	sb.append(":");
@@ -1016,7 +1024,7 @@ public class DependencyTreeBuilder {
      * 
      * 
      */
-    private List<String> extractSeparatedGroupIds(MavenProject project) {
+    private List<String> extractSeparatedGroupIds(final MavenProject project) {
 	List<String> separatedGroupIds = new ArrayList<String>();
 	Properties properties = project.getProperties();
 	if (properties != null) {
@@ -1031,8 +1039,8 @@ public class DependencyTreeBuilder {
 	return separatedGroupIds;
     }
 
-    private List<String> extractSeparatedGroupIds(Artifact artifact,
-	    List remoteRepositories) {
+    private List<String> extractSeparatedGroupIds(final Artifact artifact,
+	    final List remoteRepositories) {
 	try {
 	    Artifact pomArtifact = artifactFactory.createArtifact(artifact
 		    .getGroupId(), artifact.getArtifactId(), artifact
@@ -1045,8 +1053,8 @@ public class DependencyTreeBuilder {
 	}
     }
 
-    private void extractDepsFromProfile(List deps, List runtimeDeps,
-	    ManagedVersionMap managedVersions) {
+    private void extractDepsFromProfile(final List deps,
+	    final List runtimeDeps, final ManagedVersionMap managedVersions) {
 	if (deps != null) {
 	    for (Object depObj : deps) {
 		Dependency dep = (Dependency) depObj;
@@ -1102,8 +1110,9 @@ public class DependencyTreeBuilder {
      * @param managedVersions
      * @return
      */
-    private List getRuntimeDeps(Artifact nodeArtifact,
-	    ManagedVersionMap managedVersions, List remoteRepositories) {
+    private List getRuntimeDeps(final Artifact nodeArtifact,
+	    final ManagedVersionMap managedVersions,
+	    final List remoteRepositories) {
 	try {
 	    List runtimeDeps = new ArrayList();
 	    Artifact pomArtifact = artifactFactory.createArtifact(nodeArtifact
@@ -1168,9 +1177,10 @@ public class DependencyTreeBuilder {
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      */
-    public List<RootNode> buildDependencyTree(ArtifactRepository repository,
-	    ArtifactFactory factory, ArtifactMetadataSource metadataSource,
-	    MavenProjectDescriptor... projectDescs)
+    public List<RootNode> buildDependencyTree(
+	    final ArtifactRepository repository, final ArtifactFactory factory,
+	    final ArtifactMetadataSource metadataSource,
+	    final MavenProjectDescriptor... projectDescs)
 	    throws DependencyTreeBuilderException,
 	    ArtifactMetadataRetrievalException,
 	    InvalidVersionSpecificationException, SecurityException,

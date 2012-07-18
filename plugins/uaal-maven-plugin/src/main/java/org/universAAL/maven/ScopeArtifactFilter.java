@@ -9,7 +9,7 @@ import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
  * 
  */
 public class ScopeArtifactFilter implements ArtifactFilter {
-    public boolean include(Artifact artifact) {
+    public boolean include(final Artifact artifact) {
 	if (Artifact.SCOPE_COMPILE.equals(artifact.getScope())) {
 	    return true;
 	} else if (Artifact.SCOPE_RUNTIME.equals(artifact.getScope())) {

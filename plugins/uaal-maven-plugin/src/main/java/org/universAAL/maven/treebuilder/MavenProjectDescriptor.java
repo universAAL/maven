@@ -5,16 +5,17 @@ import java.util.List;
 import org.apache.maven.project.MavenProject;
 
 public class MavenProjectDescriptor {
-    
+
     MavenProject project;
     List remoteRepositories;
     boolean transitive = true;
-    
-    public MavenProjectDescriptor(MavenProject project) {
+
+    public MavenProjectDescriptor(final MavenProject project) {
 	this.project = project;
     }
-    
-    public MavenProjectDescriptor(MavenProject project, List remoteRepositories, boolean transitive) {
+
+    public MavenProjectDescriptor(final MavenProject project,
+	    final List remoteRepositories, final boolean transitive) {
 	this.project = project;
 	this.remoteRepositories = remoteRepositories;
 	this.transitive = transitive;

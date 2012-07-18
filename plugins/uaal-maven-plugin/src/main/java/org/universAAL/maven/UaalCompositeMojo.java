@@ -22,8 +22,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
-import org.universAAL.itests.conf.IntegrationTestConsts;
-import org.universAAL.maven.treebuilder.DependencyTreeBuilder;
 import org.universAAL.maven.treebuilder.ExecutionListCreator;
 
 /**
@@ -104,7 +102,7 @@ public class UaalCompositeMojo extends AbstractMojo {
 
     private static final String MAIN_DEPS = "target/artifact.deps";
 
-    private BufferedWriter createOutputWriter(String fileName)
+    private BufferedWriter createOutputWriter(final String fileName)
 	    throws FileNotFoundException {
 	File targetDir = new File(baseDirectory, "target");
 	targetDir.mkdirs();
@@ -113,7 +111,7 @@ public class UaalCompositeMojo extends AbstractMojo {
 		generatedCompositeFile, false)));
     }
 
-    private void writeListToFile(List mvnUrls, String fileName)
+    private void writeListToFile(final List mvnUrls, final String fileName)
 	    throws IOException {
 	BufferedWriter compositeWriter = createOutputWriter(fileName);
 	boolean hasWrittenSth = false;

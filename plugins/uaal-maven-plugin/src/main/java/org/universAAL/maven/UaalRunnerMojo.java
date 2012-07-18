@@ -137,7 +137,7 @@ public class UaalRunnerMojo extends AbstractMojo implements Contextualizable {
 
     private PlexusContainer container;
 
-    public void contextualize(Context context) throws ContextException {
+    public void contextualize(final Context context) throws ContextException {
 	container = (PlexusContainer) context.get(PlexusConstants.PLEXUS_KEY);
     }
 

@@ -36,9 +36,7 @@ public class IndexingDependencyNodeVisitor extends FilteringVisitorSupport
      */
     private Map versionsByArtifactId = new HashMap();
 
-    private int depthLevel = 0;
-
-    public IndexingDependencyNodeVisitor(Log log) {
+    public IndexingDependencyNodeVisitor(final Log log) {
 	super(log);
     }
 
@@ -48,7 +46,7 @@ public class IndexingDependencyNodeVisitor extends FilteringVisitorSupport
      * ommited. It is ensured that node with given groupId, artifactId and
      * version is visited only once.
      */
-    public boolean visit(DependencyNode node) {
+    public boolean visit(final DependencyNode node) {
 	if (wasVisited(node)) {
 	    return false;
 	}
@@ -68,33 +66,29 @@ public class IndexingDependencyNodeVisitor extends FilteringVisitorSupport
      * visited. Because all nodes should be visited this methods always returns
      * true.
      */
-    public boolean endVisit(DependencyNode node) {
-	if (!wasVisited(node)) {
-	    if (isInScope(node)) {
-		switch (node.getState()) {
-		case DependencyNode.OMITTED_FOR_DUPLICATE:
-		case DependencyNode.OMITTED_FOR_CONFLICT:
-		    break;
-		default:
-		    String artifactStrVersionLess = stringifyNoVersion(node);
-		    String artifactStr = stringify(node);
-		    nodesByArtifactId.put(artifactStr, node);
-		    if (versionsByArtifactId
-			    .containsKey(artifactStrVersionLess)) {
-			throw new IllegalStateException(
-				String
-					.format(
-						"versionsByArtifactId already contains artifact %s"
-							+ "with the following version %s and now version %s is supposed to be added",
-						artifactStrVersionLess,
-						versionsByArtifactId
-							.get(versionsByArtifactId),
-						artifactStr));
-		    }
-		    versionsByArtifactId.put(artifactStrVersionLess,
-			    artifactStr);
-		    // indexRuntimeDeps(node);
+    public boolean endVisit(final DependencyNode node) {
+	if (!wasVisited(node) && isInScope(node)) {
+	    switch (node.getState()) {
+	    case DependencyNode.OMITTED_FOR_DUPLICATE:
+	    case DependencyNode.OMITTED_FOR_CONFLICT:
+		break;
+	    default:
+		String artifactStrVersionLess = stringifyNoVersion(node);
+		String artifactStr = stringify(node);
+		nodesByArtifactId.put(artifactStr, node);
+		if (versionsByArtifactId.containsKey(artifactStrVersionLess)) {
+		    throw new IllegalStateException(
+			    String
+				    .format(
+					    "versionsByArtifactId already contains artifact %s"
+						    + "with the following version %s and now version %s is supposed to be added",
+					    artifactStrVersionLess,
+					    versionsByArtifactId
+						    .get(versionsByArtifactId),
+					    artifactStr));
 		}
+		versionsByArtifactId.put(artifactStrVersionLess, artifactStr);
+		// indexRuntimeDeps(node);
 	    }
 	}
 	return true;
