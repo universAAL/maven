@@ -37,32 +37,34 @@ import org.universAAL.maven.treebuilder.ExecutionListCreator;
 public class UaalRunnerMojo extends AbstractMojo implements Contextualizable {
 
     /**
-     * The Maven Project Object
+     * The Maven Project Object.
      * 
      * @parameter expression="${project}"
      * @required
      * @readonly
      */
-    protected MavenProject project;
+    private MavenProject project;
 
     /**
-     * The Maven Session Object
+     * The Maven Session Object.
      * 
      * @parameter expression="${session}"
      * @required
      * @readonly
      */
-    protected MavenSession session;
+    private MavenSession session;
 
     /**
-     * The Maven PluginManager Object
+     * The Maven PluginManager Object.
      * 
      * @component
      * @optional
      */
-    protected PluginManager pluginManager;
+    private PluginManager pluginManager;
 
     /**
+     * Artifact factory.
+     * 
      * @component
      * @required
      * @readonly
@@ -70,11 +72,13 @@ public class UaalRunnerMojo extends AbstractMojo implements Contextualizable {
     private ArtifactFactory artifactFactory;
 
     /**
+     * Artifact resolver.
+     * 
      * @component
      * @required
      * @readonly
      */
-    protected ArtifactResolver artifactResolver;
+    private ArtifactResolver artifactResolver;
 
     /**
      * @component
@@ -97,13 +101,13 @@ public class UaalRunnerMojo extends AbstractMojo implements Contextualizable {
     private MavenProjectBuilder mavenProjectBuilder;
 
     /**
-     * List of Remote Repositories used by the resolver
+     * List of Remote Repositories used by the resolver.
      * 
      * @parameter expression="${project.remoteArtifactRepositories}"
      * @readonly
      * @required
      */
-    protected List remoteRepositories;
+    private List remoteRepositories;
 
     /**
      * Location of the local repository.
@@ -135,13 +139,34 @@ public class UaalRunnerMojo extends AbstractMojo implements Contextualizable {
      */
     private String[] separatedGroupIds;
 
+    /**
+     * Plexus container.
+     */
     private PlexusContainer container;
 
-    public void contextualize(final Context context) throws ContextException {
+    /**
+     * Contextualize.
+     * 
+     * @param context
+     *            context
+     * @throws ContextException
+     *             ContextException
+     */
+    public final void contextualize(final Context context)
+	    throws ContextException {
 	container = (PlexusContainer) context.get(PlexusConstants.PLEXUS_KEY);
     }
 
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    /**
+     * Execute.
+     * 
+     * @throws MojoExecutionException
+     *             MojoExecutionException
+     * @throws MojoFailureException
+     *             MojoFailureException
+     */
+    public final void execute() throws MojoExecutionException,
+	    MojoFailureException {
 	try {
 	    ExecutionListCreator execListCreator = new ExecutionListCreator(
 		    getLog(), artifactMetadataSource, artifactFactory,

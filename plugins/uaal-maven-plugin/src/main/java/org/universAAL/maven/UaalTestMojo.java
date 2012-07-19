@@ -42,7 +42,7 @@ public class UaalTestMojo extends AbstractMojo {
      * @required
      * @readonly
      */
-    protected ArtifactResolver artifactResolver;
+    private ArtifactResolver artifactResolver;
 
     /**
      * @component
@@ -72,13 +72,13 @@ public class UaalTestMojo extends AbstractMojo {
     private MavenProjectBuilder mavenProjectBuilder;
 
     /**
-     * List of Remote Repositories used by the resolver
+     * List of Remote Repositories used by the resolver.
      * 
      * @parameter expression="${project.remoteArtifactRepositories}"
      * @readonly
      * @required
      */
-    protected List remoteRepositories;
+    private List remoteRepositories;
 
     /**
      * Location of the local repository.
@@ -87,7 +87,7 @@ public class UaalTestMojo extends AbstractMojo {
      * @readonly
      * @required
      */
-    protected ArtifactRepository localRepository;
+    private ArtifactRepository localRepository;
 
     /**
      * @parameter default-value="${basedir}"
@@ -96,25 +96,34 @@ public class UaalTestMojo extends AbstractMojo {
      */
     private File baseDirectory;
 
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    /**
+     * Execute.
+     * 
+     * @throws MojoExecutionException
+     *             MojoExecutionException
+     * @throws MojoFailureException
+     *             MojoFailureException
+     */
+    public final void execute() throws MojoExecutionException,
+	    MojoFailureException {
 	try {
 	    if ("pom".equals(project.getArtifact().getType())) {
-		getLog()
-			.info(
-				System.getProperty("line.separator")
-					+ System.getProperty("line.separator")
-					+ "Since this is a parent POM creating composite file for itests is abandoned"
-					+ System.getProperty("line.separator")
-					+ System.getProperty("line.separator"));
+		getLog().info(
+			System.getProperty("line.separator")
+				+ System.getProperty("line.separator")
+				+ "Since this is a parent POM creating"
+				+ "composite file for itests is abandoned"
+				+ System.getProperty("line.separator")
+				+ System.getProperty("line.separator"));
 	    } else {
-		getLog()
-			.info(
-				System.getProperty("line.separator")
-					+ System.getProperty("line.separator")
-					+ "Creating composite file for itests - output generated in "
-					+ IntegrationTestConsts.TEST_COMPOSITE
-					+ System.getProperty("line.separator")
-					+ System.getProperty("line.separator"));
+		getLog().info(
+			System.getProperty("line.separator")
+				+ System.getProperty("line.separator")
+				+ "Creating composite file for itests "
+				+ "- output generated in "
+				+ IntegrationTestConsts.TEST_COMPOSITE
+				+ System.getProperty("line.separator")
+				+ System.getProperty("line.separator"));
 
 		ExecutionListCreator execListCreator = new ExecutionListCreator(
 			getLog(), artifactMetadataSource, artifactFactory,

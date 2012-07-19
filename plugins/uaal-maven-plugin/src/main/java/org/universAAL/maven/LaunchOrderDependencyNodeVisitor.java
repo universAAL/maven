@@ -43,10 +43,19 @@ import org.universAAL.maven.treebuilder.MyDependencyNode;
 public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 	implements DependencyNodeVisitor {
 
+    /**
+     * Maven local repository.
+     */
     private ArtifactRepository localRepository;
 
+    /**
+     * Maven remote repositories.
+     */
     private List remoteRepositories;
 
+    /**
+     * Maven artifact resolver.
+     */
     private ArtifactResolver artifactResolver;
 
     /**
@@ -79,6 +88,9 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
      */
     private Map versionsByArtifactId = new HashMap();
 
+    /**
+     * Core uAAL artifacts which should be excluded from created execution list.
+     */
     private Set<String> stringifiedExcludedCoreArtifacts;
 
     /**
@@ -87,6 +99,28 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
      */
     private boolean throwExceptionOnConflict = true;
 
+    /**
+     * Constructor of LaunchOrderDependencyNodeVisitor.
+     * 
+     * @param log
+     *            object for logging
+     * @param nodesByArtifactId
+     *            mapping of stringified artifacts (groupId + artifactId +
+     *            version) to nodes in the dependency tree. Nodes contain
+     *            information about children. Duplicates of nodes are not
+     *            included in the mapping.
+     * @param versionsByArtifactId
+     *            mapping of stringified artifacts without version (groupId +
+     *            artifactId) to stringified artifacts with version.
+     * @param throwExceptionOnConflict
+     *            flag which turns turning exception on conflict
+     * @param localRepository
+     *            maven local repository
+     * @param artifactResolver
+     *            maven artifact resolver
+     * @param dontResolve
+     *            artifact which should not be resolved
+     */
     public LaunchOrderDependencyNodeVisitor(final Log log,
 	    final Map nodesByArtifactId, final Map versionsByArtifactId,
 	    final boolean throwExceptionOnConflict,
@@ -112,8 +146,11 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
      * conflict between omitted and kept node.
      * 
      * @param omittedNode
+     *            omitted node
      * @param keptNode
+     *            kept node
      * @param msgHeader
+     *            msg template
      */
     private void throwConflictException(final DependencyNode omittedNode,
 	    final DependencyNode keptNode, final String msgHeader) {
@@ -125,8 +162,8 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 	    msg.append(printNodeParentsTree(keptNode));
 	    msg.append("\nOmitted dependency parent tree:\n");
 	    msg.append(printNodeParentsTree(omittedNode));
-	    msg
-		    .append("\nIf You want to ignore the conflict please set \"ignore.dep.conflict\" property to true\n");
+	    msg.append("\nIf You want to ignore the conflict please set"
+		    + "\"ignore.dep.conflict\" property to true\n");
 	    throw new IllegalStateException(msg.toString());
 	}
     }
@@ -164,7 +201,13 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 	return msg.toString();
     }
 
-    protected void addNode(final DependencyNode node) {
+    /**
+     * Adds node to the execution list.
+     * 
+     * @param node
+     *            which should be added.
+     */
+    protected final void addNode(final DependencyNode node) {
 	try {
 	    if (!wasVisited(node)
 	    /*
@@ -206,7 +249,7 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 			mvnUrl = "wrap:" + mvnUrl;
 		    }
 		}
-		visited.add(stringify(node));
+		getVisited().add(stringify(node));
 		mvnUrls.add(mvnUrl);
 	    }
 	} catch (RuntimeException e) {
@@ -226,8 +269,12 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
      * throwExceptionOnConflict property is true. In case
      * throwExceptionOnConflict is false, the conflict is resolved as suggested
      * by the tree and kept artifact is finally added to mvnUrls list.
+     * 
+     * @param node
+     *            which should be checked for need of visiting
+     * @return true if node needs visiting, false otherwise
      */
-    public boolean visit(final DependencyNode node) {
+    public final boolean visit(final DependencyNode node) {
 	if (wasVisited(node)) {
 	    return false;
 	}
@@ -264,11 +311,14 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 		}
 		if (node.getState() == DependencyNode.OMITTED_FOR_CONFLICT) {
 		    throwConflictException(node, keptNode,
-			    "There is a conflict between kept dependency %s and omitted dependency %s");
+			    "There is a conflict between kept dependency "
+				    + "%s and omitted dependency %s");
 		}
 
 		keptNode.accept(this);
 		return false;
+	    default:
+		break;
 	    }
 	    return true;
 	}
@@ -282,8 +332,12 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
      * 
      * If node wasn't visited, it is in the scope, and was not omitted then it
      * is added to mvnUrls list.
+     * 
+     * @param node
+     *            which visiting should be finished
+     * @return this method always returns true
      */
-    public boolean endVisit(final DependencyNode node) {
+    public final boolean endVisit(final DependencyNode node) {
 	if (!wasVisited(node)) {
 	    if (isInScope(node)) {
 		switch (node.getState()) {
@@ -303,15 +357,33 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 	return true;
     }
 
-    public List getMvnUrls() {
+    /**
+     * Gets execution list containing mvn urls.
+     * 
+     * @return execution list.
+     */
+    public final List getMvnUrls() {
 	return mvnUrls;
     }
 
-    public void setRemoteRepositories(final List remoteRepositories) {
+    /**
+     * Sets remote repositories.
+     * 
+     * @param remoteRepositories
+     *            which should be set.
+     */
+    public final void setRemoteRepositories(final List remoteRepositories) {
 	this.remoteRepositories = remoteRepositories;
     }
 
-    public void setExcludedCoreArtifacts(
+    /**
+     * Sets core uAAL artifacts which should be excluded from created execution
+     * list.
+     * 
+     * @param excludedCoreArtifacts
+     *            list of artifacts to be excluded.
+     */
+    public final void setExcludedCoreArtifacts(
 	    final List<ResolutionNode> excludedCoreArtifacts) {
 	stringifiedExcludedCoreArtifacts = new HashSet<String>();
 	for (ResolutionNode resolutionNode : excludedCoreArtifacts) {

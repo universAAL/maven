@@ -44,7 +44,7 @@ public class UaalCompositeMojo extends AbstractMojo {
      * @required
      * @readonly
      */
-    protected ArtifactResolver artifactResolver;
+    private ArtifactResolver artifactResolver;
 
     /**
      * @component
@@ -74,13 +74,13 @@ public class UaalCompositeMojo extends AbstractMojo {
     private MavenProjectBuilder mavenProjectBuilder;
 
     /**
-     * List of Remote Repositories used by the resolver
+     * List of Remote Repositories used by the resolver.
      * 
      * @parameter expression="${project.remoteArtifactRepositories}"
      * @readonly
      * @required
      */
-    protected List remoteRepositories;
+    private List remoteRepositories;
 
     /**
      * Location of the local repository.
@@ -89,7 +89,7 @@ public class UaalCompositeMojo extends AbstractMojo {
      * @readonly
      * @required
      */
-    protected ArtifactRepository localRepository;
+    private ArtifactRepository localRepository;
 
     /**
      * @parameter default-value="${basedir}"
@@ -98,10 +98,25 @@ public class UaalCompositeMojo extends AbstractMojo {
      */
     private File baseDirectory;
 
+    /**
+     * Default path to main composite.
+     */
     private static final String MAIN_COMPOSITE = "target/artifact.composite";
 
+    /**
+     * Default path to deps composite.
+     */
     private static final String MAIN_DEPS = "target/artifact.deps";
 
+    /**
+     * Creates output writer for given file name.
+     * 
+     * @param fileName
+     *            for which writer will be created
+     * @return output writer.
+     * @throws FileNotFoundException
+     *             when file does not exist
+     */
     private BufferedWriter createOutputWriter(final String fileName)
 	    throws FileNotFoundException {
 	File targetDir = new File(baseDirectory, "target");
@@ -111,6 +126,16 @@ public class UaalCompositeMojo extends AbstractMojo {
 		generatedCompositeFile, false)));
     }
 
+    /**
+     * Writes given list of mvn urls to given file.
+     * 
+     * @param mvnUrls
+     *            mvn urls
+     * @param fileName
+     *            file name
+     * @throws IOException
+     *             IOException
+     */
     private void writeListToFile(final List mvnUrls, final String fileName)
 	    throws IOException {
 	BufferedWriter compositeWriter = createOutputWriter(fileName);
@@ -123,26 +148,37 @@ public class UaalCompositeMojo extends AbstractMojo {
 	}
 	if (!hasWrittenSth) {
 	    compositeWriter
-		    .write("This is an empty dummy line in order to make this file possible to deploy. Don't use this file at any time.");
+		    .write("This is an empty dummy line in order to make"
+			    + "this file possible to deploy."
+			    + "Don't use this file at any time.");
 	}
 	compositeWriter.close();
     }
 
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    /**
+     * Execute.
+     * 
+     * @throws MojoExecutionException
+     *             MojoExecutionException
+     * @throws MojoFailureException
+     *             MojoFailureException
+     */
+    public final void execute() throws MojoExecutionException,
+	    MojoFailureException {
 	try {
 	    File manualArtifactComposite = new File(baseDirectory,
 		    "artifact.composite");
+	    String msg = System.getProperty("line.separator")
+		    + System.getProperty("line.separator")
+		    + "Since artifact.composite exists in"
+		    + "the base directory composite generation is abandoned."
+		    + System.getProperty("line.separator")
+		    + "Instead artifact.composite from basedir"
+		    + " is simply copied to " + MAIN_COMPOSITE
+		    + System.getProperty("line.separator")
+		    + System.getProperty("line.separator");
 	    if (manualArtifactComposite.exists()) {
-		getLog()
-			.info(
-				System.getProperty("line.separator")
-					+ System.getProperty("line.separator")
-					+ "Since artifact.composite exists in the base directory composite generation is abandoned."
-					+ System.getProperty("line.separator")
-					+ "Instead artifact.composite from basedir is simply copied to "
-					+ MAIN_COMPOSITE
-					+ System.getProperty("line.separator")
-					+ System.getProperty("line.separator"));
+		getLog().info(msg);
 		BufferedReader compositeReader = new BufferedReader(
 			new InputStreamReader(new FileInputStream(
 				manualArtifactComposite)));
@@ -155,14 +191,13 @@ public class UaalCompositeMojo extends AbstractMojo {
 		compositeWriter.close();
 		compositeReader.close();
 	    } else {
-		getLog()
-			.info(
-				System.getProperty("line.separator")
-					+ System.getProperty("line.separator")
-					+ "Creating MAIN composite file - output generated in "
-					+ MAIN_COMPOSITE + " and " + MAIN_DEPS
-					+ System.getProperty("line.separator")
-					+ System.getProperty("line.separator"));
+		String msg2 = System.getProperty("line.separator")
+			+ System.getProperty("line.separator")
+			+ "Creating MAIN composite file - output generated in "
+			+ MAIN_COMPOSITE + " and " + MAIN_DEPS
+			+ System.getProperty("line.separator")
+			+ System.getProperty("line.separator");
+		getLog().info(msg2);
 		ExecutionListCreator execListCreator = new ExecutionListCreator(
 			getLog(), artifactMetadataSource, artifactFactory,
 			mavenProjectBuilder, localRepository,

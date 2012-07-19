@@ -17,8 +17,17 @@ import org.apache.maven.shared.dependency.tree.DependencyNode;
  */
 public abstract class FilteringVisitorSupport {
 
-    protected Log log;
+    /**
+     * Object for logging.
+     */
+    private Log log;
 
+    /**
+     * Constructor of FilteringVisitorSupport.
+     * 
+     * @param log
+     *            object used for logging.
+     */
     public FilteringVisitorSupport(final Log log) {
 	this.log = log;
     }
@@ -26,14 +35,15 @@ public abstract class FilteringVisitorSupport {
     /**
      * Set for remembering visited nodes.
      */
-    protected final Set visited = new HashSet();
+    private final Set<String> visited = new HashSet<String>();
 
     /**
      * Stringify Artifact to string a in a following way:
      * groupId:artifactId:version.
      * 
      * @param artifact
-     * @return
+     *            which should be stringified
+     * @return stringified artifact representation
      */
     public static String stringify(final Artifact artifact) {
 	if (artifact.getVersion() == null) {
@@ -49,10 +59,11 @@ public abstract class FilteringVisitorSupport {
      * Stringify DependencyNode to a string in a following way:
      * groupId:artifactId:version.
      * 
-     * @param artifact
-     * @return
+     * @param node
+     *            which should be stringified
+     * @return stringified node representation
      */
-    protected String stringify(final DependencyNode node) {
+    protected final String stringify(final DependencyNode node) {
 	return FilteringVisitorSupport.stringify(node.getArtifact());
     }
 
@@ -60,9 +71,10 @@ public abstract class FilteringVisitorSupport {
      * Stringify Artifact to a string in a following way: groupId:artifactId.
      * 
      * @param artifact
-     * @return
+     *            which should be stringified
+     * @return stringified artifact representation
      */
-    protected String stringifyNoVersion(final Artifact artifact) {
+    protected final String stringifyNoVersion(final Artifact artifact) {
 	if (artifact.getVersion() == null) {
 	    throw new RuntimeException(
 		    "Artifact version and version range is null: " + artifact);
@@ -76,10 +88,11 @@ public abstract class FilteringVisitorSupport {
      * Stringify DependencyNode to a string in a following way:
      * groupId:artifactId.
      * 
-     * @param artifact
-     * @return
+     * @param node
+     *            which should be stringified
+     * @return stringified node representation
      */
-    protected String stringifyNoVersion(final DependencyNode node) {
+    protected final String stringifyNoVersion(final DependencyNode node) {
 	return stringifyNoVersion(node.getArtifact());
     }
 
@@ -87,9 +100,10 @@ public abstract class FilteringVisitorSupport {
      * Check if node was visited.
      * 
      * @param node
-     * @return
+     *            which should be checked for being visited
+     * @return true is node was visited
      */
-    protected boolean wasVisited(final DependencyNode node) {
+    protected final boolean wasVisited(final DependencyNode node) {
 	return visited.contains(stringify(node));
     }
 
@@ -98,9 +112,10 @@ public abstract class FilteringVisitorSupport {
      * scope are taken into account.
      * 
      * @param node
-     * @return
+     *            which should be checked for being in scope
+     * @return true if node is in scope
      */
-    protected boolean isInScope(final DependencyNode node) {
+    protected final boolean isInScope(final DependencyNode node) {
 	String scope = node.getArtifact().getScope();
 	if (scope == null) {
 	    log.debug("Null Scope For artifact: "
@@ -115,6 +130,24 @@ public abstract class FilteringVisitorSupport {
 	    return true;
 	}
 	return false;
+    }
+
+    /**
+     * Gets the log object.
+     * 
+     * @return the log object.
+     */
+    protected final Log getLog() {
+	return log;
+    }
+
+    /**
+     * Gets set of visited nodes. Each node is in stringified representation.
+     * 
+     * @return set of visited nodess
+     */
+    protected final Set<String> getVisited() {
+	return visited;
     }
 
 }

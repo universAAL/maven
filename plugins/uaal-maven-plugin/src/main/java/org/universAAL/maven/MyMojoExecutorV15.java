@@ -36,11 +36,21 @@ import org.codehaus.plexus.util.xml.Xpp3DomUtils;
  * 	executionEnvironment(project, session, pluginManager));
  * </pre>
  */
-public class MyMojoExecutorV15 {
+public final class MyMojoExecutorV15 {
+    /**
+     * Fake execution id.
+     */
     private static final String FAKE_EXECUTION_ID = "virtual-execution";
 
     /**
-     * Entry point for executing a mojo
+     * Empty private constructor.
+     */
+    private MyMojoExecutorV15() {
+
+    }
+
+    /**
+     * Entry point for executing a mojo.
      * 
      * @param plugin
      *            The plugin to execute
@@ -59,7 +69,21 @@ public class MyMojoExecutorV15 {
 	env.executeMojo(plugin, goal, configuration);
     }
 
-    public static void executeMojoImpl(final Plugin plugin, String goal,
+    /**
+     * Entry point for executing a mojo
+     * 
+     * @param plugin
+     *            The plugin to execute
+     * @param goal
+     *            The goal to execute
+     * @param configuration
+     *            The execution configuration
+     * @param env
+     *            The execution environment
+     * @throws MojoExecutionException
+     *             If there are any exceptions locating or executing the mojo
+     */
+    public static void executeMojoImpl(final Plugin plugin, final String goal,
 	    final Xpp3Dom configuration, final ExecutionEnvironmentM2 env)
 	    throws MojoExecutionException {
 	Map<String, PluginExecution> executionMap = null;
@@ -72,8 +96,8 @@ public class MyMojoExecutorV15 {
 	    if (goal != null && goal.length() > 0 && goal.indexOf('#') > -1) {
 		int pos = goal.indexOf('#');
 		executionId = goal.substring(pos + 1);
-		goal = goal.substring(0, pos);
-		System.out.println("Executing goal " + goal
+		String newgoal = goal.substring(0, pos);
+		System.out.println("Executing goal " + newgoal
 			+ " with execution ID " + executionId);
 	    }
 
@@ -114,8 +138,9 @@ public class MyMojoExecutorV15 {
 	} catch (Exception e) {
 	    throw new MojoExecutionException("Unable to execute mojo", e);
 	} finally {
-	    if (executionMap != null)
+	    if (executionMap != null) {
 		executionMap.remove(FAKE_EXECUTION_ID);
+	    }
 	}
     }
 
@@ -133,18 +158,19 @@ public class MyMojoExecutorV15 {
      * @throws MojoExecutionException
      *             If there are any exceptions locating or executing the mojo
      */
-    public static void executeMojoImpl(final Plugin plugin, String goal,
+    public static void executeMojoImpl(final Plugin plugin, final String goal,
 	    final Xpp3Dom configuration, final ExecutionEnvironmentM3 env)
 	    throws MojoExecutionException {
 	if (configuration == null) {
 	    throw new NullPointerException("configuration may not be null");
 	}
 	try {
+	    String newgoal = null;
 	    String executionId = null;
 	    if (goal != null && goal.length() > 0 && goal.indexOf('#') > -1) {
 		int pos = goal.indexOf('#');
 		executionId = goal.substring(pos + 1);
-		goal = goal.substring(0, pos);
+		newgoal = goal.substring(0, pos);
 	    }
 
 	    MavenSession session = env.getMavenSession();
@@ -179,10 +205,10 @@ public class MyMojoExecutorV15 {
 		}
 	    }
 
-	    MojoDescriptor mojoDescriptor = pluginDescriptor.getMojo(goal);
+	    MojoDescriptor mojoDescriptor = pluginDescriptor.getMojo(newgoal);
 	    if (mojoDescriptor == null) {
-		throw new MojoExecutionException("Could not find goal '" + goal
-			+ "' in plugin " + plugin.getGroupId() + ":"
+		throw new MojoExecutionException("Could not find goal '"
+			+ newgoal + "' in plugin " + plugin.getGroupId() + ":"
 			+ plugin.getArtifactId() + ":" + plugin.getVersion());
 	    }
 	    MojoExecution exec = mojoExecution3(mojoDescriptor, executionId,
@@ -191,7 +217,7 @@ public class MyMojoExecutorV15 {
 	    // The code underneath is equal to the following code:
 	    //
 	    // env.getBuildPluginManager().executeMojo(session, exec);
-	    // 
+	    //
 	    // However it cannot be compiled like that because compatibility
 	    // issues between Maven 2 and Maven 3
 	    for (Method m : methods) {
@@ -204,6 +230,13 @@ public class MyMojoExecutorV15 {
 	}
     }
 
+    /**
+     * Gets executions as map.
+     * 
+     * @param pomPlugin
+     *            pom plugin
+     * @return the map of executions
+     */
     @SuppressWarnings( { "unchecked" })
     // Maven 2 API isn't generic
     private static Map<String, PluginExecution> getExecutionsAsMap(
@@ -211,6 +244,17 @@ public class MyMojoExecutorV15 {
 	return pomPlugin.getExecutionsAsMap();
     }
 
+    /**
+     * Executes mojo in maven 2.
+     * 
+     * @param mojoDescriptor
+     *            descriptor of mojo
+     * @param executionId
+     *            execution id
+     * @param configuration
+     *            configuration
+     * @return mojo execution
+     */
     private static MojoExecution mojoExecution2(
 	    final MojoDescriptor mojoDescriptor, final String executionId,
 	    final Xpp3Dom configuration) {
@@ -221,20 +265,31 @@ public class MyMojoExecutorV15 {
 	}
     }
 
+    /**
+     * Executes mojo in maven 3.
+     * 
+     * @param mojoDescriptor
+     *            descriptor of mojo
+     * @param executionId
+     *            execution id
+     * @param configuration
+     *            configuration
+     * @return mojo execution
+     */
     private static MojoExecution mojoExecution3(
 	    final MojoDescriptor mojoDescriptor, final String executionId,
-	    Xpp3Dom configuration) {
+	    final Xpp3Dom configuration) {
 	if (executionId != null) {
 	    return new MojoExecution(mojoDescriptor, executionId);
 	} else {
-	    configuration = Xpp3DomUtils.mergeXpp3Dom(configuration,
+	    Xpp3Dom newconfiguration = Xpp3DomUtils.mergeXpp3Dom(configuration,
 		    toXpp3Dom(mojoDescriptor.getMojoConfiguration()));
-	    return new MojoExecution(mojoDescriptor, configuration);
+	    return new MojoExecution(mojoDescriptor, newconfiguration);
 	}
     }
 
     /**
-     * Constructs the {@link ExecutionEnvironment} instance fluently
+     * Constructs the {@link ExecutionEnvironment} instance fluently.
      * 
      * @param mavenProject
      *            The current Maven project
@@ -252,7 +307,7 @@ public class MyMojoExecutorV15 {
     }
 
     /**
-     * Constructs the {@link ExecutionEnvironment} instance fluently
+     * Constructs the {@link ExecutionEnvironment} instance fluently.
      * 
      * @param mavenProject
      *            The current Maven project
@@ -270,7 +325,7 @@ public class MyMojoExecutorV15 {
     }
 
     /**
-     * Builds the configuration for the goal using Elements
+     * Builds the configuration for the goal using Elements.
      * 
      * @param elements
      *            A list of elements for the configuration section
@@ -285,7 +340,7 @@ public class MyMojoExecutorV15 {
     }
 
     /**
-     * Defines the plugin without its version
+     * Defines the plugin without its version.
      * 
      * @param groupId
      *            The group id
@@ -298,7 +353,7 @@ public class MyMojoExecutorV15 {
     }
 
     /**
-     * Defines a plugin
+     * Defines a plugin.
      * 
      * @param groupId
      *            The group id
@@ -318,7 +373,7 @@ public class MyMojoExecutorV15 {
     }
 
     /**
-     * Wraps the group id string in a more readable format
+     * Wraps the group id string in a more readable format.
      * 
      * @param groupId
      *            The value
@@ -329,7 +384,7 @@ public class MyMojoExecutorV15 {
     }
 
     /**
-     * Wraps the artifact id string in a more readable format
+     * Wraps the artifact id string in a more readable format.
      * 
      * @param artifactId
      *            The value
@@ -340,7 +395,7 @@ public class MyMojoExecutorV15 {
     }
 
     /**
-     * Wraps the version string in a more readable format
+     * Wraps the version string in a more readable format.
      * 
      * @param version
      *            The value
@@ -351,7 +406,7 @@ public class MyMojoExecutorV15 {
     }
 
     /**
-     * Wraps the goal string in a more readable format
+     * Wraps the goal string in a more readable format.
      * 
      * @param goal
      *            The value
@@ -362,7 +417,7 @@ public class MyMojoExecutorV15 {
     }
 
     /**
-     * Wraps the element name string in a more readable format
+     * Wraps the element name string in a more readable format.
      * 
      * @param name
      *            The value
@@ -373,7 +428,7 @@ public class MyMojoExecutorV15 {
     }
 
     /**
-     * Constructs the element with a textual body
+     * Constructs the element with a textual body.
      * 
      * @param name
      *            The element name
@@ -386,7 +441,7 @@ public class MyMojoExecutorV15 {
     }
 
     /**
-     * Constructs the element containing child elements
+     * Constructs the element containing child elements.
      * 
      * @param name
      *            The element name
@@ -399,17 +454,44 @@ public class MyMojoExecutorV15 {
     }
 
     /**
-     * Element wrapper class for configuration elements
+     * Element wrapper class for configuration elements.
      */
     public static class Element {
+	/**
+	 * Children.
+	 */
 	private final Element[] children;
+	/**
+	 * Name.
+	 */
 	private final String name;
+	/**
+	 * Text.
+	 */
 	private final String text;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param name
+	 *            name
+	 * @param children
+	 *            children
+	 */
 	public Element(final String name, final Element... children) {
 	    this(name, null, children);
 	}
 
+	/**
+	 * Constructor
+	 * 
+	 * @param name
+	 *            name
+	 * @param text
+	 *            text
+	 * @param children
+	 *            children
+	 */
 	public Element(final String name, final String text,
 		final Element... children) {
 	    this.name = name;
@@ -417,7 +499,12 @@ public class MyMojoExecutorV15 {
 	    this.children = children;
 	}
 
-	public Xpp3Dom toDom() {
+	/**
+	 * Transform to DOM format.
+	 * 
+	 * @return transformed to DOM
+	 */
+	public final Xpp3Dom toDom() {
 	    Xpp3Dom dom = new Xpp3Dom(name);
 	    if (text != null) {
 		dom.setValue(text);
@@ -430,33 +517,85 @@ public class MyMojoExecutorV15 {
     }
 
     /**
-     * Collects Maven execution information
+     * Collects Maven execution information.
      */
     public static abstract class ExecutionEnvironment {
+	/**
+	 * MavenProject.
+	 */
 	private final MavenProject mavenProject;
+	/**
+	 * MavenSession.
+	 */
 	private final MavenSession mavenSession;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param mavenProject
+	 *            mavenProject
+	 * @param mavenSession
+	 *            mavenSession
+	 */
 	public ExecutionEnvironment(final MavenProject mavenProject,
 		final MavenSession mavenSession) {
 	    this.mavenProject = mavenProject;
 	    this.mavenSession = mavenSession;
 	}
 
-	public MavenProject getMavenProject() {
+	/**
+	 * Gets maven project.
+	 * 
+	 * @return maven project
+	 */
+	public final MavenProject getMavenProject() {
 	    return mavenProject;
 	}
 
-	public MavenSession getMavenSession() {
+	/**
+	 * Gets maven project.
+	 * 
+	 * @return maven project
+	 */
+	public final MavenSession getMavenSession() {
 	    return mavenSession;
 	}
 
+	/**
+	 * Executes mojo.
+	 * 
+	 * @param plugin
+	 *            The plugin to execute
+	 * @param goal
+	 *            The goal to execute
+	 * @param configuration
+	 *            The execution configuration
+	 * @throws MojoExecutionException
+	 *             MojoExecutionException
+	 */
 	public abstract void executeMojo(Plugin plugin, String goal,
 		Xpp3Dom configuration) throws MojoExecutionException;
     }
 
+    /**
+     * Collects Maven 2 execution information.
+     */
     public static class ExecutionEnvironmentM2 extends ExecutionEnvironment {
+	/**
+	 * Plugin manager.
+	 */
 	private final PluginManager pluginManager;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param mavenProject
+	 *            mavenProject
+	 * @param mavenSession
+	 *            mavenSession
+	 * @param pluginManager
+	 *            pluginManager
+	 */
 	public ExecutionEnvironmentM2(final MavenProject mavenProject,
 		final MavenSession mavenSession,
 		final PluginManager pluginManager) {
@@ -464,33 +603,59 @@ public class MyMojoExecutorV15 {
 	    this.pluginManager = pluginManager;
 	}
 
-	public PluginManager getPluginManager() {
+	/**
+	 * Gets plugin manager.
+	 * 
+	 * @return plugin manager.
+	 */
+	public final PluginManager getPluginManager() {
 	    return pluginManager;
 	}
 
 	@Override
-	public void executeMojo(final Plugin plugin, final String goal,
+	public final void executeMojo(final Plugin plugin, final String goal,
 		final Xpp3Dom configuration) throws MojoExecutionException {
 	    MyMojoExecutorV15
 		    .executeMojoImpl(plugin, goal, configuration, this);
 	}
     }
 
+    /**
+     * Collects Maven 3 execution information.
+     */
     public static class ExecutionEnvironmentM3 extends ExecutionEnvironment {
+	/**
+	 * BuildPluginManager.
+	 */
 	private final Object buildPluginManager;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param mavenProject
+	 *            mavenProject
+	 * @param mavenSession
+	 *            mavenSession
+	 * @param buildPluginManager
+	 *            buildPluginManager
+	 */
 	public ExecutionEnvironmentM3(final MavenProject mavenProject,
 		final MavenSession mavenSession, final Object buildPluginManager) {
 	    super(mavenProject, mavenSession);
 	    this.buildPluginManager = buildPluginManager;
 	}
 
-	public Object getBuildPluginManager() {
+	/**
+	 * Gets build plugin manager.
+	 * 
+	 * @return build plugin manager.
+	 */
+	public final Object getBuildPluginManager() {
 	    return buildPluginManager;
 	}
 
 	@Override
-	public void executeMojo(final Plugin plugin, final String goal,
+	public final void executeMojo(final Plugin plugin, final String goal,
 		final Xpp3Dom configuration) throws MojoExecutionException {
 	    MyMojoExecutorV15
 		    .executeMojoImpl(plugin, goal, configuration, this);
