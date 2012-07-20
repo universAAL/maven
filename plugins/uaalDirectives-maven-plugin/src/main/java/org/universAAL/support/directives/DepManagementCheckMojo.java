@@ -210,8 +210,8 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
 			String depIDs = (String) iterator.next();
 			Dependency d = new Dependency();
 			String[] ids = depIDs.split("\\:");
-			d.setArtifactId(ids[0]);
-			d.setGroupId(ids[1]);
+			d.setArtifactId(ids[1]);
+			d.setGroupId(ids[0]);
 			d.setVersion(toBeFixed.get(depIDs));
 			newDep.add(d);
 		}
