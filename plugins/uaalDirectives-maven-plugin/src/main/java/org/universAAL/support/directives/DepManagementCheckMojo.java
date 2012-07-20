@@ -79,7 +79,7 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
    /**
     * List of Dependencies to be fixed
     */
-   private HashMap<String, String> toBeFixed = new HashMap<String, String>();
+   private HashMap<DependencyID, String> toBeFixed = new HashMap<DependencyID, String>();
 	
 	public void execute() throws MojoFailureException {
 		if (!passCheck(mavenProject)) {
@@ -102,12 +102,9 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
 		String err = DirectiveCheckMojo.isRootProject(mavenProject)? 
 				VERSIONS_NOT_CONFIGURED_ROOT 
 				: VERSIONS_NOT_CONFIGURED;
-		if (!toBeFixed.isEmpty()) {
-			for (Iterator<String> iterator = toBeFixed.keySet().iterator(); iterator.hasNext();) {
-				String dep =  (String) iterator.next();
-				err += "\n" + dep 
-						+ ", version should be : " + toBeFixed.get(dep) ;
-			}
+		for (DependencyID dep : toBeFixed.keySet()) {
+			err += "\n" + dep.getGID() + ":" + dep.getAID() 
+					+ ", version should be : " + toBeFixed.get(dep) ;
 		}
 		return err;
 	}
@@ -145,28 +142,26 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
 	}
 
 	private boolean passRootCheck(MavenProject mavenProject2) {
-		HashMap<String,String> versionMap = getActualVersions(mavenProject2);
+		HashMap<DependencyID,String> versionMap = getActualVersions(mavenProject2);
 		List<Dependency> lod = mavenProject.getDependencyManagement().getDependencies();
-		HashMap<String,String> lodVersionMap = new HashMap<String,String>();
+		HashMap<DependencyID,String> lodVersionMap = new HashMap<DependencyID,String>();
 		
 		// test if the version in DependencyManagement corresponds to the version of the actual artefact
 		for (Iterator<Dependency> iterator = lod.iterator(); iterator.hasNext();) {
 			Dependency dependency = (Dependency) iterator.next();
-			String artefact = dependency.getGroupId() + ":" +  dependency.getArtifactId();
-			String realVersion = versionMap.get(artefact);
-			lodVersionMap.put(artefact, dependency.getVersion());
+			String realVersion = versionMap.get(dependency);
+			lodVersionMap.put(new DependencyID(dependency), dependency.getVersion());
 			//System.out.println("***1 ." + dependency.getGroupId() + ":" +  dependency.getArtifactId() + " - " + realVersion);
 			if ( dependency != null &&
 					! dependency.getVersion()
 					.equals(realVersion)
 					&& realVersion != null) {
-				toBeFixed.put(dependency.getGroupId() + ":" + dependency.getArtifactId(), realVersion);
+				toBeFixed.put( new DependencyID(dependency), realVersion);
 			}
 		}
 		
 		// test that every real artefact has an entry in the DependencyManagement
-		for (Iterator<?> iterator = versionMap.keySet().iterator(); iterator.hasNext();) {
-			String key = (String) iterator.next();
+		for (DependencyID key : versionMap.keySet()) {
 			if (!lodVersionMap.containsKey(key)) {
 				toBeFixed.put(key, versionMap.get(key));
 				//System.out.println("***2 ." + key + ". - ." + versionMap.get(key) + ".");
@@ -175,14 +170,13 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
 		return toBeFixed.isEmpty();
 	}
 
-	private HashMap<String, String> getActualVersions(MavenProject mavenProject2) {
-		HashMap<String,String> versionMap = new HashMap<String, String>();
-		for (Iterator<MavenProject> iterator = reactorProjects.iterator(); iterator.hasNext();) {
-			MavenProject mavenProject = (MavenProject) iterator.next();
+	private HashMap<DependencyID, String> getActualVersions(MavenProject mavenProject2) {
+		HashMap<DependencyID,String> versionMap = new HashMap<DependencyID, String>();
+		for (MavenProject mavenProject : reactorProjects) {
 			if (mavenProject.getVersion() != null 
 					&& !mavenProject.getPackaging().equals("pom")) {
 				// Check if its a pom, add it if not!
-				versionMap.put(mavenProject.getGroupId()+ ":" + mavenProject.getArtifactId()
+				versionMap.put( new DependencyID(mavenProject.getGroupId(), mavenProject.getArtifactId())
 						,mavenProject.getVersion());
 				getLog().debug("added to ActualVersions: " + mavenProject.getGroupId() + ":" + mavenProject.getArtifactId()
 						+ mavenProject.getVersion());
@@ -192,29 +186,57 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
 	}
 
 	public void fix(Model model) {
-		List<Dependency> dep = model.getDependencyManagement().getDependencies();
+		List<Dependency> modelDependencyManagement = model.getDependencyManagement().getDependencies();
 		List<Dependency> newDep = new ArrayList<Dependency>();
-		getLog().debug(Integer.toString(dep.size())+"\n");
-		for (Iterator<Dependency> iterator = dep.iterator(); iterator.hasNext();) {
-			Dependency dependency = (Dependency) iterator.next();
-			String key = dependency.getGroupId() + ":" + dependency.getArtifactId();
+		getLog().debug(Integer.toString(modelDependencyManagement.size())+"\n");
+		for (Dependency dep : modelDependencyManagement) {
+			DependencyID key  = new DependencyID(dep);
 			if (toBeFixed.containsKey(key)) {
-				dependency.setVersion(toBeFixed.get(key));
-				getLog().info("Fixing: " + dependency.getGroupId() + ":" + dependency.getArtifactId()
+				dep.setVersion(toBeFixed.get(key));
+				getLog().info("Fixing: " + dep.getGroupId() + ":" + dep.getArtifactId()
 						+ " to: " + toBeFixed.get(key));
 				toBeFixed.remove(key);
 			}
-			newDep.add(dependency);
+			newDep.add(dep);
 		}
-		for (Iterator<String> iterator = toBeFixed.keySet().iterator(); iterator.hasNext();) {
-			String depIDs = (String) iterator.next();
+		for (DependencyID depID : toBeFixed.keySet()) {
 			Dependency d = new Dependency();
-			String[] ids = depIDs.split("\\:");
-			d.setArtifactId(ids[1]);
-			d.setGroupId(ids[0]);
-			d.setVersion(toBeFixed.get(depIDs));
+			d.setArtifactId(depID.getAID());
+			d.setGroupId(depID.getGID());
+			d.setVersion(toBeFixed.get(depID));
 			newDep.add(d);
 		}
 		model.getDependencyManagement().setDependencies(newDep);		
+	}
+	
+	class DependencyID implements Comparable<DependencyID>{
+		private String gID;
+		private String aID;
+
+		public DependencyID(Dependency dep) {
+			gID = dep.getGroupId();
+			aID = dep.getArtifactId();
+		}
+
+		public DependencyID(String groupId, String artifactId) {
+			aID = artifactId;
+			gID = groupId;
+		}
+
+		public int compareTo(DependencyID o) {
+			int g = gID.compareTo(o.gID);
+			if (g == 0){
+				return aID.compareTo(o.aID);
+			}
+			return g;
+		}
+
+		public String getGID() {
+			return gID;
+		}
+
+		public String getAID() {
+			return aID;
+		}
 	}
 }
