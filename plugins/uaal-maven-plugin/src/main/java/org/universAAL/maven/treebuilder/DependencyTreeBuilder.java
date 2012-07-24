@@ -1231,6 +1231,10 @@ public class DependencyTreeBuilder {
 			List dependencies = project.getDependencies();
 			for (Object depObj : dependencies) {
 			    Dependency dep = (Dependency) depObj;
+			    if (dep.isOptional()) {
+				// filtering optional dependencies
+				continue;
+			    }
 			    Artifact dependencyArtifact;
 			    VersionRange versionRange = VersionRange
 				    .createFromVersionSpec(dep.getVersion());
@@ -1255,7 +1259,17 @@ public class DependencyTreeBuilder {
 			    }
 			    dependencyArtifacts.add(dependencyArtifact);
 			}
+		    } else {
+			// filtering optional dependencies
+			Set<Artifact> filteredArtifacts = new LinkedHashSet();
+			for (Artifact a : dependencyArtifacts) {
+			    if (!a.isOptional()) {
+				filteredArtifacts.add(a);
+			    }
+			}
+			dependencyArtifacts = filteredArtifacts;
 		    }
+
 		    for (Artifact depArtifact : dependencyArtifacts) {
 			if (depArtifact.getVersion() != null) {
 			    if (!depArtifact.getVersion().equals(
