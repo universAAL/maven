@@ -240,10 +240,13 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 		    JarInputStream jio = new JarInputStream(
 			    new FileInputStream(jarPath));
 		    Manifest manifest = jio.getManifest();
-		    Attributes attribs = manifest.getMainAttributes();
-		    Object bundleManifestVersion = attribs
-			    .getValue("Bundle-ManifestVersion");
-		    if (bundleManifestVersion == null) {
+		    Object bundleManifestVersion = null;
+		    if (manifest != null) {
+			Attributes attribs = manifest.getMainAttributes();
+			bundleManifestVersion = attribs
+				.getValue("Bundle-ManifestVersion");
+		    }
+		    if (manifest == null || bundleManifestVersion == null) {
 			// it means that the jar is not a bundle - it has to be
 			// wrapped before installation in OSGi container
 			mvnUrl = "wrap:" + mvnUrl;
