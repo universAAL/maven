@@ -10,6 +10,8 @@
   </parent> 
  <!--  mvn  org.universAAL.support:uaalDirectives-maven-plugin:goal -->
   <artifactId>uaalDirectives-maven-plugin</artifactId>
+  <version>1.2.2-SNAPSHOT</version>
+  
   <packaging>maven-plugin</packaging>
   <name>uaalDirectives-maven-plugin Maven Mojos</name>
   <url>http://maven.apache.org</url>
