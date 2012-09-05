@@ -17,13 +17,16 @@ package org.universAAL.support.directives.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 /**
  * @author amedrano
@@ -41,9 +44,7 @@ public class PomWriter {
 	
 	public void fix() throws Exception{
 			// Reading
-			MavenXpp3Reader reader = new MavenXpp3Reader();
-			Model model = reader.read(new FileInputStream(new File(pom
-					.getFile().getAbsolutePath())));
+			Model model = readPOMFile(pom);
 
 			// Editing
 			fixer.fix(model);
@@ -53,5 +54,12 @@ public class PomWriter {
 
 			writer.write(new OutputStreamWriter(new FileOutputStream(new File(
 					pom.getFile().getAbsolutePath()))), model);
+	}
+	
+	public static Model readPOMFile(MavenProject pom) throws FileNotFoundException, IOException, XmlPullParserException {
+		MavenXpp3Reader reader = new MavenXpp3Reader();
+		Model model = reader.read(new FileInputStream(new File(pom
+				.getFile().getAbsolutePath())));
+		return model;
 	}
 }

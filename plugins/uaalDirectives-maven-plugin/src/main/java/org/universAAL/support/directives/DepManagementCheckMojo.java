@@ -15,6 +15,8 @@
  ******************************************************************************/
 package org.universAAL.support.directives;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +28,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.universAAL.support.directives.util.PomFixer;
 import org.universAAL.support.directives.util.PomWriter;
 
@@ -100,12 +103,20 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
 	}
 
 	private String getErrorMessge() {
-		String err = DirectiveCheckMojo.isRootProject(mavenProject)? 
-				VERSIONS_NOT_CONFIGURED_ROOT 
-				: VERSIONS_NOT_CONFIGURED;
-		for (DependencyID dep : toBeFixed.keySet()) {
-			err += "\n" + dep.getGID() + ":" + dep.getAID() 
-					+ ", version should be : " + toBeFixed.get(dep) ;
+		String err;
+		if (DirectiveCheckMojo.isRootProject(mavenProject)) {
+			err = VERSIONS_NOT_CONFIGURED_ROOT;
+			for (DependencyID dep : toBeFixed.keySet()) {
+				err += "\n" + dep.getGID() + ":" + dep.getAID() 
+						+ ", version should be : " + toBeFixed.get(dep) ;
+			}
+		}
+		else {
+			err = VERSIONS_NOT_CONFIGURED;
+			for (DependencyID dep : toBeFixed.keySet()) {
+				err += "\n" + dep.getGID() + ":" + dep.getAID() 
+						+ ", version shouldn't be declared.";
+			}
 		}
 		return err;
 	}
@@ -138,8 +149,36 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
 	}
 
 	private boolean passNoRootCheck(MavenProject mavenProject2) {
-		// TODO check that the pom (not the model) hasn't any versions in it.
-		return true;
+		// check that the pom (not the model) hasn't any versions in it.
+		List<Dependency> depMan = mavenProject2.getParent().getDependencyManagement().getDependencies();
+		Map<DependencyID,String> depIDMan = new TreeMap<DepManagementCheckMojo.DependencyID, String>();
+		// grather DependencyIDs form parent
+		for (Dependency dep: depMan) {
+			depIDMan.put(new DependencyID(dep), dep.getVersion());
+		}
+		try {
+			for (Object o: PomWriter.readPOMFile(mavenProject2).getDependencies()) {
+				Dependency dep = (Dependency) o;
+				DependencyID depID = new DependencyID(dep);
+				getLog().debug("***.1 " + dep.getGroupId() + ":" + dep.getArtifactId() + ":" + dep.getVersion());
+				getLog().debug("***.1 " + depID.getGID() + ":" + depID.getAID());
+				if (depIDMan.containsKey(depID)
+						&& dep.getVersion() != null) {
+					getLog().debug("in DepManagement. Declared Version: " + dep.getVersion() + "Managed Version: " + depIDMan.get(depID));
+					toBeFixed.put(depID, null);
+				}
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (XmlPullParserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return toBeFixed.isEmpty();
 	}
 
 	private boolean passRootCheck(MavenProject mavenProject2) {
@@ -186,8 +225,33 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
 		}
 		return versionMap;
 	}
-
+	
 	public void fix(Model model) {
+		if (model.getPackaging().equals("pom")) {
+			fixPOM(model);
+		}
+		else {
+			fixNonPOM(model);
+		}
+	}
+
+	public void fixNonPOM(Model model) {
+		List<Dependency> ld = model.getDependencies();
+		List<Dependency> nld = new ArrayList<Dependency>();
+		for (Dependency dep: ld) {
+			for (DependencyID depID : toBeFixed.keySet()){
+				if (depID.compareTo(new DependencyID(dep)) == 0) {
+					nld.add(depID.toDependency());
+				}
+				else {
+					nld.add(dep);
+				}
+			}
+		}
+		model.setDependencies(nld);
+	}
+	
+	public void fixPOM(Model model) {
 		List<Dependency> modelDependencyManagement = model.getDependencyManagement().getDependencies();
 		List<Dependency> newDep = new ArrayList<Dependency>();
 		getLog().debug(Integer.toString(modelDependencyManagement.size())+"\n");
@@ -239,6 +303,13 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
 
 		public String getAID() {
 			return aID;
+		}
+		
+		public Dependency toDependency() {
+			Dependency dep = new Dependency();
+			dep.setArtifactId(aID);
+			dep.setGroupId(gID);
+			return dep;
 		}
 	}
 }
