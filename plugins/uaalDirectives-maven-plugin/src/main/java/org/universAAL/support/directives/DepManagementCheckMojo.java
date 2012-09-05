@@ -18,7 +18,6 @@ package org.universAAL.support.directives;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -83,7 +82,7 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
    /**
     * List of Dependencies to be fixed
     */
-   private HashMap<DependencyID, String> toBeFixed = new HashMap<DependencyID, String>();
+   private Map<DependencyID, String> toBeFixed = new TreeMap<DependencyID, String>();
 	
 	public void execute() throws MojoFailureException {
 		if (!passCheck(mavenProject)) {
@@ -131,6 +130,7 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
 			new PomWriter(this, mavenProject2).fix();
 		} catch (Exception e) {
 			getLog().error("unable to Write POM.");
+			getLog().error(e);
 		}
 	}
 
@@ -255,21 +255,29 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
 		List<Dependency> modelDependencyManagement = model.getDependencyManagement().getDependencies();
 		List<Dependency> newDep = new ArrayList<Dependency>();
 		getLog().debug(Integer.toString(modelDependencyManagement.size())+"\n");
+		List<DependencyID> toBeRemoved = new ArrayList<DepManagementCheckMojo.DependencyID>();
 		for (Dependency dep : modelDependencyManagement) {
 			DependencyID key  = new DependencyID(dep);
 			if (toBeFixed.containsKey(key)) {
 				dep.setVersion(toBeFixed.get(key));
 				getLog().info("Fixing: " + dep.getGroupId() + ":" + dep.getArtifactId()
 						+ " to: " + toBeFixed.get(key));
-				toBeFixed.remove(key);
+				Dependency d = key.toDependency();
+				d.setVersion(toBeFixed.get(key));
+				newDep.add(d);
+				//toBeFixed.remove(key);
+				toBeRemoved.add(key);
 			}
-			newDep.add(dep);
+			else {
+				newDep.add(dep);
+			}
 		}
-		for (DependencyID depID : toBeFixed.keySet()) {
-			Dependency d = new Dependency();
-			d.setArtifactId(depID.getAID());
-			d.setGroupId(depID.getGID());
-			d.setVersion(toBeFixed.get(depID));
+		for (DependencyID d : toBeRemoved) {
+			toBeFixed.remove(d);
+		}
+		for (DependencyID dID : toBeFixed.keySet()) {
+			Dependency d = dID.toDependency();
+			d.setVersion(toBeFixed.get(dID));
 			newDep.add(d);
 		}
 		model.getDependencyManagement().setDependencies(newDep);		

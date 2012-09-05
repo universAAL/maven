@@ -58,8 +58,10 @@ public class PomWriter {
 	
 	public static Model readPOMFile(MavenProject pom) throws FileNotFoundException, IOException, XmlPullParserException {
 		MavenXpp3Reader reader = new MavenXpp3Reader();
-		Model model = reader.read(new FileInputStream(new File(pom
-				.getFile().getAbsolutePath())));
+		FileInputStream fis = new FileInputStream(new File(pom
+				.getFile().getAbsolutePath()));
+		Model model = reader.read(fis);
+		fis.close();
 		return model;
 	}
 }
