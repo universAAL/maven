@@ -17,8 +17,9 @@ package org.universAAL.support.directives;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
@@ -142,20 +143,20 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
 	}
 
 	private boolean passRootCheck(MavenProject mavenProject2) {
-		HashMap<DependencyID,String> versionMap = getActualVersions(mavenProject2);
+		Map<DependencyID,String> versionMap = getActualVersions(mavenProject2);
 		List<Dependency> lod = mavenProject.getDependencyManagement().getDependencies();
-		HashMap<DependencyID,String> lodVersionMap = new HashMap<DependencyID,String>();
+		Map<DependencyID,String> lodVersionMap = new TreeMap<DependencyID,String>();
 		
 		// test if the version in DependencyManagement corresponds to the version of the actual artefact
-		for (Iterator<Dependency> iterator = lod.iterator(); iterator.hasNext();) {
-			Dependency dependency = (Dependency) iterator.next();
-			String realVersion = versionMap.get(dependency);
-			lodVersionMap.put(new DependencyID(dependency), dependency.getVersion());
-			//System.out.println("***1 ." + dependency.getGroupId() + ":" +  dependency.getArtifactId() + " - " + realVersion);
-			if ( dependency != null &&
-					! dependency.getVersion()
-					.equals(realVersion)
+		for (Dependency dependency : lod) {
+			DependencyID depId = new DependencyID(dependency);
+			String realVersion = versionMap.get(depId);
+			lodVersionMap.put(depId, dependency.getVersion());
+			getLog().debug("***1 ." + dependency.getGroupId() + ":" +  dependency.getArtifactId() + " Real:\"" + realVersion + "\" - Declared: \"" + dependency.getVersion()+"\"");
+			if ( dependency != null
+					&& !dependency.getVersion().equals(realVersion)
 					&& realVersion != null) {
+				getLog().debug("Marked as wrong.");
 				toBeFixed.put( new DependencyID(dependency), realVersion);
 			}
 		}
@@ -164,14 +165,15 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
 		for (DependencyID key : versionMap.keySet()) {
 			if (!lodVersionMap.containsKey(key)) {
 				toBeFixed.put(key, versionMap.get(key));
+				getLog().debug("***2 ." + key.getGID() + ":" +  key.getAID() + " Not declared.");
 				//System.out.println("***2 ." + key + ". - ." + versionMap.get(key) + ".");
 			}
 		}
 		return toBeFixed.isEmpty();
 	}
 
-	private HashMap<DependencyID, String> getActualVersions(MavenProject mavenProject2) {
-		HashMap<DependencyID,String> versionMap = new HashMap<DependencyID, String>();
+	private Map<DependencyID, String> getActualVersions(MavenProject mavenProject2) {
+		TreeMap<DependencyID,String> versionMap = new TreeMap<DependencyID, String>();
 		for (MavenProject mavenProject : reactorProjects) {
 			if (mavenProject.getVersion() != null 
 					&& !mavenProject.getPackaging().equals("pom")) {
@@ -179,7 +181,7 @@ public class DepManagementCheckMojo extends AbstractMojo implements PomFixer{
 				versionMap.put( new DependencyID(mavenProject.getGroupId(), mavenProject.getArtifactId())
 						,mavenProject.getVersion());
 				getLog().debug("added to ActualVersions: " + mavenProject.getGroupId() + ":" + mavenProject.getArtifactId()
-						+ mavenProject.getVersion());
+						+ ":" + mavenProject.getVersion());
 			}
 		}
 		return versionMap;
