@@ -97,6 +97,14 @@ public class UaalTestMojo extends AbstractMojo {
     private File baseDirectory;
 
     /**
+     * Directives configured via <configuration> in pom file, setting the
+     * startlevel and/or nostart parameters to specified artifacts
+     * 
+     * @parameter
+     */
+    private StartSpec[] startArtifacts;
+
+    /**
      * Execute.
      * 
      * @throws MojoExecutionException
@@ -129,7 +137,7 @@ public class UaalTestMojo extends AbstractMojo {
 			getLog(), artifactMetadataSource, artifactFactory,
 			mavenProjectBuilder, localRepository,
 			remoteRepositories, artifactResolver,
-			throwExceptionOnConflictStr);
+			throwExceptionOnConflictStr, startArtifacts);
 		Set<String> separatedArtifactDepsOfRoot = new HashSet<String>();
 		List<String> mvnUrls = execListCreator
 			.createArtifactExecutionList(project,

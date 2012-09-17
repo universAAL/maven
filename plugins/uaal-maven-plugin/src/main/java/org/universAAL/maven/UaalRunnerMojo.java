@@ -140,6 +140,14 @@ public class UaalRunnerMojo extends AbstractMojo implements Contextualizable {
     private String[] separatedGroupIds;
 
     /**
+     * Directives configured via <configuration> in pom file, setting the
+     * startlevel and/or nostart parameters to specified artifacts
+     * 
+     * @parameter
+     */
+    private StartSpec[] startArtifacts;
+
+    /**
      * Plexus container.
      */
     private PlexusContainer container;
@@ -171,7 +179,8 @@ public class UaalRunnerMojo extends AbstractMojo implements Contextualizable {
 	    ExecutionListCreator execListCreator = new ExecutionListCreator(
 		    getLog(), artifactMetadataSource, artifactFactory,
 		    mavenProjectBuilder, localRepository, remoteRepositories,
-		    artifactResolver, throwExceptionOnConflictStr);
+		    artifactResolver, throwExceptionOnConflictStr,
+		    startArtifacts);
 
 	    boolean defaultTransitive = true;
 	    if ("false".equals(transitive)) {

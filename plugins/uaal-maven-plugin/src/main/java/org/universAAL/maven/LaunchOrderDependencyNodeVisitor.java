@@ -100,6 +100,12 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
     private boolean throwExceptionOnConflict = true;
 
     /**
+     * Directives configured via <configuration> in pom file, setting the
+     * startlevel and/or nostart parameters to specified artifacts
+     */
+    private StartSpec[] startSpecs;
+
+    /**
      * Constructor of LaunchOrderDependencyNodeVisitor.
      * 
      * @param log
@@ -125,7 +131,8 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 	    final Map nodesByArtifactId, final Map versionsByArtifactId,
 	    final boolean throwExceptionOnConflict,
 	    final ArtifactRepository localRepository,
-	    final ArtifactResolver artifactResolver, final Artifact dontResolve) {
+	    final ArtifactResolver artifactResolver,
+	    final Artifact dontResolve, final StartSpec[] startSpecs) {
 	super(log);
 	this.localRepository = localRepository;
 	this.nodesByArtifactId = nodesByArtifactId;
@@ -139,6 +146,7 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 		visitingOnPomBehalf = true;
 	    }
 	}
+	this.startSpecs = startSpecs;
     }
 
     /**
@@ -252,6 +260,22 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 			mvnUrl = "wrap:" + mvnUrl;
 		    }
 		}
+
+		// customizing starting of bundles configured in pom file
+		for (StartSpec s : startSpecs) {
+		    if (artifact.getGroupId().equals(s.getGroupId())
+			    && artifact.getArtifactId().equals(
+				    s.getArtifactId())) {
+			Integer level = s.getStartlevel();
+			if (level != null) {
+			    mvnUrl += "@" + level;
+			}
+			if (s.isNostart()) {
+			    mvnUrl += "@nostart";
+			}
+		    }
+		}
+
 		getVisited().add(stringify(node));
 		mvnUrls.add(mvnUrl);
 	    }

@@ -99,6 +99,14 @@ public class UaalCompositeMojo extends AbstractMojo {
     private File baseDirectory;
 
     /**
+     * Directives configured via <configuration> in pom file, setting the
+     * startlevel and/or nostart parameters to specified artifacts
+     * 
+     * @parameter
+     */
+    private StartSpec[] startArtifacts;
+
+    /**
      * Default path to main composite.
      */
     private static final String MAIN_COMPOSITE = "target/artifact.composite";
@@ -202,7 +210,7 @@ public class UaalCompositeMojo extends AbstractMojo {
 			getLog(), artifactMetadataSource, artifactFactory,
 			mavenProjectBuilder, localRepository,
 			remoteRepositories, artifactResolver,
-			throwExceptionOnConflictStr);
+			throwExceptionOnConflictStr, startArtifacts);
 		List<String> mvnUrls = execListCreator
 			.createArtifactExecutionList(project,
 				new HashSet<String>(), false);

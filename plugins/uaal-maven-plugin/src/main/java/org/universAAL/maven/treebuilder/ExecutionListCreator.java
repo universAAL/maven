@@ -21,6 +21,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.universAAL.maven.IndexingDependencyNodeVisitor;
 import org.universAAL.maven.LaunchOrderDependencyNodeVisitor;
+import org.universAAL.maven.StartSpec;
 
 /**
  * This class provides creation of OSGi bundles execution list on basis of list
@@ -56,6 +57,12 @@ public class ExecutionListCreator {
 
     private boolean throwExceptionOnConflict;
 
+    /**
+     * Directives configured via <configuration> in pom file, setting the
+     * startlevel and/or nostart parameters to specified artifacts
+     */
+    private StartSpec[] startSpecs;
+
     public ExecutionListCreator(final Log log,
 	    final ArtifactMetadataSource artifactMetadataSource,
 	    final ArtifactFactory artifactFactory,
@@ -63,7 +70,8 @@ public class ExecutionListCreator {
 	    final ArtifactRepository localRepository,
 	    final List remoteRepositories,
 	    final ArtifactResolver artifactResolver,
-	    final String throwExceptionOnConflictStr) {
+	    final String throwExceptionOnConflictStr,
+	    final StartSpec[] startSpecs) {
 	this.log = log;
 	this.artifactMetadataSource = artifactMetadataSource;
 	this.artifactFactory = artifactFactory;
@@ -74,6 +82,7 @@ public class ExecutionListCreator {
 	this.artifactResolver = artifactResolver;
 	this.throwExceptionOnConflict = !("true"
 		.equals(throwExceptionOnConflictStr));
+	this.startSpecs = startSpecs;
     }
 
     /**
@@ -195,7 +204,6 @@ public class ExecutionListCreator {
     private List processTreeIntoFlatList(final List<RootNode> rootNodes,
 	    final Artifact dontResolve) {
 	Iterator<RootNode> rootNodesIterator = rootNodes.iterator();
-	int i = 0;
 	while (rootNodesIterator.hasNext()) {
 	    RootNode rootNode = rootNodesIterator.next();
 	    log.info("Dependency tree for artifact: "
@@ -215,7 +223,7 @@ public class ExecutionListCreator {
 	LaunchOrderDependencyNodeVisitor visitor = new LaunchOrderDependencyNodeVisitor(
 		log, filteringVisitor.getNodesByArtifactId(), filteringVisitor
 			.getVersionByArtifactId(), throwExceptionOnConflict,
-		localRepository, artifactResolver, dontResolve);
+		localRepository, artifactResolver, dontResolve, startSpecs);
 	rootNodesIterator = rootNodes.iterator();
 	while (rootNodesIterator.hasNext()) {
 	    RootNode rootNode = rootNodesIterator.next();
