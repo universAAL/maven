@@ -262,16 +262,18 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 		}
 
 		// customizing starting of bundles configured in pom file
-		for (StartSpec s : startSpecs) {
-		    if (artifact.getGroupId().equals(s.getGroupId())
-			    && artifact.getArtifactId().equals(
-				    s.getArtifactId())) {
-			Integer level = s.getStartlevel();
-			if (level != null) {
-			    mvnUrl += "@" + level;
-			}
-			if (s.isNostart()) {
-			    mvnUrl += "@nostart";
+		if (startSpecs != null) {
+		    for (StartSpec s : startSpecs) {
+			if (artifact.getGroupId().equals(s.getGroupId())
+				&& artifact.getArtifactId().equals(
+					s.getArtifactId())) {
+			    Integer level = s.getStartlevel();
+			    if (level != null) {
+				mvnUrl += "@" + level;
+			    }
+			    if (s.isNostart()) {
+				mvnUrl += "@nostart";
+			    }
 			}
 		    }
 		}
