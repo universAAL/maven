@@ -586,8 +586,15 @@ public class DependencyTreeBuilder {
 		 * from .core to .osgi to follow the actual dependencies of the
 		 * .osgi branch.
 		 */
-		childArtifactId = changeCoreSuffixToOsgi(childArtifactId);
-		child.setArtifactId(childArtifactId);
+		Artifact osgiArtifact = null;
+		String osgiArtifactId = changeCoreSuffixToOsgi(childArtifactId);
+		if (child.getVersion() != null) {
+		    osgiArtifact = artifactFactory.createArtifact(child.getGroupId(), osgiArtifactId, child.getVersion(),
+			    child.getScope(), child.getType());
+		} else {
+		    throw new IllegalArgumentException();
+		}
+		childNode.setArtifact(osgiArtifact);
 	    }
 	}
     }
