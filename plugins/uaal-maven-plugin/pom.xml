@@ -12,7 +12,7 @@
 	<groupId>org.universAAL.support</groupId>
 	<artifactId>uaal-maven-plugin</artifactId>
 	<version>1.3.1-SNAPSHOT</version>
-	<name>uAAL Maven Plugin</name>
+	<name>universAAL Support Maven Plugin</name>
 	<description>Maven plugin for resolution and running uAAL artifacts</description>
 	<url />
 
