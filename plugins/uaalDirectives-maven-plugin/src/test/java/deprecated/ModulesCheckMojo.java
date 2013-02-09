@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.universAAL.support.directives;
+package deprecated;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -25,6 +25,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.universAAL.support.directives.util.PomFixer;
 import org.universAAL.support.directives.util.PomWriter;
+
 
 /**
  * @author amedrano

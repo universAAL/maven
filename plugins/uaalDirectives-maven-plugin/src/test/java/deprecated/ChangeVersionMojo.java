@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.universAAL.support.directives;
+package deprecated;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.AbstractMojo;

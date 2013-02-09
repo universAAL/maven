@@ -13,29 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.universAAL.support.directives;
+package org.universAAL.support.directives.procedures;
 
 import java.io.File;
 
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNCopySource;
 import org.tmatesoft.svn.core.wc.SVNRevision;
+import org.universAAL.support.directives.api.APIProcedure;
+
+import deprecated.DirectiveCheckMojo;
 
 /**
  * Tags the project in an appropiate tag URL, in concordance to T2.3 Directives.
  * @author amedrano
- * 
- * @goal tag
- * 
- * @requiresDirectInvocation 
  */
-public class TagMojo extends AbstractMojo{
+public class Tag implements APIProcedure{
 
     /**
      * Message content when tag fails
@@ -46,18 +45,21 @@ public class TagMojo extends AbstractMojo{
 	    + "Failed Trying to tag the project try again manually.\n"
 	    + System.getProperty("line.separator") + "\n";
 
-    /** @parameter default-value="${project}" */
-    private MavenProject mavenProject;
-    
-    /**
-     * @parameter expression="${tagWorkingCopy}" default-value="false"
-     */
+
     private boolean tagRemoteHead;
-    /** {@inheritDoc} */
-	public void execute() throws MojoExecutionException, MojoFailureException {
+    
+    
+    public Tag(boolean tagRemoteHead) {
+		super();
+		this.tagRemoteHead = tagRemoteHead;
+	}
+
+	/** {@inheritDoc} */
+	public void execute(MavenProject mavenProject, Log log)
+			throws MojoExecutionException, MojoFailureException {
 		String url = mavenProject.getScm().getDeveloperConnection();
 		String tagUrl = getTagURL(mavenProject);
-		getLog().info("Tagging: " + url + "  ->  " + tagUrl);
+		log.info("Tagging: " + url + "  ->  " + tagUrl);
 		if (tagRemoteHead) {
 			if (!performTag(url, tagUrl, "Automatic tag of " 
 					+ mavenProject.getArtifactId() + " version: " + mavenProject.getVersion())) {

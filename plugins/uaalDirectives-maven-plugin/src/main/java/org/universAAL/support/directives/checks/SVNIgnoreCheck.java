@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.universAAL.support.directives;
+package org.universAAL.support.directives.checks;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.project.MavenProject;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNProperty;
@@ -29,14 +30,12 @@ import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNPropertyData;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNWCClient;
+import org.universAAL.support.directives.api.APIFixableCheck;
 
 /**
  * @author amedrano
- * 
- * @goal svnIgnore-check
- * @phase process-sources
  */
-public class SVNIgnoreCheckMojo extends AbstractMojo {
+public class SVNIgnoreCheck implements APIFixableCheck {
 
 	private String NO_IGNORES = System.getProperty("line.separator")
 			+ "\n"
@@ -50,20 +49,15 @@ public class SVNIgnoreCheckMojo extends AbstractMojo {
 	private String[] ignores;
 	
 	private static String[] DEFAULT_IGNORES = {".project", ".settings", "target", ".classpath"};
-	/**
-	 * @parameter expression="${failOnMissMatch}"
-	 *            default-value="false"
-	 */
-	private boolean failOnMissMatch;
-	/**
-	 * @parameter expression="${directive.fix}" default-value="false"
-	 */
-	private boolean fixSCM;
 
-	/** @parameter default-value="${project}" */
-	private org.apache.maven.project.MavenProject mavenProject;
+	private SVNWCClient wcCli;
 
-	public SVNIgnoreCheckMojo() {
+	private String prop;
+
+	private Log log;
+
+
+	public SVNIgnoreCheck() {
 		if (ignores == null
 				|| ignores.length <= 0) {
 			ignores = DEFAULT_IGNORES;
@@ -74,56 +68,46 @@ public class SVNIgnoreCheckMojo extends AbstractMojo {
 		NO_IGNORES += System.getProperty("line.separator");
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void execute() throws MojoExecutionException, MojoFailureException {
+	/** {@inheritDoc} */
+	public boolean check(MavenProject mavenProject, Log log)
+			throws MojoExecutionException, MojoFailureException {
+		this.log = log;
 		SVNClientManager cli = SVNClientManager.newInstance();
-		this.getLog().debug(
+		log.debug(
 				"checking svn ignore Rules in: "
 						+ mavenProject.getBasedir().getPath());
 		try {
-			SVNWCClient wcCli = cli.getWCClient();
+			wcCli = cli.getWCClient();
 			SVNPropertyData pd = wcCli.doGetProperty(mavenProject.getBasedir(),
 					SVNProperty.IGNORE, SVNRevision.WORKING,
 					SVNRevision.WORKING);
 			boolean changed = false;
-			String prop = pd.getValue().getString();
-			getLog().debug("Ignore Property contains: " + prop);// .split("\n")[0]
+			prop = pd.getValue().getString();
+			log.debug("Ignore Property contains: " + prop);// .split("\n")[0]
 			for (int i = 0; i < ignores.length; i++) {
-				if (!prop.contains(ignores[i]) && exists(ignores[i])) {
+				if (!prop.contains(ignores[i]) && exists(mavenProject, ignores[i])) {
 					prop += ignores[i] + "\n";
 					changed = true;
 				}
 			}
 			if (changed) {
-				if (failOnMissMatch) {
-					throw new MojoFailureException(NO_IGNORES);
-				} else {
-					getLog().warn(NO_IGNORES);
-				}
-				if (fixSCM) {
-					SVNPropertyValue propValue = SVNPropertyValue.create(SVNProperty.IGNORE, prop.getBytes());
-					Collection<String> cl = new ArrayList<String>();
-					cl.add("added ignore list");
-					wcCli.doSetProperty(mavenProject.getBasedir(), SVNProperty.IGNORE, propValue, false, SVNDepth.IMMEDIATES, null, cl );
-					getLog().info("Fixing");
-				}
+				throw new MojoFailureException(NO_IGNORES);
 			}
 		} catch (SVNException e) {
 			e.printStackTrace();
-			getLog().warn("SVN Error.");
-			getLog().warn("directory seems not to be a local SVN working copy.");
+			log.warn("SVN Error.");
+			log.warn("directory seems not to be a local SVN working copy.");
+			return false;
 		}
-
+		return true;
 	}
 
-	private boolean exists(String string) {
+	private boolean exists(MavenProject mavenProject, String string) {
 		String[] files = mavenProject.getBasedir().list();
 		int i = 0;
-		getLog().debug("Matching: " + string);
+		log.debug("Matching: " + string);
 		while (i < files.length && !files[i].endsWith(string.replace("*", ""))) {
-			getLog().debug("No Match: " + files[i] + " with " + string);
+			log.debug("No Match: " + files[i] + " with " + string);
 			i++;
 		}
 		if (i < files.length) {
@@ -132,6 +116,21 @@ public class SVNIgnoreCheckMojo extends AbstractMojo {
 		else {
 			return false;
 		}
+	}
+
+	/** {@inheritDoc} */
+	public void fix(MavenProject mavenProject, Log log)
+			throws MojoExecutionException {
+		SVNPropertyValue propValue = SVNPropertyValue.create(SVNProperty.IGNORE, prop.getBytes());
+		Collection<String> cl = new ArrayList<String>();
+		cl.add("added ignore list");
+		try {
+			wcCli.doSetProperty(mavenProject.getBasedir(), SVNProperty.IGNORE, propValue, false, SVNDepth.IMMEDIATES, null, cl );
+		} catch (SVNException e) {
+			throw new MojoExecutionException("error setting SVN properties.", e);
+		}
+		log.info("Fixing");
+
 	}
 
 }
