@@ -20,7 +20,15 @@ import org.universAAL.support.directives.api.AbstractProcedureMojo;
 import org.universAAL.support.directives.procedures.UpdateRootVersionsProcedure;
 
 /** 
- * Changes the versions of the one pom and root dependencyManagement imports to the given new Version.
+ * Changes the versions of the one pom and root dependencyManagement imports to the given new Version. 
+ * sections changed:
+ * <ol>
+ * 	<li> the uAAL.pom parent version
+ * 	<li> the imported root poms' versions in dependencyManagement
+ * 	<li> the version of itest in dependencyManagement
+ *  <li> the version of uaal-maven-plugin in dependencyManagement
+ *  <li> the version of uaaldirectives-maven-plugin in dependencyManagement
+ * </ol>
  * @author amedrano
  * 
  * @goal update-roots

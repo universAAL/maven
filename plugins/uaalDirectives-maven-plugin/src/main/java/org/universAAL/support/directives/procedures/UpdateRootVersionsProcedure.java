@@ -29,6 +29,14 @@ import org.universAAL.support.directives.util.PomFixer;
 import org.universAAL.support.directives.util.PomWriter;
 
 /**
+ * this procedure is intended to ease Release process by:
+ * <ol>
+ * 	<li> changing the uAAL.pom parent version
+ * 	<li> changing the imported root poms' versions in dependencyManagement
+ * 	<li> changing the version of itest in dependencyManagement
+ *  <li> changing the version of uaal-maven-plugin in dependencyManagement
+ *  <li> changing the version of uaaldirectives-maven-plugin in dependencyManagement
+ * </ol>
  * @author amedrano
  *
  */
@@ -62,18 +70,29 @@ public class UpdateRootVersionsProcedure implements APIProcedure, PomFixer {
 	}
 
 	public void fix(Model model) {
+		//Update parent Version
 		if (model.getParent().getArtifactId().equals(UAAL_AID)
 				&& model.getParent().getGroupId().equals(UAAL_GID)){
 			model.getParent().setVersion(newVersion);
 		}
+		//Update dependency management
 		if (model.getPackaging().equals("pom")){
 			List<Dependency> deps = model.getDependencyManagement().getDependencies();
 			List<Dependency> nld = new ArrayList<Dependency>();
 			for (Dependency d : deps) {
+				//Update imports
 				if (d.getScope() != null
 						&& d.getScope().equals("import")
 						&& d.getGroupId().startsWith(UAAL_GID)){
 					d.setVersion(newVersion);
+				}
+				//update support artifacts
+				if (d.getGroupId().equals("org.universAAL.support")) {
+					if (d.getArtifactId().equals("itests")
+							|| d.getArtifactId().equals("uaal-maven-plugin")
+							|| d.getArtifactId().equals("uaalDirectives-maven-plugin")) {
+					d.setVersion(newVersion);
+				}
 				}
 				nld.add(d);			
 			}
