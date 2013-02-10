@@ -29,6 +29,7 @@ public abstract class AbstractFixableCheckMojo extends AbstractCheckMojo {
 	 * @parameter expression="${directive.fix}" default-value="false"
 	 */
 	private boolean fix;
+
 	
 	/** {@inheritDoc} */
 	@Override
@@ -44,6 +45,10 @@ public abstract class AbstractFixableCheckMojo extends AbstractCheckMojo {
 		if (fail && fix) {
 			((APIFixableCheck) check).fix(null, getLog());
 		}
+		if (fail && !fix) {
+				getLog().info("This plugin is able to automatically" +
+						"fix the prbolem. just add  \"-D-Ddirective.fix\" to your command.");
+		}
 		
 		if (failedE instanceof MojoExecutionException) {
 			throw (MojoExecutionException) failedE;
@@ -51,7 +56,7 @@ public abstract class AbstractFixableCheckMojo extends AbstractCheckMojo {
 			throw (MojoFailureException) failedE;
 		}
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public APICheck getCheck() {

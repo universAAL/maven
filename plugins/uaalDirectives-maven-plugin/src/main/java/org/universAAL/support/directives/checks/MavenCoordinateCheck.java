@@ -58,10 +58,10 @@ public class MavenCoordinateCheck implements APICheck {
 		Pattern pVer = Pattern.compile(versionMatchString);
 		Pattern pNam = Pattern.compile(nameMatchString);
 
-		Matcher mAId = pAId.matcher(mavenProject.getArtifactId());
-		Matcher mGId = pGId.matcher(mavenProject.getGroupId());
-		Matcher mVer = pVer.matcher(mavenProject.getVersion());
-		Matcher mNam = pNam.matcher(mavenProject.getName());
+		Matcher mAId = pAId.matcher(mavenProject.getModel().getArtifactId());
+		Matcher mGId = pGId.matcher(mavenProject.getModel().getGroupId());
+		Matcher mVer = pVer.matcher(mavenProject.getModel().getVersion());
+		Matcher mNam = pNam.matcher(mavenProject.getModel().getName());
 
 		StringBuffer message = new StringBuffer();
 

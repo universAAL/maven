@@ -25,6 +25,7 @@ import org.universAAL.support.directives.util.PomFixer;
 import org.universAAL.support.directives.util.PomWriter;
 
 /**
+ * Change the version of a POM file.
  * @author amedrano
  *
  */

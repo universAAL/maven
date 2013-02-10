@@ -17,16 +17,16 @@ package org.universAAL.support.directives.mojos;
 
 import org.universAAL.support.directives.api.APIProcedure;
 import org.universAAL.support.directives.api.AbstractProcedureMojo;
-import org.universAAL.support.directives.procedures.ChangeVersionProcedure;
+import org.universAAL.support.directives.procedures.UpdateRootVersionsProcedure;
 
 /** 
- * Changes the version of a project to the given new Version.
+ * Changes the versions of the one pom and root dependencyManagement imports to the given new Version.
  * @author amedrano
  * 
- * @goal change-version
- *
+ * @goal update-roots
+ * @aggregator
  */
-public class ChangeVersionMojo extends AbstractProcedureMojo {
+public class UpdateRootVersionsMojo extends AbstractProcedureMojo {
 
     /**
      * @parameter expression="${newVersion}"
@@ -40,13 +40,14 @@ public class ChangeVersionMojo extends AbstractProcedureMojo {
 				|| newVersion.isEmpty()){
 			while (newVersion == null 
 				|| newVersion.isEmpty()){
-				System.out.print("\nEnter new version: ");
+				System.out.print("\nEnter new version of super pom and root poms: ");
 				newVersion = System.console().readLine();
+				System.setProperty("newVersion", newVersion);
 			}
-			return new ChangeVersionProcedure(newVersion);
+			return new UpdateRootVersionsProcedure(newVersion);
 		}
 		else {
-			return new ChangeVersionProcedure(newVersion);
+			return new UpdateRootVersionsProcedure(newVersion);
 		}
 	}
 
