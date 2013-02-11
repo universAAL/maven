@@ -97,7 +97,7 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 	}
 
 	/** {@inheritDoc} */
-	public void fix(MavenProject mavenProject, Log log) throws MojoExecutionException {
+	public void fix(MavenProject mavenProject, Log log) throws MojoExecutionException, MojoFailureException {
 		try {
 			new PomWriter(this, mavenProject).fix();
 		} catch (Exception e) {

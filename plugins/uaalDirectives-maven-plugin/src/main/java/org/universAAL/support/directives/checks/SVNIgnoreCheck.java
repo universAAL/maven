@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.universAAL.support.directives.checks;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -120,8 +121,8 @@ public class SVNIgnoreCheck implements APIFixableCheck {
 
 	/** {@inheritDoc} */
 	public void fix(MavenProject mavenProject, Log log)
-			throws MojoExecutionException {
-		SVNPropertyValue propValue = SVNPropertyValue.create(SVNProperty.IGNORE, prop.getBytes());
+			throws MojoExecutionException, MojoFailureException {
+		SVNPropertyValue propValue = SVNPropertyValue.create(SVNProperty.IGNORE, prop.getBytes(Charset.defaultCharset()));
 		Collection<String> cl = new ArrayList<String>();
 		cl.add("added ignore list");
 		try {

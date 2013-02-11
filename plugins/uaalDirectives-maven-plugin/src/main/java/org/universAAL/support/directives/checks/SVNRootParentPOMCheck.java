@@ -16,15 +16,11 @@
 package org.universAAL.support.directives.checks;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
 import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
@@ -34,11 +30,13 @@ import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNStatus;
 import org.universAAL.support.directives.api.APIFixableCheck;
+import org.universAAL.support.directives.util.PomFixer;
+import org.universAAL.support.directives.util.PomWriter;
 
 /**
  * @author amedrano
  */
-public class SVNRootParentPOMCheck implements APIFixableCheck {
+public class SVNRootParentPOMCheck implements APIFixableCheck, PomFixer {
 
     /**
      * Variable to check
@@ -59,6 +57,8 @@ public class SVNRootParentPOMCheck implements APIFixableCheck {
     private static final Object UAAL_GID = "org.universAAL";
 
     private static final String UAAL_AID = "uAAL.pom";
+
+	private String correctValue;
     
     /** {@inheritDoc} */
     public boolean check(MavenProject mavenProject, Log log)
@@ -72,33 +72,21 @@ public class SVNRootParentPOMCheck implements APIFixableCheck {
 
     /** {@inheritDoc} */
 	public void fix(MavenProject mavenProject, Log log)
-			throws MojoExecutionException {
-		String correctValue;
-			try {
-			    correctValue = getSVNURL(mavenProject.getBasedir());
-			    URL u = new URL(correctValue);
-			    correctValue = u.getPath().split("/")[1];
-			    log.debug("Determined Correct Value for " + PROP + ": " + correctValue);
-			    // Reading
-			    MavenXpp3Reader reader = new MavenXpp3Reader();
-			    Model model = reader.read(new FileInputStream(new File(mavenProject
-				    .getFile().getAbsolutePath())));
+			throws MojoExecutionException, MojoFailureException {
 
-			    // Editing
-			    Properties p = model.getProperties();
-			    
-			    p.setProperty(PROP, correctValue);
-			    model.setProperties(p);
-
-			    // Writing
-			    MavenXpp3Writer writer = new MavenXpp3Writer();
-
-			    writer.write(new OutputStreamWriter(new FileOutputStream(new File(
-				    mavenProject.getFile().getAbsolutePath()))), model);
-			} catch (Exception e) {
-			    log.error("Unable to Correct POM",e);
-			}
-		
+		try {
+			correctValue = getSVNURL(mavenProject.getBasedir());
+			URL u = new URL(correctValue);
+			correctValue = u.getPath().split("/")[1];
+			log.debug("Determined Correct Value for " + PROP + ": " + correctValue);
+			new PomWriter(this, mavenProject).fix();
+		} catch (MalformedURLException e) {
+			throw new MojoExecutionException("wrong URL", e);
+		} catch (SVNException e) {
+			throw new MojoExecutionException("unexpected SVN Exception, unable to retrieve URL", e);
+		} catch (Exception e) {
+			throw new MojoExecutionException("WTH? Exception.", e);
+		}
 	}
 
 	public static boolean hasProperty(MavenProject mp, String prop) {
@@ -120,5 +108,12 @@ public class SVNRootParentPOMCheck implements APIFixableCheck {
 			return url.toDecodedString();
 		}
 		throw new Exception("unable to find URL from svn info.");
+	}
+
+	/** {@inheritDoc} */
+	public void fix(Model model) {
+		Properties p = model.getProperties();
+		p.setProperty(PROP, correctValue);
+		model.setProperties(p);		
 	}
 }

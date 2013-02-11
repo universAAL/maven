@@ -43,7 +43,7 @@ public abstract class AggregatedCheck implements APIFixableCheck {
 	}
 
 	/** {@inheritDoc} */
-	public void fix(MavenProject mavenProject, Log log) throws MojoExecutionException {
+	public void fix(MavenProject mavenProject, Log log) throws MojoExecutionException, MojoFailureException {
 		for (APICheck c : checks) {
 			if (c instanceof APIFixableCheck) {
 				((APIFixableCheck)c).fix(null, log);

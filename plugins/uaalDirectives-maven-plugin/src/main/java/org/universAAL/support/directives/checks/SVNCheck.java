@@ -90,7 +90,7 @@ public class SVNCheck implements APIFixableCheck {
 		return false;
 	}
 	
-	public void fix(MavenProject mavenProject, Log log) {
+	public void fix(MavenProject mavenProject, Log log) throws MojoFailureException {
 		log.debug("Fixing SCM with URL: " + surl);
 		fixSCMWith(surl, log);		
 	}

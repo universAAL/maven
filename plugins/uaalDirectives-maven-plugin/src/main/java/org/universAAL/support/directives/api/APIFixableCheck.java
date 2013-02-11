@@ -16,6 +16,7 @@
 package org.universAAL.support.directives.api;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
@@ -25,5 +26,5 @@ import org.apache.maven.project.MavenProject;
  */
 public interface APIFixableCheck extends APICheck {
 
-	void fix(MavenProject mavenProject, Log log) throws MojoExecutionException;
+	void fix(MavenProject mavenProject, Log log) throws MojoExecutionException, MojoFailureException;
 }

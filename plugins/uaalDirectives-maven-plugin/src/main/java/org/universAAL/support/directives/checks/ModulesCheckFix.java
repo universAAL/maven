@@ -76,7 +76,7 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 	/** 
 	 * {@inheritDoc}
 	 */
-	public void fix(MavenProject mavenProject2, Log log) {
+	public void fix(MavenProject mavenProject2, Log log) throws MojoFailureException {
 		// TODO Auto-generated method stub
 		try {
 			new PomWriter(this, mavenProject2).fix();
