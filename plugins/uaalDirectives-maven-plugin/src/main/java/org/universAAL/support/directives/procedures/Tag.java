@@ -27,8 +27,7 @@ import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNCopySource;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.universAAL.support.directives.api.APIProcedure;
-
-import deprecated.DirectiveCheckMojo;
+import org.universAAL.support.directives.api.AbstractCheckMojo;
 
 /**
  * Tags the project in an appropiate tag URL, in concordance to T2.3 Directives.
@@ -83,7 +82,7 @@ public class Tag implements APIProcedure{
 		scmUrl = scmUrl.replace("scm:", "").replace("svn:", "");
 		String tagUrl = scmUrl.split("trunk")[0];
 		tagUrl += "tags/";
-		if (DirectiveCheckMojo.isSnapshot(mavenProject)) {
+		if (AbstractCheckMojo.isSnapshot(mavenProject)) {
 			tagUrl += "SNAPSHOT/" + mavenProject.getArtifactId() + "-" + mavenProject.getVersion();
 		}
 		else {

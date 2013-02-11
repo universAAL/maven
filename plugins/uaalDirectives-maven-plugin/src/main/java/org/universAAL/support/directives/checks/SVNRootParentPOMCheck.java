@@ -29,9 +29,11 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
+import org.tmatesoft.svn.core.SVNException;
+import org.tmatesoft.svn.core.SVNURL;
+import org.tmatesoft.svn.core.wc.SVNClientManager;
+import org.tmatesoft.svn.core.wc.SVNStatus;
 import org.universAAL.support.directives.api.APIFixableCheck;
-
-import deprecated.SVNCheckMojo;
 
 /**
  * @author amedrano
@@ -73,7 +75,7 @@ public class SVNRootParentPOMCheck implements APIFixableCheck {
 			throws MojoExecutionException {
 		String correctValue;
 			try {
-			    correctValue = SVNCheckMojo.getSVNURL(mavenProject.getBasedir());
+			    correctValue = getSVNURL(mavenProject.getBasedir());
 			    URL u = new URL(correctValue);
 			    correctValue = u.getPath().split("/")[1];
 			    log.debug("Determined Correct Value for " + PROP + ": " + correctValue);
@@ -108,5 +110,15 @@ public class SVNRootParentPOMCheck implements APIFixableCheck {
 	return (parent.getGroupId().equals(UAAL_GID)
 		&& parent.getArtifactId().endsWith(UAAL_AID));
     }
-
+    
+	public static String getSVNURL(File dir) throws Exception, SVNException {
+		SVNClientManager cli = SVNClientManager.newInstance();
+		SVNStatus status;
+		status = cli.getStatusClient().doStatus(dir, false);
+		if (status != null) {
+			SVNURL url = status.getURL();
+			return url.toDecodedString();
+		}
+		throw new Exception("unable to find URL from svn info.");
+	}
 }

@@ -30,10 +30,10 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.universAAL.support.directives.api.APIFixableCheck;
+import org.universAAL.support.directives.api.AbstractCheckMojo;
 import org.universAAL.support.directives.util.PomFixer;
 import org.universAAL.support.directives.util.PomWriter;
 
-import deprecated.DirectiveCheckMojo;
 
 /**
  * @author amedrano
@@ -108,7 +108,7 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 
 	private String getErrorMessge(MavenProject mavenProject) {
 		String err;
-		if (DirectiveCheckMojo.isRootProject(mavenProject)) {
+		if (AbstractCheckMojo.isRootProject(mavenProject)) {
 			err = VERSIONS_NOT_CONFIGURED_ROOT;
 			for (DependencyID dep : toBeFixed.keySet()) {
 				err += "\n" + dep.getGID() + ":" + dep.getAID() 
