@@ -27,16 +27,16 @@ import org.universAAL.support.directives.checks.MavenCoordinateCheck;
 public class NamingCheckMojo extends AbstractCheckMojo {
 	
 
-	/** @parameter default-value=".*" */
+	/** @parameter default-value=".*" expression="${artifactIdMatchString}" */
 	private String artifactIdMatchString;
 	
-	/** @parameter default-value=".*" */
+	/** @parameter default-value=".*" expression="${groupIdMatchString}" */
 	private String groupIdMatchString;
 	
-	/** @parameter default-value=".*" */
+	/** @parameter default-value=".*" expression="${nameMatchString}" */
 	private String nameMatchString;
 	
-	/** @parameter default-value=".*" */
+	/** @parameter default-value=".*" expression="${versionMatchString}" */
 	private String versionMatchString;
 
 	/** {@inheritDoc} */
