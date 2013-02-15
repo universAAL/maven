@@ -15,13 +15,14 @@
  ******************************************************************************/
 package org.universAAL.support.directives.mojos;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.doxia.siterenderer.Renderer;
-import org.apache.maven.doxia.siterenderer.sink.SiteRendererSink;
 import org.apache.maven.plugin.AbstractMojoExecutionException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -41,8 +42,6 @@ import org.universAAL.support.directives.checks.SVNRootParentPOMCheck;
  * @author amedrano
  * @goal check-report
  * @phase site
- * @aggregator
- * @execute
  */
 public class CheckReportMojo extends AbstractMavenReport {
 	
@@ -65,11 +64,10 @@ public class CheckReportMojo extends AbstractMavenReport {
     private MavenProject project;
  
     /**
-     * @component
-     * @required
-     * @readonly
+     * Doxia Site Renderer component.
+     * @Component
      */
-    private SiteRendererSink siteRenderer;
+    protected Renderer siteRenderer;
     
     /**
      * The projects in the reactor.
@@ -90,6 +88,12 @@ public class CheckReportMojo extends AbstractMavenReport {
 	
 	/** @parameter default-value=".*" expression="${versionMatchString}" */
 	private String versionMatchString;
+	
+	private int myFailedTests;
+
+	private Set<MavenProject> FailedModules;
+			
+			
 
 	/** {@inheritDoc} */
 	@Override
@@ -105,6 +109,8 @@ public class CheckReportMojo extends AbstractMavenReport {
 				new SVNRootParentPOMCheck()
 			};
 		checks = cs;
+		myFailedTests = 0;
+		FailedModules = new HashSet<MavenProject>();
 		
 		Sink sink = getSink();
 		sink.head();
@@ -133,10 +139,14 @@ public class CheckReportMojo extends AbstractMavenReport {
 	    sink.tableRow_();
 	    renderMyTable(sink, loc);
 	    sink.table_();
+	    
+	    sink.lineBreak();
+	    sink.text("Passed " + Integer.toString(cs.length-myFailedTests) + " out of " + Integer.toString(cs.length) + "checks.");
+	    
 	    if (project.getPackaging().equals("pom")) {
-	    	sink.section2();
+	    	sink.sectionTitle2();
 	    	sink.text("Check on Modules");
-	    	sink.section2_();
+	    	sink.sectionTitle2_();
 	    	
 	    	sink.table();
 		    sink.tableRow();
@@ -154,6 +164,9 @@ public class CheckReportMojo extends AbstractMavenReport {
 		    sink.tableRow_();
 		    renderModulesTable(sink, loc);
 		    sink.table_();
+		    
+		    sink.lineBreak();
+		    sink.text(Integer.toString(reactorProjects.size()-1-FailedModules.size()) + " out of " + Integer.toString(reactorProjects.size()-1) + " modules are compliant.");
 	    }
 	    sink.section1_();
 	    sink.body_();
@@ -163,32 +176,35 @@ public class CheckReportMojo extends AbstractMavenReport {
 
 	/**
 	 * @param sink
-	 * @param loc TODO
+	 * @param loc 
 	 */
 	private void renderModulesTable(Sink sink, Locale loc) {
 		for (MavenProject mp : reactorProjects) {
 
 			for (int i = 0; i < checks.length; i++) {
-				boolean passed;
-				AbstractMojoExecutionException ex = null;
-				try {
-					passed = checks[i].check(mp, getLog());
-				} catch (MojoExecutionException e) {
-					passed = false;
-					ex = e;
-				} catch (MojoFailureException e) {
-					passed = false;
-					ex = e;
-				}
-
-				// IF passed, do nothing if failed write row.
-				if (!passed) {
-					sink.tableRow();
-					sink.tableCell();
-					sink.text(mp.getGroupId() + ":" + mp.getArtifactId());
-					sink.tableCell_();
-					writeRow(checks[i],passed, ex, sink, loc);
-					sink.tableRow_();
+				if (!mp.equals(project)) {
+					boolean passed;
+					AbstractMojoExecutionException ex = null;
+					try {
+						passed = checks[i].check(mp, getLog());
+					} catch (MojoExecutionException e) {
+						passed = false;
+						ex = e;
+					} catch (MojoFailureException e) {
+						passed = false;
+						ex = e;
+					}
+					// IF passed, do nothing if failed write row.
+					if (!passed) {
+						sink.tableRow();
+						sink.tableCell();
+//						sink.text(mp.getGroupId() + ":" + mp.getArtifactId());
+						sink.text(mp.getArtifactId());
+						sink.tableCell_();
+						writeRow(checks[i], passed, ex, sink, loc);
+						sink.tableRow_();
+						FailedModules.add(mp);
+					} 
 				}
 			}	
 		}
@@ -196,7 +212,7 @@ public class CheckReportMojo extends AbstractMavenReport {
 
 	/**
 	 * @param sink
-	 * @param loc TODO
+	 * @param loc the locale to use.
 	 */
 	private void renderMyTable(Sink sink, Locale loc) {
 		for (int i = 0; i < checks.length; i++) {
@@ -215,24 +231,33 @@ public class CheckReportMojo extends AbstractMavenReport {
 		    sink.tableRow();
 		    writeRow(checks[i],passed, ex, sink, loc);
 		    sink.tableRow_();
+		    if (!passed) {
+		    	myFailedTests++;
+		    }
 		}
 	}
 	
 	private void writeRow(APICheck check, boolean passed, AbstractMojoExecutionException ex, Sink sink, Locale loc) {
 	    sink.tableCell();
-	    sink.text(check.getClass().getName());
+	    sink.text(check.getClass().getSimpleName());
 	    sink.tableCell_();
 	    if (passed) {
 	    	sink.tableCell();
+	    	sink.bold();
 	    	sink.text(getBundle(loc).getString("report.passed"));
+	    	sink.bold_();
 	    	sink.tableCell_();
 	    } else {
-	    	sink.tableCell();
-	    	sink.text(getBundle(loc).getString("report.failed"));
+	    	sink.tableCell( "bgcolor=\"#FF0000\"");
+	    	sink.bold();
+	    	sink.text( getBundle(loc).getString("report.failed"));
+	    	sink.bold_();
 	    	sink.lineBreak();
-	    	sink.text(ex.getMessage());
-	    	sink.lineBreak();
-	    	sink.text(ex.getLongMessage());
+	    	if (ex != null) {
+	    		sink.text(ex.getMessage());
+	    		sink.lineBreak();
+	    		sink.text(ex.getLongMessage());
+	    	}
 	    	sink.tableCell_();
 	    }
 		

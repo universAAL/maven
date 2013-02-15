@@ -63,7 +63,7 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 	/**
 	 * List of Dependencies to be fixed
 	 */
-	private Map<DependencyID, String> toBeFixed = new TreeMap<DependencyID, String>();
+	private Map<DependencyID, String> toBeFixed;
 	
 	/**
 	 * list of children projects.
@@ -88,6 +88,7 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 	/** {@inheritDoc} */
 	public boolean check(MavenProject mavenProject, Log log)
 			throws MojoExecutionException, MojoFailureException {
+		
 		this.log = log;
 		if (!passCheck(mavenProject)) {
 			String err = getErrorMessge(mavenProject);
@@ -139,6 +140,7 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 	 * @return
 	 */
 	private boolean passCheck(MavenProject mavenProject2) {
+		toBeFixed = new TreeMap<DependencyID, String>();
 		if (mavenProject2.getPackaging().equals("pom")) {
 			return passRootCheck(mavenProject2);
 		}

@@ -48,7 +48,7 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 	/**
 	 * List of Dependencies to be fixed
 	 */
-	private ArrayList<String> toBeFixed = new ArrayList<String>();
+	private ArrayList<String> toBeFixed;
 	
 	/** {@inheritDoc} */
 	public boolean check(MavenProject mavenproject, Log log)
@@ -101,6 +101,7 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 	}
 
 	private boolean passRootCheck(MavenProject mavenProject2, Log log) {
+		toBeFixed = new ArrayList<String>();
 		List<String> listed = (List<String>) mavenProject2.getModules();
 		
 		//gather the existent modules

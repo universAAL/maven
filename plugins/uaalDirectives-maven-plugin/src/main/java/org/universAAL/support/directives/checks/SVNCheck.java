@@ -18,6 +18,7 @@ package org.universAAL.support.directives.checks;
 import java.io.File;
 
 import org.apache.maven.model.Model;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
@@ -60,7 +61,7 @@ public class SVNCheck implements APIFixableCheck {
 	private MavenProject mavenProject;
 
 
-	public boolean check(MavenProject mavenProject, Log log) {
+	public boolean check(MavenProject mavenProject, Log log) throws MojoExecutionException, MojoFailureException {
 		this.mavenProject = mavenProject;
 		log.debug(
 				"checking svn for " + mavenProject.getBasedir().getPath());
@@ -84,6 +85,7 @@ public class SVNCheck implements APIFixableCheck {
 		} catch (SVNException e) {
 			log.warn("SVN Error.", e);
 			log.warn("directory seems not to be a local SVN working copy.");
+			throw new MojoExecutionException("Directory seems not to be a local SVN working copy.", e);
 		} catch (Exception e1) {
 			log.error(e1);
 		}
