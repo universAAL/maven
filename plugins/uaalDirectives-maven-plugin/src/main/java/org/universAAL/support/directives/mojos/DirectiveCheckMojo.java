@@ -18,26 +18,48 @@ package org.universAAL.support.directives.mojos;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.maven.project.MavenProject;
 import org.universAAL.support.directives.api.APICheck;
 import org.universAAL.support.directives.api.APIFixableCheck;
 import org.universAAL.support.directives.api.AbstractFixableCheckMojo;
 import org.universAAL.support.directives.api.AggregatedCheck;
+import org.universAAL.support.directives.checks.DecoupleCheck;
+import org.universAAL.support.directives.checks.DependencyManagementCheckFix;
+import org.universAAL.support.directives.checks.MavenCoordinateCheck;
+import org.universAAL.support.directives.checks.ModulesCheckFix;
+import org.universAAL.support.directives.checks.ParentGForgePropertyCheck;
+import org.universAAL.support.directives.checks.SVNCheck;
+import org.universAAL.support.directives.checks.SVNIgnoreCheck;
 
 
 
 /**
  * @author amedrano
+ * @goal check
  *
  */
 public class DirectiveCheckMojo extends AbstractFixableCheckMojo {
-
+	/**
+	 * The projects in the reactor.
+	 *
+	 * @parameter expression="${reactorProjects}"
+	 * @readonly
+	 */
+	private List<MavenProject> reactorProjects;
+	
 	private class FullCheck extends AggregatedCheck {
 
 		/** {@inheritDoc} */
 		@Override
 		public List<APICheck> getCheckList() {
 			List<APICheck> list = new ArrayList<APICheck>();
-			//list.add();
+			list.add(new ModulesCheckFix());
+			list.add(new DependencyManagementCheckFix(reactorProjects));
+			list.add(new ParentGForgePropertyCheck());
+			list.add(new MavenCoordinateCheck());
+			list.add(new SVNCheck());
+			list.add(new SVNIgnoreCheck());
+			list.add(new DecoupleCheck());
 			return list;
 		}
 		

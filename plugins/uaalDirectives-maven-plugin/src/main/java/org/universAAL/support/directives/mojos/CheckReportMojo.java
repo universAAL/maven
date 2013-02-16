@@ -89,13 +89,13 @@ public class CheckReportMojo extends AbstractMavenReport {
 	protected void executeReport(Locale loc) throws MavenReportException {
 		
 		APICheck [] cs	= {
-				new DecoupleCheck(),
-				new DependencyManagementCheckFix(reactorProjects),
-				new MavenCoordinateCheck(),
 				new ModulesCheckFix(),
+				new DependencyManagementCheckFix(reactorProjects),
+				new ParentGForgePropertyCheck(),
+				new MavenCoordinateCheck(),
 				new SVNCheck(),
 				new SVNIgnoreCheck(),
-				new ParentGForgePropertyCheck()
+				new DecoupleCheck(),
 			};
 		checks = cs;
 		myFailedTests = 0;

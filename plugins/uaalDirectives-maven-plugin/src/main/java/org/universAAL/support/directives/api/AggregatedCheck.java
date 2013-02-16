@@ -35,19 +35,48 @@ public abstract class AggregatedCheck implements APIFixableCheck {
 	/** {@inheritDoc} */
 	public boolean check(MavenProject mavenproject, Log log)
 			throws MojoExecutionException, MojoFailureException {
-		boolean fail = false;
+		String fMessage = "";
+		String eMessage ="";
 		for (APICheck c : checks) {
-			fail = fail && c.check(mavenproject, log);
+			try {
+				c.check(mavenproject, log);
+			} catch (MojoFailureException fe) {
+				fMessage += "\n" + fe.getMessage();
+			} catch (MojoExecutionException ee) {
+				eMessage += "\n" + ee.getMessage();
+			}
 		}
-		return fail;
+		if (!eMessage.isEmpty()){
+			throw new MojoExecutionException(eMessage);
+		}
+		if (!fMessage.isEmpty()){
+			throw new MojoFailureException(fMessage);
+		}
+		return fMessage.isEmpty() && eMessage.isEmpty();
 	}
 
 	/** {@inheritDoc} */
-	public void fix(MavenProject mavenProject, Log log) throws MojoExecutionException, MojoFailureException {
+	public void fix(MavenProject mavenProject, Log log) 
+			throws MojoExecutionException, MojoFailureException {
+		String fMessage = "";
+		String eMessage ="";
 		for (APICheck c : checks) {
 			if (c instanceof APIFixableCheck) {
-				((APIFixableCheck)c).fix(null, log);
+				try {
+					((APIFixableCheck)c).fix(mavenProject, log);
+				}  catch (MojoFailureException fe) {
+					fMessage += "\n" + fe.getMessage();
+				} catch (MojoExecutionException ee) {
+					eMessage += "\n" + ee.getMessage();
+				}
 			}
+		}
+
+		if (!eMessage.isEmpty()){
+			throw new MojoExecutionException(eMessage);
+		}
+		if (!fMessage.isEmpty()){
+			throw new MojoFailureException(fMessage);
 		}
 		
 	}
