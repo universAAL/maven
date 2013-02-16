@@ -38,12 +38,11 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 	/**
 	 * Message content when check fails
 	 */
-	private static final String MODULES_NOT_CONFIGURED_ROOT = System
-			.getProperty("line.separator")
-			+ "\n"
-			+ "Modules List Directive Fail :\n"
-			+ "It seems the POM does not list all the modules it should. "
-			+ System.getProperty("line.separator") + "\n";
+	private static final String MODULES_NOT_CONFIGURED_ROOT = 
+			"Modules List Directive Fail :\n"
+			+ "It seems the POM does not list all the modules it should. ";
+
+	private static final String SVN_FOLDER = ".svn";
 
 	/**
 	 * List of Dependencies to be fixed
@@ -65,8 +64,8 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 		if (AbstractCheckMojo.isRootProject(mavenProject)) {
 			String err = MODULES_NOT_CONFIGURED_ROOT;
 			for (String mod : toBeFixed) {
-				err += "\n" + mod 
-						+ ", version should be listed as a module." ;
+				err += "\n\t" + mod 
+						+ ", folder should be listed as a module?" ;
 			}
 			return err;
 		}
@@ -100,6 +99,7 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 		}
 	}
 
+
 	private boolean passRootCheck(MavenProject mavenProject2, Log log) {
 		toBeFixed = new ArrayList<String>();
 		List<String> listed = (List<String>) mavenProject2.getModules();
@@ -110,7 +110,8 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 			String rel = "../" + f.getName();
 			if (f.isDirectory()
 					&& !listed.contains(rel)
-					&& !rel.endsWith(mavenProject2.getBasedir().getName())) {
+					&& !rel.endsWith(mavenProject2.getBasedir().getName())
+					&& !rel.contains(SVN_FOLDER)) {
 				toBeFixed.add(rel);
 				log.debug("Found not listed module : " + rel);
 			}

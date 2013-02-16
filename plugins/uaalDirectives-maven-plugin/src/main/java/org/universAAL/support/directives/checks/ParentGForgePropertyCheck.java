@@ -36,7 +36,7 @@ import org.universAAL.support.directives.util.PomWriter;
 /**
  * @author amedrano
  */
-public class SVNRootParentPOMCheck implements APIFixableCheck, PomFixer {
+public class ParentGForgePropertyCheck implements APIFixableCheck, PomFixer {
 
     /**
      * Variable to check
@@ -46,13 +46,10 @@ public class SVNRootParentPOMCheck implements APIFixableCheck, PomFixer {
     /**
      * Message content when check fails
      */
-    private static final String VARIABLE_NOT_CONFIGURED = System
-	    .getProperty("line.separator")
-	    + "\n"
-	    + "Parent Property Conformance Directive Fail :\n"
+    private static final String VARIABLE_NOT_CONFIGURED = 
+    	"Parent Property Conformance Directive Fail :\n"
 	    + "It seems the POM does not contain a <" + PROP + "> property, "
-	    + "add such property, which must be equal to gforge's short project name."
-	    + System.getProperty("line.separator") + "\n";
+	    + "add such property, which must be equal to gforge's short project name.";
     
     private static final Object UAAL_GID = "org.universAAL";
 
@@ -65,20 +62,33 @@ public class SVNRootParentPOMCheck implements APIFixableCheck, PomFixer {
     		throws MojoExecutionException, MojoFailureException {
     	if (isParentRootPOM(mavenProject)
     			&& !hasProperty(mavenProject,PROP)){
-    		throw new MojoFailureException(VARIABLE_NOT_CONFIGURED);
+    		try {
+				throw new MojoFailureException(VARIABLE_NOT_CONFIGURED 
+						+ "\n\t may be the correct value for the property is: " 
+						+ getCorrectPropValue(mavenProject, log) + " ?");
+    		}
+    		catch (Exception e) {
+				throw new MojoFailureException(VARIABLE_NOT_CONFIGURED);
+			}
     	}
     	return true;
     }
 
+    private String getCorrectPropValue(MavenProject mavenProject, Log log)
+    		throws SVNException, MalformedURLException, Exception{
+
+		String correctValue = getSVNURL(mavenProject.getBasedir());
+		URL u = new URL(correctValue);
+		correctValue = u.getPath().split("/")[1];
+		log.debug("Determined Correct Value for " + PROP + ": " + correctValue);
+		return correctValue;
+    }
+    
     /** {@inheritDoc} */
 	public void fix(MavenProject mavenProject, Log log)
 			throws MojoExecutionException, MojoFailureException {
-
 		try {
-			correctValue = getSVNURL(mavenProject.getBasedir());
-			URL u = new URL(correctValue);
-			correctValue = u.getPath().split("/")[1];
-			log.debug("Determined Correct Value for " + PROP + ": " + correctValue);
+			correctValue = getCorrectPropValue(mavenProject, log);
 			new PomWriter(this, mavenProject).fix();
 		} catch (MalformedURLException e) {
 			throw new MojoExecutionException("wrong URL", e);

@@ -36,7 +36,7 @@ import org.universAAL.support.directives.checks.MavenCoordinateCheck;
 import org.universAAL.support.directives.checks.ModulesCheckFix;
 import org.universAAL.support.directives.checks.SVNCheck;
 import org.universAAL.support.directives.checks.SVNIgnoreCheck;
-import org.universAAL.support.directives.checks.SVNRootParentPOMCheck;
+import org.universAAL.support.directives.checks.ParentGForgePropertyCheck;
 
 /**
  * @author amedrano
@@ -76,18 +76,7 @@ public class CheckReportMojo extends AbstractMavenReport {
      * @readonly
      */
     private List<MavenProject> reactorProjects;
-    
-	/** @parameter default-value=".*" expression="${artifactIdMatchString}" */
-	private String artifactIdMatchString;
-	
-	/** @parameter default-value=".*" expression="${groupIdMatchString}" */
-	private String groupIdMatchString;
-	
-	/** @parameter default-value=".*" expression="${nameMatchString}" */
-	private String nameMatchString;
-	
-	/** @parameter default-value=".*" expression="${versionMatchString}" */
-	private String versionMatchString;
+   
 	
 	private int myFailedTests;
 
@@ -102,11 +91,11 @@ public class CheckReportMojo extends AbstractMavenReport {
 		APICheck [] cs	= {
 				new DecoupleCheck(),
 				new DependencyManagementCheckFix(reactorProjects),
-				new MavenCoordinateCheck(artifactIdMatchString, groupIdMatchString, versionMatchString, nameMatchString),
+				new MavenCoordinateCheck(),
 				new ModulesCheckFix(),
 				new SVNCheck(),
 				new SVNIgnoreCheck(),
-				new SVNRootParentPOMCheck()
+				new ParentGForgePropertyCheck()
 			};
 		checks = cs;
 		myFailedTests = 0;
@@ -141,7 +130,7 @@ public class CheckReportMojo extends AbstractMavenReport {
 	    sink.table_();
 	    
 	    sink.lineBreak();
-	    sink.text("Passed " + Integer.toString(cs.length-myFailedTests) + " out of " + Integer.toString(cs.length) + "checks.");
+	    sink.text("Passed " + Integer.toString(cs.length-myFailedTests) + " out of " + Integer.toString(cs.length) + " checks.");
 	    
 	    if (project.getPackaging().equals("pom")) {
 	    	sink.sectionTitle2();
@@ -254,9 +243,13 @@ public class CheckReportMojo extends AbstractMavenReport {
 	    	sink.bold_();
 	    	sink.lineBreak();
 	    	if (ex != null) {
+	    		sink.monospaced();
+	    		sink.verbatim(true);
 	    		sink.text(ex.getMessage());
 	    		sink.lineBreak();
 	    		sink.text(ex.getLongMessage());
+	    		sink.verbatim_();
+	    		sink.monospaced_();
 	    	}
 	    	sink.tableCell_();
 	    }

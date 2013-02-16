@@ -44,21 +44,15 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 	/**
 	 * Message content when check fails
 	 */
-	private static final String VERSIONS_NOT_CONFIGURED_ROOT = System
-			.getProperty("line.separator")
-			+ "\n"
-			+ "dependencyManagement Conformance Directive Fail :\n"
-			+ "It seems the POM has a dependencyManagement malformed section. "
-			+ System.getProperty("line.separator") + "\n";
+	private static final String VERSIONS_NOT_CONFIGURED_ROOT = 
+			"dependencyManagement Conformance Directive Fail :\n"
+			+ "It seems the POM has a dependencyManagement malformed section.";
 	/**
 	 * Message content when check fails
 	 */
-	private static final String VERSIONS_NOT_CONFIGURED = System
-			.getProperty("line.separator")
-			+ "\n"
-			+ "dependencyManagement Conformance Directive Fail :\n"
-			+ "It seems the POM has versions it shouldn't. "
-			+ System.getProperty("line.separator") + "\n";
+	private static final String VERSIONS_NOT_CONFIGURED =
+			"dependencyManagement Conformance Directive Fail :\n"
+			+ "It seems the POM has versions it shouldn't.";
 
 	/**
 	 * List of Dependencies to be fixed
@@ -112,14 +106,14 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 		if (AbstractCheckMojo.isRootProject(mavenProject)) {
 			err = VERSIONS_NOT_CONFIGURED_ROOT;
 			for (DependencyID dep : toBeFixed.keySet()) {
-				err += "\n" + dep.getGID() + ":" + dep.getAID() 
+				err += "\n\t" + dep.getGID() + ":" + dep.getAID() 
 						+ ", version should be : " + toBeFixed.get(dep) ;
 			}
 		}
 		else {
 			err = VERSIONS_NOT_CONFIGURED;
 			for (DependencyID dep : toBeFixed.keySet()) {
-				err += "\n" + dep.getGID() + ":" + dep.getAID() 
+				err += "\n\t" + dep.getGID() + ":" + dep.getAID() 
 						+ ", version shouldn't be declared.";
 			}
 		}

@@ -48,18 +48,13 @@ public class DecoupleCheck implements APICheck, SourceChecker {
 			ArrayList<File> conflicted = se.walk(mavenProject.getBasedir()
 					+ "/src/main/java/");
 			if (conflicted.size() > 0) {
-				String m = System.getProperty("line.separator")
-						+ System.getProperty("line.separator")
-						+ "\nThe following Files are not Container Decoupled:\n";
+				String m = "The following Files are not Container Decoupled:\n";
 				for (java.util.Iterator<File> iterator = conflicted.iterator(); iterator
 						.hasNext();) {
-					m += iterator.next().getAbsolutePath() + "\n";
+					m += "\t" + iterator.next().getAbsolutePath() + "\n";
 				}
-				m += System.getProperty("line.separator");
 				m += "To solve this problem, make sure there are no OSGi imports in your classes,"
 						+ " unless the package that contains them has explicitly \"osgi\" in it's name.";
-				m += System.getProperty("line.separator")
-				+ System.getProperty("line.separator");
 				throw new MojoExecutionException(m);
 			}
 			return true;

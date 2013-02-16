@@ -42,13 +42,10 @@ public class SVNCheck implements APIFixableCheck {
 	/**
 	 * Message content when check fails
 	 */
-	private static final String SCM_NOT_CONFIGURED = System
-			.getProperty("line.separator")
-			+ "\n"
-			+ "SCM Conformance Directive Fail :\n"
+	private static final String SCM_NOT_CONFIGURED = 
+			"SCM Conformance Directive Fail :\n"
 			+ "It seems the POM does not contain a SCM tag, "
-			+ "or the SCM does not match the actual SVN repository URL."
-			+ System.getProperty("line.separator") + "\n";
+			+ "or the SCM tag value does not match the actual SVN repository URL.";
 
 	/**
 	 * The SVN url.
@@ -79,7 +76,7 @@ public class SVNCheck implements APIFixableCheck {
 				throw new MojoFailureException(SCM_NOT_CONFIGURED);
 				
 			} else {
-				log.info("SCM and SVN info are in sync.");
+				log.debug("SCM and SVN info are in sync.");
 				return true;
 			}
 		} catch (SVNException e) {

@@ -17,7 +17,7 @@ package org.universAAL.support.directives.mojos;
 
 import org.universAAL.support.directives.api.APIFixableCheck;
 import org.universAAL.support.directives.api.AbstractFixableCheckMojo;
-import org.universAAL.support.directives.checks.SVNRootParentPOMCheck;
+import org.universAAL.support.directives.checks.ParentGForgePropertyCheck;
 
 /**
  * @author amedrano
@@ -26,11 +26,11 @@ import org.universAAL.support.directives.checks.SVNRootParentPOMCheck;
  * 
  * @phase process-sources
  */
-public class SVNRootParentPOMCheckMojo extends AbstractFixableCheckMojo {
+public class ParentGForgePropertyCheckMojo extends AbstractFixableCheckMojo {
 
 	/** {@inheritDoc} */
 	@Override
 	public APIFixableCheck getFix() {
-		return new SVNRootParentPOMCheck();
+		return new ParentGForgePropertyCheck();
 	}
 }

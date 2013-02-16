@@ -38,11 +38,10 @@ import org.universAAL.support.directives.api.APIFixableCheck;
  */
 public class SVNIgnoreCheck implements APIFixableCheck {
 
-	private String NO_IGNORES = System.getProperty("line.separator")
-			+ "\n"
-			+ "SVN ignore Directive Fail :\n"
+	private String NO_IGNORES = 
+			"SVN ignore Directive Fail :\n"
 			+ "It seems the current Directory includes files that should be ingored.\n "
-			+ "Remember to ignore these files with your svn client before you commit:\n";
+			+ "Remember to ignore these files with your svn client before you commit:";
 
 	/**
 	 * @parameter alias="ignores"
@@ -63,10 +62,7 @@ public class SVNIgnoreCheck implements APIFixableCheck {
 				|| ignores.length <= 0) {
 			ignores = DEFAULT_IGNORES;
 		}
-		for (int i = 0; i < ignores.length; i++) {
-			NO_IGNORES += ignores[i] + "\n";
-		}
-		NO_IGNORES += System.getProperty("line.separator");
+		
 	}
 
 	/** {@inheritDoc} */
@@ -92,7 +88,11 @@ public class SVNIgnoreCheck implements APIFixableCheck {
 				}
 			}
 			if (changed) {
-				throw new MojoFailureException(NO_IGNORES);
+				String err = NO_IGNORES;
+				for (int i = 0; i < ignores.length; i++) {
+					err += "\n\t" + ignores[i];
+				}
+				throw new MojoFailureException(err);
 			}
 		} catch (SVNException e) {
 			e.printStackTrace();

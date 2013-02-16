@@ -18,11 +18,13 @@ package org.universAAL.support.directives.checks;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.maven.model.Model;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.universAAL.support.directives.api.APICheck;
+import org.universAAL.support.directives.util.PomWriter;
 
 /**
  * @author amedrano
@@ -30,65 +32,79 @@ import org.universAAL.support.directives.api.APICheck;
  */
 public class MavenCoordinateCheck implements APICheck {
 
-	private String artifactIdMatchString;
-	private String groupIdMatchString;
-	private String versionMatchString;
-	private String nameMatchString;
-
-
-
-	public MavenCoordinateCheck(String artifactIdMatchString,
-			String groupIdMatchString, String versionMatchString,
-			String nameMatchString) {
-		super();
-		this.artifactIdMatchString = artifactIdMatchString;
-		this.groupIdMatchString = groupIdMatchString;
-		this.nameMatchString = nameMatchString;
-		this.versionMatchString = versionMatchString;
-	}
-
-
+	private static final String VERSION_MATCH_PROP = "versionMatchString";
+	private static final String NAME_MATCH_PROP = "nameMatchString";
+	private static final String GROUP_ID_MATCH_PROP = "groupIdMatchString";
+	private static final String ARTIFACT_ID_MATCH_PROP = "artifactIdMatchString";
+	private static final String DEFAULT_MATCH = ".*";
+	
+	private static final String DOES_NOT_MATCH_CONVENTION = "\ndoes not match convention: ";
 
 	/** {@inheritDoc} */
 	public boolean check(MavenProject mavenProject, Log log)
 			throws MojoExecutionException, MojoFailureException {
 
+		String artifactIdMatchString = 
+				mavenProject.getProperties().getProperty(ARTIFACT_ID_MATCH_PROP, DEFAULT_MATCH);
+		String groupIdMatchString = 
+				mavenProject.getProperties().getProperty(GROUP_ID_MATCH_PROP, DEFAULT_MATCH);
+		String nameMatchString = 
+				mavenProject.getProperties().getProperty(NAME_MATCH_PROP, DEFAULT_MATCH);
+		String versionMatchString = 
+				mavenProject.getProperties().getProperty(VERSION_MATCH_PROP, DEFAULT_MATCH);
+		
 		Pattern pAId = Pattern.compile(artifactIdMatchString);
 		Pattern pGId = Pattern.compile(groupIdMatchString);
 		Pattern pVer = Pattern.compile(versionMatchString);
 		Pattern pNam = Pattern.compile(nameMatchString);
 
-		Matcher mAId = pAId.matcher(mavenProject.getModel().getArtifactId());
-		Matcher mGId = pGId.matcher(mavenProject.getModel().getGroupId());
-		Matcher mVer = pVer.matcher(mavenProject.getModel().getVersion());
-		Matcher mNam = pNam.matcher(mavenProject.getModel().getName());
+		Matcher mAId = pAId.matcher(mavenProject.getArtifactId());
+		Matcher mGId = pGId.matcher(mavenProject.getGroupId());
+		Matcher mVer = pVer.matcher(mavenProject.getVersion());
+		Matcher mNam = pNam.matcher(mavenProject.getName());
 
 		StringBuffer message = new StringBuffer();
 
 		if (!mAId.find()) {
 			message.append("ArtifactId: " + mavenProject.getArtifactId() 
-					+ "\n does not match convention: " 
+					+ DOES_NOT_MATCH_CONVENTION 
 					+ artifactIdMatchString + "\n");
 		}
 		if (!mGId.find()) {
 			message.append("GroupId: " + mavenProject.getGroupId() 
-					+ "\n does not match convention: " 
+					+ DOES_NOT_MATCH_CONVENTION 
 					+ groupIdMatchString + "\n");
 		}
 		if (!mVer.find()) {
 			message.append("Version: " + mavenProject.getVersion() 
-					+ "\n does not match convention: " 
+					+ DOES_NOT_MATCH_CONVENTION 
 					+ versionMatchString + "\n");
 		}
 		if (!mNam.find()) {
 			message.append("Artifact Name: " + mavenProject.getName()
-					+ "\n does not match convention: " 
+					+ DOES_NOT_MATCH_CONVENTION 
 					+ nameMatchString + "\n");
 		}
 
 		if (message.length() > 0) {
 			throw new MojoFailureException(message.toString());
 		}
+		Model pomFileModel = null;
+		try {
+			pomFileModel = PomWriter.readPOMFile(mavenProject);
+		} catch (Exception e) {
+		}
+		
+		if (!mavenProject.getPackaging().equals("pom")
+				&& pomFileModel != null
+				&& (pomFileModel.getProperties().containsKey(ARTIFACT_ID_MATCH_PROP)
+						|| pomFileModel.getProperties().containsKey(GROUP_ID_MATCH_PROP)
+						|| pomFileModel.getProperties().containsKey(VERSION_MATCH_PROP)
+						|| pomFileModel.getProperties().containsKey(NAME_MATCH_PROP))){
+			throw new MojoFailureException("This proyect has declared naming conventions when it shoudln't.\n"
+					+ "This is probably an attempt to skip this directive, SHAME ON YOU!");
+		}
+	
 		
 		return true;
 	}
