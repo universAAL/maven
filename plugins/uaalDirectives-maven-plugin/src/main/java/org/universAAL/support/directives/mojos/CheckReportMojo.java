@@ -34,9 +34,9 @@ import org.universAAL.support.directives.checks.DecoupleCheck;
 import org.universAAL.support.directives.checks.DependencyManagementCheckFix;
 import org.universAAL.support.directives.checks.MavenCoordinateCheck;
 import org.universAAL.support.directives.checks.ModulesCheckFix;
+import org.universAAL.support.directives.checks.ParentGForgePropertyCheck;
 import org.universAAL.support.directives.checks.SVNCheck;
 import org.universAAL.support.directives.checks.SVNIgnoreCheck;
-import org.universAAL.support.directives.checks.ParentGForgePropertyCheck;
 
 /**
  * @author amedrano
@@ -90,7 +90,7 @@ public class CheckReportMojo extends AbstractMavenReport {
 		
 		APICheck [] cs	= {
 				new ModulesCheckFix(),
-				new DependencyManagementCheckFix(reactorProjects),
+				new DependencyManagementCheckFix(),
 				new ParentGForgePropertyCheck(),
 				new MavenCoordinateCheck(),
 				new SVNCheck(),

@@ -35,14 +35,6 @@ import org.universAAL.support.directives.checks.ModulesCheckFix;
  * @goal update-root-children
  */
 public class UpdateParentPom extends AbstractProcedureMojo {
-
-    /**
-     * The projects in the reactor.
-     *
-     * @parameter expression="${reactorProjects}"
-     * @readonly
-     */
-    private List<MavenProject> reactorProjects;
 	
 	@Override
 	public APIProcedure getProcedure() {
@@ -64,7 +56,7 @@ public class UpdateParentPom extends AbstractProcedureMojo {
 		public List<APICheck> getCheckList() {
 			List<APICheck> l = new ArrayList<APICheck>();
 			l.add(new ModulesCheckFix());
-			l.add(new DependencyManagementCheckFix(reactorProjects));
+			l.add(new DependencyManagementCheckFix());
 			return null;
 		}
 		

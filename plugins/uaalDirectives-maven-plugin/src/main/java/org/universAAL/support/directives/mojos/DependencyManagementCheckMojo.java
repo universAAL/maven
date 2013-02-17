@@ -15,9 +15,6 @@
  ******************************************************************************/
 package org.universAAL.support.directives.mojos;
 
-import java.util.List;
-
-import org.apache.maven.project.MavenProject;
 import org.universAAL.support.directives.api.APIFixableCheck;
 import org.universAAL.support.directives.api.AbstractFixableCheckMojo;
 import org.universAAL.support.directives.checks.DependencyManagementCheckFix;
@@ -30,19 +27,11 @@ import org.universAAL.support.directives.checks.DependencyManagementCheckFix;
  * @phase process-sources
  */
 public class DependencyManagementCheckMojo extends AbstractFixableCheckMojo {
-
-	   /**
-	    * The projects in the reactor.
-	    *
-	    * @parameter expression="${reactorProjects}"
-	    * @readonly
-	    */
-	   private List<MavenProject> reactorProjects;
 	
 	/** {@inheritDoc} */
 	@Override
 	public APIFixableCheck getFix() {
-		return new DependencyManagementCheckFix(reactorProjects);
+		return new DependencyManagementCheckFix();
 	}
 
 }

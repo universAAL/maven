@@ -16,6 +16,7 @@
 package org.universAAL.support.directives.checks;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,7 +62,7 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 	}
 
 	private String getErrorMessge(MavenProject mavenProject) {
-		if (AbstractCheckMojo.isRootProject(mavenProject)) {
+		if (mavenProject.getPackaging().equals("pom")) {
 			String err = MODULES_NOT_CONFIGURED_ROOT;
 			for (String mod : toBeFixed) {
 				err += "\n\t" + mod 
@@ -109,9 +110,13 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 		for (File f : dir.listFiles()) {
 			String rel = "../" + f.getName();
 			if (f.isDirectory()
-					&& !listed.contains(rel)
+					&& directoryContains(f, "pom.xml")
+					&& !listed.contains(rel)	// it is not already listed
 					&& !rel.endsWith(mavenProject2.getBasedir().getName())
-					&& !rel.contains(SVN_FOLDER)) {
+					// it is not the parent project
+					&& !rel.contains(SVN_FOLDER)
+					// it is not the svn folder
+					) {
 				toBeFixed.add(rel);
 				log.debug("Found not listed module : " + rel);
 			}
@@ -119,6 +124,15 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 		return toBeFixed.isEmpty();
 	}
 	
+	private boolean directoryContains(File f, final String endsWith) {
+		return f.list(new FilenameFilter() {
+			
+			public boolean accept(File dir, String name) {
+				return name.endsWith(endsWith);
+			}
+		}).length > 0;
+	}
+
 	public void fix(Model model) {
 		for (String mod: toBeFixed) {
 			model.addModule(mod);

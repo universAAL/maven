@@ -27,9 +27,6 @@ import org.apache.maven.project.MavenProject;
  *
  */
 public abstract class AbstractCheckMojo extends AbstractMojo {
-
-	private static final Object UAAL_SUPER_POM_AID = "uAAL.pom";
-	private static final Object UAAL_SUPER_POM_GID = "org.universAAL";
 	
 	/**
 	 * 
@@ -82,18 +79,6 @@ public abstract class AbstractCheckMojo extends AbstractMojo {
 	}
 	
 	public abstract APICheck getCheck();
-	
-	/**
-	 * Check whether the {@link MavenProject} is one of the root universAAL root projects.
-	 * @param mp
-	 * 		The {@link MavenProject} descriptor
-	 * @return
-	 * 		True if it's direct child of uaal.pom
-	 */
-	static public boolean isRootProject(MavenProject mp) {
-		return mp.getParent().getArtifactId().equals(UAAL_SUPER_POM_AID)
-				&& mp.getParent().getGroupId().equals(UAAL_SUPER_POM_GID);
-	}
 	
 	/**
 	 * Check whether the project is at snapshot version

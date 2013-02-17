@@ -15,8 +15,8 @@
  ******************************************************************************/
 package org.universAAL.support.directives.checks;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,13 +24,12 @@ import java.util.TreeMap;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.universAAL.support.directives.api.APIFixableCheck;
-import org.universAAL.support.directives.api.AbstractCheckMojo;
 import org.universAAL.support.directives.util.PomFixer;
 import org.universAAL.support.directives.util.PomWriter;
 
@@ -70,23 +69,18 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 	private Log log;
 	
 
-	/**
-	 * Constructor.
-	 * @param reactorProjects
-	 */
-	public DependencyManagementCheckFix(List<MavenProject> reactorProjects) {
-		super();
-		this.reactorProjects = reactorProjects;
-	}
-
 	/** {@inheritDoc} */
 	public boolean check(MavenProject mavenProject, Log log)
 			throws MojoExecutionException, MojoFailureException {
 		
 		this.log = log;
-		if (!passCheck(mavenProject)) {
-			String err = getErrorMessge(mavenProject);
-			throw new MojoFailureException(err);
+		try {
+			if (!passCheck(mavenProject)) {
+				String err = getErrorMessge(mavenProject);
+				throw new MojoFailureException(err);
+			}
+		} catch (Exception e) {
+			throw new MojoExecutionException(e.getMessage(), e);
 		}
 		return true;
 	}
@@ -103,7 +97,7 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 
 	private String getErrorMessge(MavenProject mavenProject) {
 		String err;
-		if (AbstractCheckMojo.isRootProject(mavenProject)) {
+		if (mavenProject.getPackaging().equals("pom")) {
 			err = VERSIONS_NOT_CONFIGURED_ROOT;
 			for (DependencyID dep : toBeFixed.keySet()) {
 				err += "\n\t" + dep.getGID() + ":" + dep.getAID() 
@@ -132,9 +126,11 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 	 * check whether there are any versions defined or dependencyManagement points to correct versions
 	 * @param mavenProject2
 	 * @return
+	 * @throws Exception when any of the children pom files can not be located.
 	 */
-	private boolean passCheck(MavenProject mavenProject2) {
+	private boolean passCheck(MavenProject mavenProject2) throws Exception {
 		toBeFixed = new TreeMap<DependencyID, String>();
+		reactorProjects = getChildrenModules(mavenProject2);
 		if (mavenProject2.getPackaging().equals("pom")) {
 			return passRootCheck(mavenProject2);
 		}
@@ -163,15 +159,7 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 					toBeFixed.put(depID, null);
 				}
 			}
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (XmlPullParserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
 		}
 		return toBeFixed.isEmpty();
 	}
@@ -189,7 +177,8 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 			getLog().debug("***1 ." + dependency.getGroupId() + ":" +  dependency.getArtifactId() + " Real:\"" + realVersion + "\" - Declared: \"" + dependency.getVersion()+"\"");
 			if ( dependency != null
 					&& !dependency.getVersion().equals(realVersion)
-					&& realVersion != null) {
+					&& realVersion != null
+					&& !realVersion.isEmpty()) {
 				getLog().debug("Marked as wrong.");
 				toBeFixed.put( new DependencyID(dependency), realVersion);
 			}
@@ -314,5 +303,30 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 			dep.setGroupId(gID);
 			return dep;
 		}
+	}
+	
+	public static List<MavenProject> getChildrenModules(MavenProject mavenProject) 
+			throws Exception{
+		List<MavenProject> children = new ArrayList<MavenProject>();
+		List<String> modules = mavenProject.getModules();
+		for (String mod : modules) {
+			File modPOM;
+			if (mod.endsWith(".xml")){
+				modPOM = new File(mavenProject.getBasedir(), mod);
+			} else if (new File(mavenProject.getBasedir(), mod + "/pom.xml").exists() ){
+				modPOM = new File(mavenProject.getBasedir(), mod + "/pom.xml");
+			} else if (new File(mavenProject.getBasedir(), mod + "pom.xml").exists() ){
+				modPOM = new File(mavenProject.getBasedir(), mod + "pom.xml");
+			} else {
+				throw new Exception("unable to load child pom.xml file in: " + mod);
+			}
+			MavenXpp3Reader reader = new MavenXpp3Reader();
+			FileInputStream fis = new FileInputStream(modPOM);
+			Model model = reader.read(fis);
+			fis.close();
+			children.add(new MavenProject(model));
+		}
+		
+		return children;
 	}
 }

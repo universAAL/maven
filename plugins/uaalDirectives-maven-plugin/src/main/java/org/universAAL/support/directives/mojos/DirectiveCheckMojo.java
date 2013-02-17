@@ -18,7 +18,6 @@ package org.universAAL.support.directives.mojos;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.maven.project.MavenProject;
 import org.universAAL.support.directives.api.APICheck;
 import org.universAAL.support.directives.api.APIFixableCheck;
 import org.universAAL.support.directives.api.AbstractFixableCheckMojo;
@@ -39,13 +38,7 @@ import org.universAAL.support.directives.checks.SVNIgnoreCheck;
  *
  */
 public class DirectiveCheckMojo extends AbstractFixableCheckMojo {
-	/**
-	 * The projects in the reactor.
-	 *
-	 * @parameter expression="${reactorProjects}"
-	 * @readonly
-	 */
-	private List<MavenProject> reactorProjects;
+
 	
 	private class FullCheck extends AggregatedCheck {
 
@@ -54,7 +47,7 @@ public class DirectiveCheckMojo extends AbstractFixableCheckMojo {
 		public List<APICheck> getCheckList() {
 			List<APICheck> list = new ArrayList<APICheck>();
 			list.add(new ModulesCheckFix());
-			list.add(new DependencyManagementCheckFix(reactorProjects));
+			list.add(new DependencyManagementCheckFix());
 			list.add(new ParentGForgePropertyCheck());
 			list.add(new MavenCoordinateCheck());
 			list.add(new SVNCheck());
