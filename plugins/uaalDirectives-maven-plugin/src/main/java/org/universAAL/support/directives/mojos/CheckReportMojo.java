@@ -21,12 +21,15 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.doxia.siterenderer.Renderer;
 import org.apache.maven.plugin.AbstractMojoExecutionException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.profiles.ProfileManager;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
 import org.universAAL.support.directives.api.APICheck;
@@ -77,6 +80,12 @@ public class CheckReportMojo extends AbstractMavenReport {
      */
     private List<MavenProject> reactorProjects;
    
+
+    /** @component */
+	private MavenProjectBuilder mavenProjectBuilder;
+	
+	/**@parameter default-value="${localRepository}" */
+	private ArtifactRepository localRepository;
 	
 	private int myFailedTests;
 
@@ -90,7 +99,7 @@ public class CheckReportMojo extends AbstractMavenReport {
 		
 		APICheck [] cs	= {
 				new ModulesCheckFix(),
-				new DependencyManagementCheckFix(),
+				new DependencyManagementCheckFix(mavenProjectBuilder, localRepository),
 				new ParentGForgePropertyCheck(),
 				new MavenCoordinateCheck(),
 				new SVNCheck(),

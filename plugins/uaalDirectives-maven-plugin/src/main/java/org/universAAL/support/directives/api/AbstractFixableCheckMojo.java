@@ -47,7 +47,7 @@ public abstract class AbstractFixableCheckMojo extends AbstractCheckMojo {
 		}
 		if (fail && !fix) {
 				getLog().info("This plugin is able to automatically" +
-						"fix the prbolem. just add  \"-D-Ddirective.fix\" to your command.");
+						" fix the prbolem. just add  \"-D-Ddirective.fix\" to your command.");
 		}
 		
 		if (failedE instanceof MojoExecutionException) {

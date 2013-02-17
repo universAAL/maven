@@ -18,10 +18,13 @@ package org.universAAL.support.directives.mojos;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.profiles.ProfileManager;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectBuilder;
 import org.universAAL.support.directives.api.APICheck;
 import org.universAAL.support.directives.api.APIProcedure;
 import org.universAAL.support.directives.api.AbstractProcedureMojo;
@@ -35,6 +38,13 @@ import org.universAAL.support.directives.checks.ModulesCheckFix;
  * @goal update-root-children
  */
 public class UpdateParentPom extends AbstractProcedureMojo {
+	
+    /** @component */
+	private MavenProjectBuilder mavenProjectBuilder;
+	
+	/**@parameter default-value="${localRepository}" */
+	private ArtifactRepository localRepository;
+
 	
 	@Override
 	public APIProcedure getProcedure() {
@@ -56,7 +66,7 @@ public class UpdateParentPom extends AbstractProcedureMojo {
 		public List<APICheck> getCheckList() {
 			List<APICheck> l = new ArrayList<APICheck>();
 			l.add(new ModulesCheckFix());
-			l.add(new DependencyManagementCheckFix());
+			l.add(new DependencyManagementCheckFix(mavenProjectBuilder, localRepository));
 			return null;
 		}
 		

@@ -18,6 +18,9 @@ package org.universAAL.support.directives.mojos;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.profiles.ProfileManager;
+import org.apache.maven.project.MavenProjectBuilder;
 import org.universAAL.support.directives.api.APICheck;
 import org.universAAL.support.directives.api.APIFixableCheck;
 import org.universAAL.support.directives.api.AbstractFixableCheckMojo;
@@ -39,6 +42,11 @@ import org.universAAL.support.directives.checks.SVNIgnoreCheck;
  */
 public class DirectiveCheckMojo extends AbstractFixableCheckMojo {
 
+    /** @component */
+	private MavenProjectBuilder mavenProjectBuilder;
+	
+	/**@parameter default-value="${localRepository}" */
+	private ArtifactRepository localRepository;
 	
 	private class FullCheck extends AggregatedCheck {
 
@@ -47,7 +55,7 @@ public class DirectiveCheckMojo extends AbstractFixableCheckMojo {
 		public List<APICheck> getCheckList() {
 			List<APICheck> list = new ArrayList<APICheck>();
 			list.add(new ModulesCheckFix());
-			list.add(new DependencyManagementCheckFix());
+			list.add(new DependencyManagementCheckFix(mavenProjectBuilder, localRepository));
 			list.add(new ParentGForgePropertyCheck());
 			list.add(new MavenCoordinateCheck());
 			list.add(new SVNCheck());

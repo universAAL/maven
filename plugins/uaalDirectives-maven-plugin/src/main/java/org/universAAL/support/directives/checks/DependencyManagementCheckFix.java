@@ -16,19 +16,21 @@
 package org.universAAL.support.directives.checks;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.profiles.ProfileManager;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectBuilder;
+import org.apache.maven.project.ProjectBuildingException;
 import org.universAAL.support.directives.api.APIFixableCheck;
 import org.universAAL.support.directives.util.PomFixer;
 import org.universAAL.support.directives.util.PomWriter;
@@ -63,6 +65,17 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 	 */
 	private List<MavenProject> reactorProjects;
 	
+	private MavenProjectBuilder mavenProjectBuilder;
+	private ArtifactRepository localRepository;
+	
+	public DependencyManagementCheckFix(
+			MavenProjectBuilder mavenProjectBuilder,
+			ArtifactRepository localRepository) {
+		super();
+		this.mavenProjectBuilder = mavenProjectBuilder;
+		this.localRepository = localRepository;
+	}
+
 	/**
 	 * Log instance.
 	 */
@@ -130,7 +143,8 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 	 */
 	private boolean passCheck(MavenProject mavenProject2) throws Exception {
 		toBeFixed = new TreeMap<DependencyID, String>();
-		reactorProjects = getChildrenModules(mavenProject2);
+		reactorProjects = getChildrenModules(mavenProject2, mavenProjectBuilder,
+				localRepository, null);
 		if (mavenProject2.getPackaging().equals("pom")) {
 			return passRootCheck(mavenProject2);
 		}
@@ -305,28 +319,23 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 		}
 	}
 	
-	public static List<MavenProject> getChildrenModules(MavenProject mavenProject) 
-			throws Exception{
+	public static List<MavenProject> getChildrenModules
+	(MavenProject mavenProject,
+			MavenProjectBuilder mpb,
+			ArtifactRepository localRepository,
+			ProfileManager pm) 
+			throws ProjectBuildingException{
 		List<MavenProject> children = new ArrayList<MavenProject>();
 		List<String> modules = mavenProject.getModules();
 		for (String mod : modules) {
-			File modPOM;
-			if (mod.endsWith(".xml")){
-				modPOM = new File(mavenProject.getBasedir(), mod);
-			} else if (new File(mavenProject.getBasedir(), mod + "/pom.xml").exists() ){
-				modPOM = new File(mavenProject.getBasedir(), mod + "/pom.xml");
-			} else if (new File(mavenProject.getBasedir(), mod + "pom.xml").exists() ){
-				modPOM = new File(mavenProject.getBasedir(), mod + "pom.xml");
-			} else {
-				throw new Exception("unable to load child pom.xml file in: " + mod);
-			}
-			MavenXpp3Reader reader = new MavenXpp3Reader();
-			FileInputStream fis = new FileInputStream(modPOM);
-			Model model = reader.read(fis);
-			fis.close();
-			children.add(new MavenProject(model));
+			children.add(mpb.build(new File(mavenProject.getBasedir(), mod + "/pom.xml"), localRepository, pm, false));
 		}
-		
+
 		return children;
+	}
+	
+	public static String replaceProperties(MavenProject mavenProject, String s){
+		String prop = s.replaceAll("\\$\\{(.*)\\}", "$1");
+		return mavenProject.getProperties().getProperty(prop);
 	}
 }
