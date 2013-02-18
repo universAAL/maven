@@ -27,9 +27,9 @@ import org.apache.maven.doxia.siterenderer.Renderer;
 import org.apache.maven.plugin.AbstractMojoExecutionException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.profiles.ProfileManager;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
+import org.apache.maven.project.ProjectBuilderConfiguration;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
 import org.universAAL.support.directives.api.APICheck;
@@ -191,6 +191,9 @@ public class CheckReportMojo extends AbstractMavenReport {
 					} catch (MojoFailureException e) {
 						passed = false;
 						ex = e;
+					} catch (Exception e) {
+						passed = false;
+						ex = new MojoExecutionException("Unexpected Exception", e);
 					}
 					// IF passed, do nothing if failed write row.
 					if (!passed) {
@@ -248,7 +251,11 @@ public class CheckReportMojo extends AbstractMavenReport {
 	    } else {
 	    	sink.tableCell( "bgcolor=\"#FF0000\"");
 	    	sink.bold();
-	    	sink.text( getBundle(loc).getString("report.failed"));
+	    	if (ex instanceof MojoFailureException) {
+	    		sink.text( getBundle(loc).getString("report.failed"));
+	    	} else {
+	    		sink.text( getBundle(loc).getString("report.failed.execution"));
+	    	}
 	    	sink.bold_();
 	    	sink.lineBreak();
 	    	if (ex != null) {
