@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.universAAL.support.directives.api.APICheck;
@@ -41,9 +42,9 @@ public class DecoupleCheck implements APICheck, SourceChecker {
 	
 	static private String OSGI_MATCH = ".*osgi.*";
 
-	/** {@inheritDoc} */
-	public boolean check(MavenProject mavenProject, Log log)
-			throws MojoExecutionException {
+	/** {@inheritDoc}  */
+	public boolean check(MavenProject mavenProject, Log log) 
+			throws MojoFailureException, MojoExecutionException {
 			SourceExplorer se = new SourceExplorer(this);
 			ArrayList<File> conflicted = se.walk(mavenProject.getBasedir()
 					+ "/src/main/java/");
@@ -55,7 +56,7 @@ public class DecoupleCheck implements APICheck, SourceChecker {
 				}
 				m += "To solve this problem, make sure there are no OSGi imports in your classes,"
 						+ " unless the package that contains them has explicitly \"osgi\" in it's name.";
-				throw new MojoExecutionException(m);
+				throw new MojoFailureException(m);
 			}
 			return true;
 		}
