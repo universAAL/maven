@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
+import org.apache.maven.model.ReportPlugin;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
@@ -97,6 +98,18 @@ public class UpdateRootVersionsProcedure implements APIProcedure, PomFixer {
 				nld.add(d);			
 			}
 			model.getDependencyManagement().setDependencies(nld);
+			
+			// Updating the reportPlugin reference
+			List<ReportPlugin> rplugins = model.getReporting().getPlugins();
+			List<ReportPlugin> newRPlugins = new ArrayList<ReportPlugin>();
+			for (ReportPlugin rp : rplugins) {
+				if (rp.getGroupId().equals("org.universAAL.support")
+						&& rp.getArtifactId().equals("uaalDirectives-maven-plugin")) {
+					rp.setVersion(newVersion);
+				}
+				newRPlugins.add(rp);
+			}
+			model.getReporting().setPlugins(newRPlugins);
 		}
 	}
 

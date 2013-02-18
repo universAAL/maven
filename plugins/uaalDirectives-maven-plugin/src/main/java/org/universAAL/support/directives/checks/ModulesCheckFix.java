@@ -26,7 +26,6 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.universAAL.support.directives.api.APIFixableCheck;
-import org.universAAL.support.directives.api.AbstractCheckMojo;
 import org.universAAL.support.directives.util.PomFixer;
 import org.universAAL.support.directives.util.PomWriter;
 

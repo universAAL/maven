@@ -16,7 +16,6 @@
 package org.universAAL.support.directives.mojos;
 
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.profiles.ProfileManager;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.universAAL.support.directives.api.APIFixableCheck;
 import org.universAAL.support.directives.api.AbstractFixableCheckMojo;

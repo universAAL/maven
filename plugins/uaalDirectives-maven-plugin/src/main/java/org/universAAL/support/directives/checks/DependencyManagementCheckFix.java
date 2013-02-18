@@ -22,8 +22,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -333,13 +331,9 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 //			children.add(mpb.build(new File(mavenProject.getBasedir(), mod + "/pom.xml"), localRepository, pm, false));
 			try {
 				children.add(mpb.buildWithDependencies(new File(mavenProject.getBasedir(), mod + "/pom.xml"), localRepository, pm));
-			} catch (ArtifactResolutionException e) {
-				// TODO Auto-generated catch block
+			} catch (Exception e) {
 				e.printStackTrace();
-			} catch (ArtifactNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			} 
 		}
 
 		return children;
