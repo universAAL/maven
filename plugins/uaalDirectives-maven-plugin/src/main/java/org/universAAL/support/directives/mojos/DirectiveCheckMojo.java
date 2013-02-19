@@ -26,6 +26,7 @@ import org.universAAL.support.directives.api.AbstractFixableCheckMojo;
 import org.universAAL.support.directives.api.AggregatedCheck;
 import org.universAAL.support.directives.checks.DecoupleCheck;
 import org.universAAL.support.directives.checks.DependencyManagementCheckFix;
+import org.universAAL.support.directives.checks.LicenseFileCheckFix;
 import org.universAAL.support.directives.checks.MavenCoordinateCheck;
 import org.universAAL.support.directives.checks.ModulesCheckFix;
 import org.universAAL.support.directives.checks.ParentGForgePropertyCheck;
@@ -47,6 +48,7 @@ import org.universAAL.support.directives.checks.SVNIgnoreCheck;
  * @see ParentGForgePropertyCheckMojo
  * @see SVNCheckMojo
  * @see SVNIgnoreCheckMojo
+ * @see LicenseFileMojo
  */
 public class DirectiveCheckMojo extends AbstractFixableCheckMojo {
 
@@ -75,6 +77,7 @@ public class DirectiveCheckMojo extends AbstractFixableCheckMojo {
 			list.add(new SVNCheck());
 			list.add(new SVNIgnoreCheck());
 			list.add(new DecoupleCheck());
+			list.add(new LicenseFileCheckFix());
 			return list;
 		}
 		

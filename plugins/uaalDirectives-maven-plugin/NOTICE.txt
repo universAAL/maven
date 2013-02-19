@@ -1,4 +1,4 @@
-universAAL universAAL Directives helper plugin for Maven
+universAAL Directives helper plugin for Maven
 
 Copyright 2012-2014 UPM, http://www.upm.es
 Universidad Politécnica de Madrid 
