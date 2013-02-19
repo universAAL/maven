@@ -22,6 +22,13 @@ import org.universAAL.support.directives.api.AbstractFixableCheckMojo;
 import org.universAAL.support.directives.checks.DependencyManagementCheckFix;
 
 /**
+ * This Mojo checks (and fixes, if configured to do so) Dependency and DependencyManagement sections.
+ * <p>
+ * For parent POMs dependencyManagement section should contain all of it's modules as dependencies, 
+ * and the versions of these dependencies should match the actual version in the module's POM.
+ * <p>
+ * For project POMs there should not be any dependency with a version already managed by the inherited (or not) 
+ * dependencyManagement section.
  * @author amedrano
  * 
  * @goal dependency-check
@@ -30,10 +37,16 @@ import org.universAAL.support.directives.checks.DependencyManagementCheckFix;
  */
 public class DependencyManagementCheckMojo extends AbstractFixableCheckMojo {
 	
-    /** @component */
+    /** 
+     * The ProyectBuilder to build children modules.
+     * @component 
+     */
 	private MavenProjectBuilder mavenProjectBuilder;
 	
-	/**@parameter default-value="${localRepository}" */
+	/**
+	 * The localRepository reference, necessary to build projects.
+	 * @parameter default-value="${localRepository}" 
+	 */
 	private ArtifactRepository localRepository;
 	
 	/** {@inheritDoc} */

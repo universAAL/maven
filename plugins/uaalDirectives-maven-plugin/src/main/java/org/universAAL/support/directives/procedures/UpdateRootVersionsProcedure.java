@@ -37,6 +37,7 @@ import org.universAAL.support.directives.util.PomWriter;
  * 	<li> changing the version of itest in dependencyManagement
  *  <li> changing the version of uaal-maven-plugin in dependencyManagement
  *  <li> changing the version of uaaldirectives-maven-plugin in dependencyManagement
+ *  <li> the version of uaaldirectives-maven-plugin in reporting
  * </ol>
  * @author amedrano
  *

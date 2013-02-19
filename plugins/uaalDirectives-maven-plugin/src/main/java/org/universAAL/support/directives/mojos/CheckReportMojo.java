@@ -41,9 +41,18 @@ import org.universAAL.support.directives.checks.SVNCheck;
 import org.universAAL.support.directives.checks.SVNIgnoreCheck;
 
 /**
+ * This Mojo executes all checks upon a project.
+ * It outputs the result as a report in the site.
  * @author amedrano
  * @goal check-report
  * @phase site
+ * @see DecoupleCheckMojo
+ * @see DependencyManagementCheckMojo
+ * @see ModulesCheckMojo
+ * @see NamingCheckMojo
+ * @see ParentGForgePropertyCheckMojo
+ * @see SVNCheckMojo
+ * @see SVNIgnoreCheckMojo
  */
 public class CheckReportMojo extends AbstractMavenReport {
 	
@@ -59,6 +68,7 @@ public class CheckReportMojo extends AbstractMavenReport {
     private String outputDirectory;
  
     /**
+     * The maven proyect.
      * @parameter default-value="${project}"
      * @required
      * @readonly
@@ -80,10 +90,16 @@ public class CheckReportMojo extends AbstractMavenReport {
     private List<MavenProject> reactorProjects;
    
 
-    /** @component */
+    /** 
+     * The ProyectBuilder to build children modules.
+     * @component 
+     */
 	private MavenProjectBuilder mavenProjectBuilder;
 	
-	/**@parameter default-value="${localRepository}" */
+	/**
+	 * The localRepository reference, necessary to build projects.
+	 * @parameter default-value="${localRepository}" 
+	 */
 	private ArtifactRepository localRepository;
 	
 	private int myFailedTests;

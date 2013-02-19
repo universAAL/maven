@@ -35,16 +35,31 @@ import org.universAAL.support.directives.checks.SVNIgnoreCheck;
 
 
 /**
+ * This Mojo executes all checks upon a project.
+ * If configured to fix, it will perform all fixes available.
  * @author amedrano
  * @goal check
- *
+ * 
+ * @see DecoupleCheckMojo
+ * @see DependencyManagementCheckMojo
+ * @see ModulesCheckMojo
+ * @see NamingCheckMojo
+ * @see ParentGForgePropertyCheckMojo
+ * @see SVNCheckMojo
+ * @see SVNIgnoreCheckMojo
  */
 public class DirectiveCheckMojo extends AbstractFixableCheckMojo {
 
-    /** @component */
+    /** 
+     * The ProyectBuilder to build children modules.
+     * @component 
+     */
 	private MavenProjectBuilder mavenProjectBuilder;
 	
-	/**@parameter default-value="${localRepository}" */
+	/**
+	 * The localRepository reference, necessary to build projects.
+	 * @parameter default-value="${localRepository}" 
+	 */
 	private ArtifactRepository localRepository;
 	
 	private class FullCheck extends AggregatedCheck {

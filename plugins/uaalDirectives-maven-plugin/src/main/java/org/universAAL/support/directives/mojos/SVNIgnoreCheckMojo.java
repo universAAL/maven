@@ -20,6 +20,15 @@ import org.universAAL.support.directives.api.AbstractFixableCheckMojo;
 import org.universAAL.support.directives.checks.SVNIgnoreCheck;
 
 /**
+ * Checks (and fixes, if configured to do so) that the SVN working copy 
+ * ignores the following files:
+ * <ul>
+ * 		<li>".project"
+ * 		<li>".settings"
+ * 		<li>"target"
+ * 		<li>".classpath"
+ * <ul>
+ * This keeps the SVN from mixing eclipse metadata, and form big binary files in the target.
  * @author amedrano
  * 
  * @goal svnIgnore-check

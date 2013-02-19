@@ -20,7 +20,8 @@ import org.universAAL.support.directives.api.AbstractProcedureMojo;
 import org.universAAL.support.directives.procedures.Tag;
 
 /**
- * Tags the project in an appropiate tag URL, in concordance to T2.3 Directives.
+ * Tags the project in an appropiate tag URL, according to its version,
+ *  in concordance to T2.3 Directives.
  * @author amedrano
  * 
  * @goal tag

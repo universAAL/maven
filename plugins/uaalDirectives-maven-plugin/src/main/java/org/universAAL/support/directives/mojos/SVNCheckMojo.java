@@ -20,6 +20,9 @@ import org.universAAL.support.directives.api.AbstractFixableCheckMojo;
 import org.universAAL.support.directives.checks.SVNCheck;
 
 /**
+ * Checks (and fixes, if configured to do so) that the SCM defined (or inherited)
+ * by the pom matches the actual SVN url. <BR>
+ * It checks the SVN metadata to do so, so this mojo should be executed over a valid SVN working copy.
  * @author amedrano
  * 
  * @goal svn-check

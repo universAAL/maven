@@ -21,6 +21,10 @@ import org.universAAL.support.directives.procedures.ChangeVersionProcedure;
 
 /** 
  * Changes the version of a project to the given new Version.
+ * This doesn't affect submodules's parent version, this mojo should be used in conjunction with 
+ * <a hrfef="http://mojo.codehaus.org/versions-maven-plugin/">Versions Maven Plugin</a>
+ * (Specially usefull is the versions:update-child-modules, which updates the parent's 
+ * version of all modules)
  * @author amedrano
  * 
  * @goal change-version
@@ -29,6 +33,7 @@ import org.universAAL.support.directives.procedures.ChangeVersionProcedure;
 public class ChangeVersionMojo extends AbstractProcedureMojo {
 
     /**
+     * The new version to which to set the POM file.
      * @parameter expression="${newVersion}"
      */
     private String newVersion;

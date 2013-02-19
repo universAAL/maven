@@ -20,6 +20,10 @@ import org.universAAL.support.directives.api.AbstractFixableCheckMojo;
 import org.universAAL.support.directives.checks.ParentGForgePropertyCheck;
 
 /**
+ * Checks (and fixes, if configured to do so) that the POM contains the <code>gforge.project.name</code> 
+ * property defined.
+ * <BR>
+ * Only for Paren POMs.
  * @author amedrano
  * 
  * @goal parent-check

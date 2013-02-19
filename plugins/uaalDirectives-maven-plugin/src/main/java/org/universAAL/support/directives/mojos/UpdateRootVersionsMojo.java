@@ -28,6 +28,7 @@ import org.universAAL.support.directives.procedures.UpdateRootVersionsProcedure;
  * 	<li> the version of itest in dependencyManagement
  *  <li> the version of uaal-maven-plugin in dependencyManagement
  *  <li> the version of uaaldirectives-maven-plugin in dependencyManagement
+ *  <li> the version of uaaldirectives-maven-plugin in reporting
  * </ol>
  * @author amedrano
  * 
@@ -37,6 +38,7 @@ import org.universAAL.support.directives.procedures.UpdateRootVersionsProcedure;
 public class UpdateRootVersionsMojo extends AbstractProcedureMojo {
 
     /**
+     * The new version to set all the version references.
      * @parameter expression="${newVersion}"
      */
     private String newVersion;

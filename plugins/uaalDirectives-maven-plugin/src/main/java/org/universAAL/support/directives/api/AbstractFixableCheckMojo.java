@@ -20,12 +20,16 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 /**
+ * An abstract Mojo that executes checks and fixes ({@link APIFixableCheck}).
  * @author amedrano
  *
  */
 public abstract class AbstractFixableCheckMojo extends AbstractCheckMojo {
 
 	/**
+	 * If set to true (adding the <code>-Ddirective.fix</code> 
+	 * option to maven run) then automatic fixes over the check will
+	 * be attempted.
 	 * @parameter expression="${directive.fix}" default-value="false"
 	 */
 	private boolean fix;
@@ -42,10 +46,10 @@ public abstract class AbstractFixableCheckMojo extends AbstractCheckMojo {
 			failedE = e;
 		}
 		
-		if (fail && fix) {
+		if (failed && fix) {
 			((APIFixableCheck) check).fix(null, getLog());
 		}
-		if (fail && !fix) {
+		if (failed && !fix) {
 				getLog().info("This plugin is able to automatically" +
 						" fix the prbolem. just add  \"-D-Ddirective.fix\" to your command.");
 		}

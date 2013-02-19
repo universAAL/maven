@@ -20,12 +20,23 @@ import org.universAAL.support.directives.api.AbstractProcedureMojo;
 import org.universAAL.support.directives.procedures.IncreaseVersionProcedure;
 
 /**
- * Tags the project in an appropiate tag URL, in concordance to T2.3 Directives.
+ * This Mojo updates the current proyect's version to the next development version.
+ * <ul>
+ * 		<li>1.2.0 turns into 1.2.1-SNAPSHOT
+ * 		<li>1.2.1-SNAPSHOT turns into 1.2.2-SNAPSHOT
+ * 		<li> etc...
+ * <ul>
+ * This doesn't affect submodules's parent version, this mojo should be used in conjunction with 
+ * <a hrfef="http://mojo.codehaus.org/versions-maven-plugin/">Versions Maven Plugin</a>
+ * (Specially usefull is the versions:update-child-modules, which updates the parent's 
+ * version of all modules)
  * @author amedrano
  * 
  * @goal increase-version
  * 
  * @requiresDirectInvocation 
+ * 
+ * @see ChangeVersionMojo
  */
 public class IncreaseVersionMojo extends AbstractProcedureMojo{
 
