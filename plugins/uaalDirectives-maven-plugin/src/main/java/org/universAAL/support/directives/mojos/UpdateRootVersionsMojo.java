@@ -30,6 +30,7 @@ import org.universAAL.support.directives.procedures.UpdateRootVersionsProcedure;
  *  <li> the version of uaaldirectives-maven-plugin in dependencyManagement
  *  <li> the version of uaaldirectives-maven-plugin in reporting
  * </ol>
+ * This mojo is only intended for uAAL release process.
  * @author amedrano
  * 
  * @goal update-roots

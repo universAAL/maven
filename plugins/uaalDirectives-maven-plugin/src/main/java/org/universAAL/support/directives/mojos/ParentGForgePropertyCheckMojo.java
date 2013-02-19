@@ -22,6 +22,9 @@ import org.universAAL.support.directives.checks.ParentGForgePropertyCheck;
 /**
  * Checks (and fixes, if configured to do so) that the POM contains the <code>gforge.project.name</code> 
  * property defined.
+ * <P>
+ * To fix this mojo uses the SVN metadata information to find out the correct value of the property, 
+ * there fore a fixing operation must be done on a valid SVN working copy project.
  * <BR>
  * Only for Paren POMs.
  * @author amedrano
