@@ -43,7 +43,7 @@ public abstract class AbstractCheckMojo extends AbstractMojo {
 	private boolean failOnMissMatch;
 
 	/**
-     * The maven proyect.
+     * The maven project.
      * @parameter default-value="${project}"
      * @required
      * @readonly

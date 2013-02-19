@@ -27,7 +27,7 @@ import org.apache.maven.plugin.MojoFailureException;
 public abstract class AbstractProcedureMojo extends AbstractMojo {
 
 	/**
-     * The maven proyect.
+     * The maven project.
      * @parameter default-value="${project}"
      * @required
      */

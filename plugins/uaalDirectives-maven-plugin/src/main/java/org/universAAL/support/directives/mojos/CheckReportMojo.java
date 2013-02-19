@@ -70,7 +70,7 @@ public class CheckReportMojo extends AbstractMavenReport {
     private String outputDirectory;
  
     /**
-     * The maven proyect.
+     * The maven project.
      * @parameter default-value="${project}"
      * @required
      * @readonly
@@ -93,7 +93,7 @@ public class CheckReportMojo extends AbstractMavenReport {
    
 
     /** 
-     * The ProyectBuilder to build children modules.
+     * The projectBuilder to build children modules.
      * @component 
      */
 	private MavenProjectBuilder mavenProjectBuilder;

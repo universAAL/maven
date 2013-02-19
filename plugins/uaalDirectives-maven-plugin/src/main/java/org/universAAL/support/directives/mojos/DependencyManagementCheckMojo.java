@@ -38,7 +38,7 @@ import org.universAAL.support.directives.checks.DependencyManagementCheckFix;
 public class DependencyManagementCheckMojo extends AbstractFixableCheckMojo {
 	
     /** 
-     * The ProyectBuilder to build children modules.
+     * The projectBuilder to build children modules.
      * @component 
      */
 	private MavenProjectBuilder mavenProjectBuilder;

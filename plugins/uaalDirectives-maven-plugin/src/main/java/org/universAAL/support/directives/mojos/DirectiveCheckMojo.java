@@ -53,7 +53,7 @@ import org.universAAL.support.directives.checks.SVNIgnoreCheck;
 public class DirectiveCheckMojo extends AbstractFixableCheckMojo {
 
     /** 
-     * The ProyectBuilder to build children modules.
+     * The projectBuilder to build children modules.
      * @component 
      */
 	private MavenProjectBuilder mavenProjectBuilder;

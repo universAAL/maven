@@ -101,7 +101,7 @@ public class MavenCoordinateCheck implements APICheck {
 						|| pomFileModel.getProperties().containsKey(GROUP_ID_MATCH_PROP)
 						|| pomFileModel.getProperties().containsKey(VERSION_MATCH_PROP)
 						|| pomFileModel.getProperties().containsKey(NAME_MATCH_PROP))){
-			throw new MojoFailureException("This proyect has declared naming conventions when it shoudln't.\n"
+			throw new MojoFailureException("This project has declared naming conventions when it shoudln't.\n"
 					+ "This is probably an attempt to skip this directive, SHAME ON YOU!");
 		}
 	
