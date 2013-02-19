@@ -20,7 +20,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.jar.JarInputStream;
 
-import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
@@ -43,11 +42,12 @@ public class LicenseFileCheckFix implements APIFixableCheck {
 	
 	private static final String[] exFiles = {
 		"LICENSE.txt",
+		"LICENCE.txt",
 	};
 	
-	private static final String NOT_FOUND = "Liscense File does not exist: ";
+	private static final String NOT_FOUND = "License File does not exist: ";
 
-	private static final String FOUND = "Liscense File exist (where it shoudl not): ";
+	private static final String FOUND = "License File exist (where it shoudl not): ";
 	
 	/** {@inheritDoc} */
 	public boolean check(MavenProject mavenproject, Log log)
