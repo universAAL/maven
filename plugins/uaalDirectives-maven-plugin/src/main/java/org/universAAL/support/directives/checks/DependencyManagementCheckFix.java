@@ -30,7 +30,6 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.profiles.ProfileManager;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
-import org.apache.maven.project.ProjectBuildingException;
 import org.universAAL.support.directives.api.APIFixableCheck;
 import org.universAAL.support.directives.util.PomFixer;
 import org.universAAL.support.directives.util.PomWriter;
@@ -87,13 +86,9 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 			throws MojoExecutionException, MojoFailureException {
 		
 		this.log = log;
-		try {
-			if (!passCheck(mavenProject)) {
-				String err = getErrorMessge(mavenProject);
-				throw new MojoFailureException(err);
-			}
-		} catch (Exception e) {
-			throw new MojoExecutionException(e.getMessage(), e);
+		if (!passCheck(mavenProject)) {
+			String err = getErrorMessge(mavenProject);
+			throw new MojoFailureException(err);
 		}
 		return true;
 	}
@@ -141,7 +136,7 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 	 * @return
 	 * @throws Exception when any of the children pom files can not be located.
 	 */
-	private boolean passCheck(MavenProject mavenProject2) throws Exception {
+	private boolean passCheck(MavenProject mavenProject2) {
 		toBeFixed = new TreeMap<DependencyID, String>();
 		reactorProjects = getChildrenModules(mavenProject2, mavenProjectBuilder,
 				localRepository, null);
@@ -323,12 +318,10 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 	(MavenProject mavenProject,
 			MavenProjectBuilder mpb,
 			ArtifactRepository localRepository,
-			ProfileManager pm) 
-			throws ProjectBuildingException{
+			ProfileManager pm) {
 		List<MavenProject> children = new ArrayList<MavenProject>();
 		List<String> modules = mavenProject.getModules();
 		for (String mod : modules) {
-//			children.add(mpb.build(new File(mavenProject.getBasedir(), mod + "/pom.xml"), localRepository, pm, false));
 			try {
 				children.add(mpb.buildWithDependencies(new File(mavenProject.getBasedir(), mod + "/pom.xml"), localRepository, pm));
 			} catch (Exception e) {

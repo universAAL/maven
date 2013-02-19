@@ -248,7 +248,7 @@ public class CheckReportMojo extends AbstractMavenReport {
 	    	sink.bold_();
 	    	sink.tableCell_();
 	    } else {
-	    	sink.tableCell( "bgcolor=\"#FF0000\"");
+	    	sink.tableCell();
 	    	sink.bold();
 	    	if (ex instanceof MojoFailureException) {
 	    		sink.text( getBundle(loc).getString("report.failed"));

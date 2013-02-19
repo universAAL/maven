@@ -83,10 +83,13 @@ public class SVNCheck implements APIFixableCheck {
 			log.warn("SVN Error.", e);
 			log.warn("directory seems not to be a local SVN working copy.");
 			throw new MojoExecutionException("Directory seems not to be a local SVN working copy.", e);
+		} catch (MojoFailureException e) {
+			throw e;
+		} catch (MojoExecutionException e) {
+			throw e;
 		} catch (Exception e1) {
-			log.error(e1);
+			throw new MojoExecutionException("Unexpected Exception", e1);
 		}
-		return false;
 	}
 	
 	public void fix(MavenProject mavenProject, Log log) throws MojoFailureException {
