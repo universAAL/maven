@@ -63,7 +63,7 @@ public class LicenseFileCheckFix implements APIFixableCheck {
 		}
 		for (int i = 0; i < exFiles.length ; i++) {
 			if (new File(mavenproject.getBasedir(), exFiles[i]).exists() ) {
-				message += FOUND + files[i]+ "\n";
+				message += FOUND + exFiles[i]+ "\n";
 			}
 		}
 		if (!message.isEmpty()) {
