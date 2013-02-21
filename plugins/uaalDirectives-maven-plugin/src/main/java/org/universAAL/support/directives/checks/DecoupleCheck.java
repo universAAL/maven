@@ -104,6 +104,7 @@ public class DecoupleCheck implements APICheck, SourceChecker {
 			try {
 				br = new BufferedReader(new FileReader(f));
 				ArrayList<String> r = lookForLinesWith(br, ".*package.*");
+				br.close();
 				if (r.size() > 0) {
 					return r.get(0);
 				} else {
@@ -111,6 +112,9 @@ public class DecoupleCheck implements APICheck, SourceChecker {
 					System.out.flush();
 				}
 			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

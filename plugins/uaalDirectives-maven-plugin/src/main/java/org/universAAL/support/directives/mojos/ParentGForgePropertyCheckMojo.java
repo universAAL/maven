@@ -24,7 +24,7 @@ import org.universAAL.support.directives.checks.ParentGForgePropertyCheck;
  * property defined.
  * <P>
  * To fix this mojo uses the SVN metadata information to find out the correct value of the property, 
- * there fore a fixing operation must be done on a valid SVN working copy project.
+ * therefore a fixing operation must be done on a valid SVN working copy project.
  * <BR>
  * Only for Paren POMs.
  * @author amedrano

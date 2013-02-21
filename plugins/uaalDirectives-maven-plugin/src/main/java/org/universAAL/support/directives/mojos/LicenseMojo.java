@@ -15,9 +15,15 @@
  ******************************************************************************/
 package org.universAAL.support.directives.mojos;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.universAAL.support.directives.api.APICheck;
 import org.universAAL.support.directives.api.APIFixableCheck;
 import org.universAAL.support.directives.api.AbstractFixableCheckMojo;
+import org.universAAL.support.directives.api.AggregatedCheck;
 import org.universAAL.support.directives.checks.LicenseFileCheckFix;
+import org.universAAL.support.directives.checks.LicenseHeaderCheckFix;
 
 /**
  * This Mojo checks (and fixes, if configured to do so) for license files.
@@ -28,12 +34,21 @@ import org.universAAL.support.directives.checks.LicenseFileCheckFix;
  * @goal license-check
  *
  */
-public class LicenseFileMojo extends AbstractFixableCheckMojo {
+public class LicenseMojo extends AbstractFixableCheckMojo {
 
 	/** {@inheritDoc} */
 	@Override
 	public APIFixableCheck getFix() {
-		return new LicenseFileCheckFix();
+		return new AggregatedCheck() {
+			
+			@Override
+			public List<APICheck> getCheckList() {
+				ArrayList<APICheck> list = new ArrayList<APICheck>();
+				list.add(new LicenseFileCheckFix());
+				list.add(new LicenseHeaderCheckFix());
+				return list;
+			}
+		};
 	}
 
 }
