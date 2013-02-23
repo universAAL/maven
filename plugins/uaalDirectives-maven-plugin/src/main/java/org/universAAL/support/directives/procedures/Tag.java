@@ -38,11 +38,8 @@ public class Tag implements APIProcedure{
     /**
      * Message content when tag fails
      */
-    private static final String NOT_TAGGED = System
-	    .getProperty("line.separator")
-	    + "\n"
-	    + "Failed Trying to tag the project try again manually.\n"
-	    + System.getProperty("line.separator") + "\n";
+    private static final String NOT_TAGGED = 
+	    "Failed Trying to tag the project try again manually.\n";
 
 
     private boolean tagRemoteHead;
@@ -62,13 +59,13 @@ public class Tag implements APIProcedure{
 		if (tagRemoteHead) {
 			if (!performTag(url, tagUrl, "Automatic tag of " 
 					+ mavenProject.getArtifactId() + " version: " + mavenProject.getVersion())) {
-				throw new MojoFailureException(NOT_TAGGED);
+				throw new MojoExecutionException(NOT_TAGGED);
 			}			
 		}
 		else {
 			if (!performWCTag(mavenProject.getBasedir(), tagUrl, "Automatic tag of " 
 					+ mavenProject.getArtifactId() + " version: " + mavenProject.getVersion())) {
-				throw new MojoFailureException(NOT_TAGGED);
+				throw new MojoExecutionException(NOT_TAGGED);
 			}
 		}
 	}

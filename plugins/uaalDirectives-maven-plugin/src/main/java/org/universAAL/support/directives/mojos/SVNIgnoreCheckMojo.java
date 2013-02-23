@@ -28,7 +28,9 @@ import org.universAAL.support.directives.checks.SVNIgnoreCheck;
  * 		<li>"target"
  * 		<li>".classpath"
  * </ul>
- * This keeps the SVN from mixing eclipse metadata, and form big binary files in the target.
+ * This keeps the SVN from mixing eclipse metadata, and from big binary files in the target.
+ * <br>
+ * This mojo should be executed over a valid SVN working copy.
  * @author amedrano
  * 
  * @goal svnIgnore-check

@@ -22,6 +22,9 @@ import org.universAAL.support.directives.procedures.Tag;
 /**
  * Tags the project in an appropiate tag URL, according to its version,
  *  in concordance to T2.3 Directives.
+ *  <br>
+ *  It Tags the current working copy by default, 
+ *  so this mojo should be executed over a valid SVN working copy.
  * @author amedrano
  * 
  * @goal tag
