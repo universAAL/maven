@@ -40,15 +40,20 @@ public class LicenseHeaderCheckFix implements APIFixableCheck, SourceChecker {
 
 	private static final Pattern PATTERN_SPACE = Pattern.compile("\\s\\s*");
 	private static final Pattern PATTERN_DELETE = Pattern.compile("(^//*|/$|\\n\\s*//|\\*|;)");
-	private static final String APACHE_LICENSE_HEADER = " under the Apache License, Version 2.0 (the \"License\")"
-			+" you may not use this file except in compliance with the License."
-			+" You may obtain a copy of the License at"
-			+" http://www.apache.org/licenses/LICENSE-2.0"
-			+" Unless required by applicable law or agreed to in writing, software"
+	private static final Pattern PATTERN_LICENSED_UNDER =
+			Pattern.compile("[Ll]icensed under .* Apache License.*[Vv]ersion 2\\.0");
+	
+	private static final String APACHE_ENDING = 
+			" Unless required by applicable law or agreed to in writing, software"
 			+" distributed under the License is distributed on an \"AS IS\" BASIS,"
 			+" WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied."
 			+" See the License for the specific language governing permissions and"
 			+" limitations under the License.";
+	private static final String APACHE_LICENSE_HEADER = " under the Apache License, Version 2.0 (the \"License\")"
+			+" you may not use this file except in compliance with the License."
+			+" You may obtain a copy of the License at"
+			+" http://www.apache.org/licenses/LICENSE-2.0"
+			+ APACHE_ENDING;
 
 	/** {@inheritDoc} */
 	public boolean check(MavenProject mavenproject, Log log)
@@ -94,7 +99,9 @@ public class LicenseHeaderCheckFix implements APIFixableCheck, SourceChecker {
 						.matcher(comment).replaceAll(" ")
 						.replace("\n", "");
 //				System.out.println(comment);
-				return comment.contains(APACHE_LICENSE_HEADER);
+				return comment.contains(APACHE_LICENSE_HEADER) 
+						|| (PATTERN_LICENSED_UNDER.matcher(comment).find() 
+								&& comment.contains(APACHE_ENDING));
 			}
 
 		} catch (FileNotFoundException e) {
