@@ -15,11 +15,14 @@
  ******************************************************************************/
 package org.universAAL.support.directives.mojos;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.doxia.sink.Sink;
@@ -278,18 +281,68 @@ public class CheckReportMojo extends AbstractMavenReport {
 	    	}
 	    	sink.bold_();
 	    	sink.lineBreak();
-	    	if (ex != null) {
-	    		sink.monospaced();
-	    		sink.verbatim(true);
-	    		sink.text(ex.getMessage());
-	    		sink.lineBreak();
-	    		sink.text(ex.getLongMessage());
-	    		sink.verbatim_();
-	    		sink.monospaced_();
-	    	}
+	    	renderException(sink,ex);
 	    	sink.tableCell_();
 	    }
 		
+	}
+
+//	/**
+//	 * Render Monospaced.
+//	 * @param ex
+//	 */
+//	private void renderException(Sink sink,AbstractMojoExecutionException ex) {
+//		if (ex != null) {
+//    		sink.monospaced();
+//    		sink.verbatim(true);
+//    		sink.text(ex.getMessage());
+//    		sink.lineBreak();
+//    		sink.text(ex.getLongMessage());
+//    		sink.verbatim_();
+//    		sink.monospaced_();
+//    	}		
+//	}
+	/**
+	 * Render linked to Xref.
+	 * @param ex
+	 */
+	private void renderException(Sink sink,AbstractMojoExecutionException ex) {
+		if (ex != null) {
+    		sink.monospaced();
+
+    		linkMessage(sink, ex.getMessage());
+    		
+    		linkMessage(sink, ex.getLongMessage());
+    		
+    		sink.monospaced_();
+    	}		
+	}
+	
+	private void linkMessage(Sink sink, String message) {
+		if (message != null) {
+			Matcher nl = Pattern.compile("(\\n)|(\\z)").matcher(message);
+			int last = 0;
+			while (nl.find()) {
+				String line = message.substring(last, nl.start());
+				last = nl.start();
+				int javaInx = line.indexOf(File.separator + "java" + File.separator);
+				if (javaInx > -1) {
+					String file = line.substring(javaInx+6);
+					sink.nonBreakingSpace();
+					sink.nonBreakingSpace();
+					sink.nonBreakingSpace();
+					sink.nonBreakingSpace();					
+					sink.link("xref/"+file.replace(".java", ".html"));
+					sink.text(file.replace(File.separator, ".").replace(".java", ""));
+					sink.link_();
+//				} else if (line.indexOf("http://")> -1) { 
+					//TODO find and link http links
+				} else {
+					sink.text(line);
+				}
+				sink.lineBreak();
+			}
+		}
 	}
 
 	/** {@inheritDoc} */
