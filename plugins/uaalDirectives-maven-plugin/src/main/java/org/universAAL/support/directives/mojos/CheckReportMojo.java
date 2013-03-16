@@ -16,6 +16,8 @@
 package org.universAAL.support.directives.mojos;
 
 import java.io.File;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -111,9 +113,26 @@ public class CheckReportMojo extends AbstractMavenReport {
 	private int myFailedTests;
 
 	private Set<MavenProject> FailedModules;
-			
-			
+	
+	private static final HashMap<String,String> langStrings;
+	
+    static {
+	langStrings = new HashMap<String,String>();
 
+	langStrings.put("report.name", "universAAL Directive Checks");
+	langStrings.put("report.description",
+		"Report on universAAL T2.3 directive checks.");
+	langStrings.put("report.header", "directive-checks");
+	langStrings.put("report.passed", "Passed");
+	langStrings.put("report.failed", "Failed");
+	langStrings
+		.put("report.failed.execution", "Exception during execution");
+	langStrings.put("report.check.module", "Module");
+	langStrings.put("report.check.title", "Check");
+	langStrings.put("report.check.status", "Status");
+    }	
+	
+	
 	/** {@inheritDoc} */
 	@Override
 	protected void executeReport(Locale loc) throws MavenReportException {
@@ -151,11 +170,11 @@ public class CheckReportMojo extends AbstractMavenReport {
 	    sink.table();
 	    sink.tableRow();
 	    sink.tableHeaderCell();
-	    sink.text(getBundle(loc).getString("report.check.title"));
+	    sink.text(getString(loc, "report.check.title"));
 	    sink.tableHeaderCell_();
 
 	    sink.tableHeaderCell();
-	    sink.text(getBundle(loc).getString("report.check.status"));
+	    sink.text(getString(loc, "report.check.status"));
 	    sink.tableHeaderCell_();
 	    sink.tableRow_();
 	    renderMyTable(sink, loc);
@@ -172,15 +191,15 @@ public class CheckReportMojo extends AbstractMavenReport {
 	    	sink.table();
 		    sink.tableRow();
 		    sink.tableHeaderCell();
-		    sink.text(getBundle(loc).getString("report.check.module"));
+		    sink.text(getString(loc, "report.check.module"));
 		    sink.tableHeaderCell_();
 		    
 		    sink.tableHeaderCell();
-		    sink.text(getBundle(loc).getString("report.check.title"));
+		    sink.text(getString(loc, "report.check.title"));
 		    sink.tableHeaderCell_();
 
 		    sink.tableHeaderCell();
-		    sink.text(getBundle(loc).getString("report.check.status"));
+		    sink.text(getString(loc, "report.check.status"));
 		    sink.tableHeaderCell_();
 		    sink.tableRow_();
 		    renderModulesTable(sink, loc);
@@ -268,16 +287,16 @@ public class CheckReportMojo extends AbstractMavenReport {
 	    if (passed) {
 	    	sink.tableCell();
 	    	sink.bold();
-	    	sink.text(getBundle(loc).getString("report.passed"));
+	    	sink.text(getString(loc, "report.passed"));
 	    	sink.bold_();
 	    	sink.tableCell_();
 	    } else {
 	    	sink.tableCell();
 	    	sink.bold();
 	    	if (ex instanceof MojoFailureException) {
-	    		sink.text( getBundle(loc).getString("report.failed"));
+	    		sink.text(getString(loc, "report.failed"));
 	    	} else {
-	    		sink.text( getBundle(loc).getString("report.failed.execution"));
+	    		sink.text(getString(loc, "report.failed.execution"));
 	    	}
 	    	sink.bold_();
 	    	sink.lineBreak();
@@ -347,17 +366,17 @@ public class CheckReportMojo extends AbstractMavenReport {
 
 	/** {@inheritDoc} */
 	public String getDescription(Locale loc) {
-		return getBundle( loc ).getString( "report.description" );
+		return getString(loc, "report.description" );
 	}
 
 	/** {@inheritDoc} */
 	public String getName(Locale loc) {
-		return getBundle( loc ).getString( "report.name" );
+		return getString(loc, "report.name" );
 	}
 
 	/** {@inheritDoc} */
 	public String getOutputName() {
-		return getBundle( Locale.ENGLISH ).getString( "report.header" );
+		return getString(Locale.ENGLISH, "report.header" );
 	}
 
 	/** {@inheritDoc} */
@@ -378,9 +397,22 @@ public class CheckReportMojo extends AbstractMavenReport {
 		return (Renderer) siteRenderer;
 	}
 	
-	private ResourceBundle getBundle( Locale locale )
-	{
-	    return ResourceBundle.getBundle( "org.universAAL.support.directives.report",
-	    		locale, this.getClass().getClassLoader() );
+	
+    private String getString(Locale locale, String key) {
+	try {
+	    return getBundle(locale).getString(key);
+	} catch (Exception e) {
+	    System.out.println("ERROR in uaalDirectives-maven-plugin: " + e);
+	    String s = langStrings.get(key);
+	    if (s == null)
+		s = key;
+	    return s;
 	}
+    }
+	
+    private ResourceBundle getBundle(Locale locale) {
+	return ResourceBundle.getBundle(
+		"org.universAAL.support.directives.report", locale, this
+			.getClass().getClassLoader());
+    }
 }
