@@ -379,15 +379,6 @@ public class CheckReportMojo extends AbstractMavenReport {
 					}
 					sink.text(line.substring(lastI, line.length()));
 				}
-				
-//				else if (line.indexOf("http://")> -1) { 
-////					String link = 
-//					sink.text(line.substring(0, ihttp-1));
-//					
-//					//TODO find and link http links
-//				} else {
-//					sink.text(line);
-//				}
 				sink.lineBreak();
 			}
 		}
