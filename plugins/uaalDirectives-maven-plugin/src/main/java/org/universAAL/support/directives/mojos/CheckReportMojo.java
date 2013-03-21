@@ -16,7 +16,6 @@
 package org.universAAL.support.directives.mojos;
 
 import java.io.File;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
