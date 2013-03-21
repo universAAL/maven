@@ -132,6 +132,18 @@ public class CheckReportMojo extends AbstractMavenReport {
 	langStrings.put("report.check.status", "Status");
     }	
 	
+    Pattern urlPattern = 
+    		Pattern.compile("([A-Za-z]+):\\/\\/"
+					  + "(\\w+(:\\w+)?@)?"
+					  + "[\\w\\.]+"
+					  + "(:\\d+)?"
+					  + "("
+					  + "\\/"
+//					  + "(\\w*\\/)*"
+					  + "([^\\s]+)?"
+					  + "(\\?[\\w=&.]*)?"
+					  + "(#\\w+)?"
+					  + ")?");
 	
 	/** {@inheritDoc} */
 	@Override
@@ -345,6 +357,7 @@ public class CheckReportMojo extends AbstractMavenReport {
 				String line = message.substring(last, nl.start());
 				last = nl.start();
 				int javaInx = line.indexOf(File.separator + "java" + File.separator);
+				//TODO use Regexp to find and replace (in case there is something else in the line)
 				if (javaInx > -1) {
 					String file = line.substring(javaInx+6);
 					sink.nonBreakingSpace();
@@ -354,11 +367,27 @@ public class CheckReportMojo extends AbstractMavenReport {
 					sink.link("xref/"+file.replace(".java", ".html"));
 					sink.text(file.replace(File.separator, ".").replace(".java", ""));
 					sink.link_();
-//				} else if (line.indexOf("http://")> -1) { 
-					//TODO find and link http links
 				} else {
-					sink.text(line);
+					Matcher link = urlPattern.matcher(line);
+					int lastI = 0;
+					while (link.find()) {
+						sink.text(line.substring(lastI, link.start()));
+						lastI = link.end();
+						sink.link(link.group());
+						sink.text(link.group());
+						sink.link_();
+					}
+					sink.text(line.substring(lastI, line.length()));
 				}
+				
+//				else if (line.indexOf("http://")> -1) { 
+////					String link = 
+//					sink.text(line.substring(0, ihttp-1));
+//					
+//					//TODO find and link http links
+//				} else {
+//					sink.text(line);
+//				}
 				sink.lineBreak();
 			}
 		}
