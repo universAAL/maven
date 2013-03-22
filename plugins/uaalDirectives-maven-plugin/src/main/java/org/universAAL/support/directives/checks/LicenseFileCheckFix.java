@@ -47,7 +47,7 @@ public class LicenseFileCheckFix implements APIFixableCheck {
 	
 	private static final String NOT_FOUND = "License File does not exist: ";
 
-	private static final String FOUND = "License File exist (where it shoudl not): ";
+	private static final String FOUND = "License File exist (where it should not): ";
 	
 	/** {@inheritDoc} */
 	public boolean check(MavenProject mavenproject, Log log)
