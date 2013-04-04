@@ -32,12 +32,26 @@
       <directory>runner/configurations</directory>
       <includes>
         <include>**/*.id</include>
+        <include>**/*.</include>
         <include>**/*.dat</include>
         <include>**/*.hash</include>
-        <include>**/*.che/store/txn-status</include>
+        <include>**/*.xsd</include>
         <include>**/*.prop</include>
+        <include>**/*.space</include>
         <include>**/*.key</include>
         <include>**/*.alloc</include>
+      </includes>
+    </fileSet>
+    <fileSet encoding="UTF-8">
+      <directory>.settings</directory>
+      <includes>
+        <include>**/*.prefs</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory></directory>
+      <includes>
+        <include>.project</include>
       </includes>
     </fileSet>
     <fileSet encoding="UTF-8">
