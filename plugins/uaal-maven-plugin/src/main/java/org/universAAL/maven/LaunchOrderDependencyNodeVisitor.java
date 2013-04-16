@@ -221,17 +221,20 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 		boolean shouldResolve = true;
 		Artifact artifact = node.getArtifact();
 		String nodeStr = stringify(node);
-		if (artifactDontResolve != null) {
-		    if (artifactDontResolve.equals(nodeStr)) {
-			shouldResolve = false;
-		    }
-		}
 		if (visitingOnPomBehalf) {
 		    shouldResolve = false;
 		}
 		String mvnUrl = String.format("mvn:%s/%s/%s", artifact
 			.getGroupId(), artifact.getArtifactId(), artifact
 			.getVersion());
+		if (artifactDontResolve != null) {
+		    if (artifactDontResolve.equals(nodeStr)) {
+			shouldResolve = false;
+			if ("jar".equals(node.getArtifact().getType())) {
+			    mvnUrl = "wrap:" + mvnUrl;
+			}
+		    }
+		}
 		if (shouldResolve) {
 		    MyDependencyNode myNode = (MyDependencyNode) node;
 		    artifactResolver.resolve(artifact, myNode
