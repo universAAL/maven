@@ -227,7 +227,6 @@ public class ExecutionListCreator {
 	rootNodesIterator = rootNodes.iterator();
 	while (rootNodesIterator.hasNext()) {
 	    RootNode rootNode = rootNodesIterator.next();
-	    visitor.setRemoteRepositories(rootNode.remoteRepositories);
 	    visitor.setExcludedCoreArtifacts(rootNode.excludedCoreArtifacts);
 	    rootNode.rootNode.accept(visitor);
 	}

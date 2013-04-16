@@ -49,11 +49,6 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
     private ArtifactRepository localRepository;
 
     /**
-     * Maven remote repositories.
-     */
-    private List remoteRepositories;
-
-    /**
      * Maven artifact resolver.
      */
     private ArtifactResolver artifactResolver;
@@ -259,6 +254,7 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 			// wrapped before installation in OSGi container
 			mvnUrl = "wrap:" + mvnUrl;
 		    }
+		    jio.close();
 		}
 
 		// customizing starting of bundles configured in pom file
@@ -393,16 +389,6 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
      */
     public final List getMvnUrls() {
 	return mvnUrls;
-    }
-
-    /**
-     * Sets remote repositories.
-     * 
-     * @param remoteRepositories
-     *            which should be set.
-     */
-    public final void setRemoteRepositories(final List remoteRepositories) {
-	this.remoteRepositories = remoteRepositories;
     }
 
     /**
