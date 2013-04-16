@@ -96,8 +96,8 @@ public class DependencyTreeResolutionListener implements
      * Creates a new dependency tree resolution listener that writes to the
      * specified log.
      * 
-     * @param logger
-     *            the log to write debug messages to
+     * @param artifactFilter
+     *            Object for filtering artifacts.
      */
     public DependencyTreeResolutionListener(final ArtifactFilter artifactFilter) {
 	this.artifactFilter = artifactFilter;
@@ -207,8 +207,8 @@ public class DependencyTreeResolutionListener implements
 	log("omitForNearer: omitted=" + omittedNode.getArtifact() + " kept="
 		+ keptNode.getArtifact());
 
-	if (!omittedNode.getArtifact().getDependencyConflictId().equals(
-		keptNode.getArtifact().getDependencyConflictId())) {
+	if (!omittedNode.getArtifact().getDependencyConflictId()
+		.equals(keptNode.getArtifact().getDependencyConflictId())) {
 	    throw new IllegalArgumentException(
 		    "Omitted artifact dependency conflict id "
 			    + omittedNode.getArtifact()
@@ -475,14 +475,14 @@ public class DependencyTreeResolutionListener implements
      * Creates a new dependency node for the specified artifact and appends it
      * to the current parent dependency node.
      * 
-     * @param artifact
+     * @param resolutionNode
      *            the attached artifact for the new dependency node
      * @return the new dependency node
      */
     private DependencyNode createNode(final ResolutionNode resolutionNode) {
 	DependencyNode node = new MyDependencyNode(
-		resolutionNode.getArtifact(), resolutionNode
-			.getRemoteRepositories());
+		resolutionNode.getArtifact(),
+		resolutionNode.getRemoteRepositories());
 
 	if (!parentNodes.isEmpty()) {
 	    DependencyNode parent = (DependencyNode) parentNodes.peek();
@@ -498,7 +498,7 @@ public class DependencyTreeResolutionListener implements
      * the current parent dependency node and puts it into the dependency node
      * cache.
      * 
-     * @param artifact
+     * @param resolutionNode
      *            the attached artifact for the new dependency node
      * @return the new dependency node
      */
@@ -506,8 +506,8 @@ public class DependencyTreeResolutionListener implements
     DependencyNode addNode(final ResolutionNode resolutionNode) {
 	DependencyNode node = createNode(resolutionNode);
 
-	DependencyNode previousNode = (DependencyNode) nodesByArtifact.put(node
-		.getArtifact(), node);
+	DependencyNode previousNode = (DependencyNode) nodesByArtifact.put(
+		node.getArtifact(), node);
 
 	if (previousNode != null) {
 	    throw new IllegalStateException(
@@ -605,10 +605,21 @@ public class DependencyTreeResolutionListener implements
 	}
     }
 
+    /**
+     * Getter to nodesByArtifact.
+     * 
+     * @return Returns nodesByArtifact.
+     */
     public Map getNodesByArtifact() {
 	return nodesByArtifact;
     }
 
+    /**
+     * Adds node to excluded core artifacts.
+     * 
+     * @param node
+     *            Node which is add to excluded core artifacts.
+     */
     public void addExcludedCoreArtifact(final ResolutionNode node) {
 	currentRootNode.excludedCoreArtifacts.add(node);
     }

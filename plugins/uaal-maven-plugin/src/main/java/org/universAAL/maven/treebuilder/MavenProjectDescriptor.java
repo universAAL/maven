@@ -4,6 +4,14 @@ import java.util.List;
 
 import org.apache.maven.project.MavenProject;
 
+/**
+ * Descriptor of maven project related to the dependency resolving process. It
+ * aggregates maven project, list of remote repositories used for resolving and
+ * indication if dependencies should be resolved transitively or not.
+ * 
+ * @author rotgier
+ * 
+ */
 public class MavenProjectDescriptor {
 
     MavenProject project;
