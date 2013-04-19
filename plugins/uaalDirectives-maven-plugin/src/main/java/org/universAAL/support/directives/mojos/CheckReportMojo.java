@@ -40,6 +40,7 @@ import org.universAAL.support.directives.checks.DecoupleCheck;
 import org.universAAL.support.directives.checks.DependencyManagementCheckFix;
 import org.universAAL.support.directives.checks.LicenseFileCheckFix;
 import org.universAAL.support.directives.checks.LicenseHeaderCheckFix;
+import org.universAAL.support.directives.checks.MainMethodCheck;
 import org.universAAL.support.directives.checks.MavenCoordinateCheck;
 import org.universAAL.support.directives.checks.ModulesCheckFix;
 import org.universAAL.support.directives.checks.ParentGForgePropertyCheck;
@@ -158,6 +159,7 @@ public class CheckReportMojo extends AbstractMavenReport {
 				new DecoupleCheck(),
 				new LicenseFileCheckFix(),
 				new LicenseHeaderCheckFix(),
+				new MainMethodCheck(),
 			};
 		checks = cs;
 		myFailedTests = 0;

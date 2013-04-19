@@ -28,6 +28,7 @@ import org.universAAL.support.directives.checks.DecoupleCheck;
 import org.universAAL.support.directives.checks.DependencyManagementCheckFix;
 import org.universAAL.support.directives.checks.LicenseFileCheckFix;
 import org.universAAL.support.directives.checks.LicenseHeaderCheckFix;
+import org.universAAL.support.directives.checks.MainMethodCheck;
 import org.universAAL.support.directives.checks.MavenCoordinateCheck;
 import org.universAAL.support.directives.checks.ModulesCheckFix;
 import org.universAAL.support.directives.checks.ParentGForgePropertyCheck;
@@ -80,6 +81,7 @@ public class DirectiveCheckMojo extends AbstractFixableCheckMojo {
 			list.add(new DecoupleCheck());
 			list.add(new LicenseFileCheckFix());
 			list.add(new LicenseHeaderCheckFix());
+			list.add(new MainMethodCheck());
 			return list;
 		}
 		
