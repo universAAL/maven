@@ -178,7 +178,7 @@ public class UaalTestMojo extends AbstractMojo {
 		}
 
 		Artifact runDirArtifact = execListCreator
-			.parseMvnUrlWithType(IntegrationTestConsts.RUN_DIR_MVN_URL);
+			.parseMvnUrlWithType(IntegrationTestConsts.getRunDirMvnUrl());
 		artifactResolver.resolve(runDirArtifact, remoteRepositories,
 			localRepository);
 	    }
