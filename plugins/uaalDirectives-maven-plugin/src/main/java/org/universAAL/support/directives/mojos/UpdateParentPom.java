@@ -68,7 +68,7 @@ public class UpdateParentPom extends AbstractProcedureMojo {
 			List<APICheck> l = new ArrayList<APICheck>();
 			l.add(new ModulesCheckFix());
 			l.add(new DependencyManagementCheckFix(mavenProjectBuilder, localRepository));
-			return null;
+			return l;
 		}
 		
 	}
