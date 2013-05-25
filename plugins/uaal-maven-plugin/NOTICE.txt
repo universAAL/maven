@@ -1,0 +1,35 @@
+SODAPOP OSGI Bundle
+
+Copyright 
+
+Copyright 2007-2014 AGH-CS, http://www.ki.agh.edu.pl/
+Department of Computer Science
+AGH University of Science and Technology
+
+Copyright 2008-2012 CNR-ISTI, http://isti.cnr.it
+Institute of Information Science and Technologies 
+of the Italian National Research Council 
+
+I. Included Software
+
+Software developed by AGH-CS and CNR-ISTI for the universAAL project.
+
+
+II. Used Software
+
+This product uses software developed at
+The Apache Software Foundation (http://www.apache.org/).
+Licensed under the Apache License 2.0.
+
+This product uses software developed at
+The OPS4J (http://www.ops4j.org)
+Licensed under the Apache License 2.0.
+
+This product uses software developed at
+The OSGi Alliance (http://www.osgi.org/).
+Copyright 2006-2008 The OSGi Alliance.
+Licensed under the Apache License 2.0.
+
+III. License Summary
+- Apache License 2.0
+

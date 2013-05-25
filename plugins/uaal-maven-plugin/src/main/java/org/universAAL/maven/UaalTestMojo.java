@@ -1,3 +1,28 @@
+/*
+
+        Copyright 2007-2014 AGH-CS, http://www.ki.agh.edu.pl/
+        Department of Computer Science
+        AGH University of Science and Technology
+
+        Copyright 2007-2014 CNR-ISTI, http://isti.cnr.it
+        Institute of Information Science and Technologies
+        of the Italian National Research Council
+        
+        See the NOTICE file distributed with this work for additional
+        information regarding copyright ownership
+
+        Licensed under the Apache License, Version 2.0 (the "License");
+        you may not use this file except in compliance with the License.
+        You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+        Unless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+ */
 package org.universAAL.maven;
 
 import java.io.BufferedWriter;
@@ -18,6 +43,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
+import org.sonatype.inject.Parameters;
 import org.universAAL.itests.conf.IntegrationTestConsts;
 import org.universAAL.maven.treebuilder.ExecutionListCreator;
 
@@ -27,6 +53,9 @@ import org.universAAL.maven.treebuilder.ExecutionListCreator;
  * IntegrationTest.RUN_DIR_MVN_URL which is needed by integration tests.
  * 
  * @goal test
+ * @author <a href="mailto:stefano.lenzi@isti.cnr.it">Stefano Lenzi</a>
+ * @author <a href="marek.psiuk@agh.edu.pl">Marek Psiuk</a>
+ * @version $LastChangedRevision$ ( $LastChangedDate$ )
  */
 public class UaalTestMojo extends AbstractMojo {
 
@@ -95,7 +124,26 @@ public class UaalTestMojo extends AbstractMojo {
      * @required
      */
     private File baseDirectory;
-
+    
+    /**
+     * Set this to "true" to bypass unit tests entirely. 
+     * You can also the skipTests parameter instead.
+     * 
+     * @since 1.3.2
+     * @parameter expression="${maven.test.skip}" defaultValue="false"
+     */    
+    private boolean skip;
+    
+    /**
+     * Set this to "true" to bypass unit tests entirely. 
+     * You can also the skipTests parameter instead.
+     * 
+     * @since 1.3.2
+     * @parameter expression="${skipTests}" defaultValue="false"
+     */    
+    private boolean skipTests;
+    
+    
     /**
      * Directives configured via <configuration> in pom file, setting the
      * startlevel and/or nostart parameters to specified artifacts
@@ -115,6 +163,10 @@ public class UaalTestMojo extends AbstractMojo {
     public final void execute() throws MojoExecutionException,
 	    MojoFailureException {
 	try {
+	    if ( skipTests() ) {
+		getLog().info("Creation of composite file for itests skipped");
+		return;
+	    } 
 	    if ("pom".equals(project.getArtifact().getType())) {
 		getLog().info(
 			System.getProperty("line.separator")
@@ -186,5 +238,13 @@ public class UaalTestMojo extends AbstractMojo {
 	    getLog().error(e);
 	    throw new RuntimeException(e);
 	}
+    }
+    
+    /**
+     * 
+     * @return true if either test has to be skipped
+     */
+    private boolean skipTests() {
+	return skip || skipTests;
     }
 }
