@@ -27,7 +27,7 @@ import org.apache.maven.project.MavenProject;
 import org.universAAL.support.directives.api.APIFixableCheck;
 
 /**
- * Check that ASL2.0.txt, MITX.txt and NOTICE.txt files Exists.
+ * Check that ASL2.0.txt and NOTICE.txt files Exists.
  * Also checks that LICENSE.txt does not exist.
  * @author amedrano
  *
@@ -36,7 +36,7 @@ public class LicenseFileCheckFix implements APIFixableCheck {
 
 	private static final String[] files = {
 		"ASL2.0.txt",
-		"MITX.txt",
+		//"MITX.txt",
 		"NOTICE.txt", // NOTICE should always be last!
 	};
 	
