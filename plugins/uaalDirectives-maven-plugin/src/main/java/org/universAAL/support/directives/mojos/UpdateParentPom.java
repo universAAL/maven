@@ -60,7 +60,7 @@ public class UpdateParentPom extends AbstractProcedureMojo {
 				this.check(mavenProject, log);
 			} catch (Exception e) {
 			}
-			this.fix(mavenProject, log);			
+			this.fix(mavenProject, log);
 		}
 
 		@Override

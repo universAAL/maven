@@ -236,14 +236,15 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 		List<Dependency> ld = model.getDependencies();
 		List<Dependency> nld = new ArrayList<Dependency>();
 		for (Dependency dep: ld) {
+			boolean found = false;
 			for (DependencyID depID : toBeFixed.keySet()){
 				if (depID.compareTo(new DependencyID(dep)) == 0) {
 					nld.add(depID.toDependency());
-				}
-				else {
-					nld.add(dep);
+					found = true;
 				}
 			}
+			if (!found)
+			    nld.add(dep);
 		}
 		model.setDependencies(nld);
 	}
