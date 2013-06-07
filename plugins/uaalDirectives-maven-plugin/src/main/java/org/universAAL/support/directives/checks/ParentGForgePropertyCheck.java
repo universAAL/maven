@@ -105,8 +105,11 @@ public class ParentGForgePropertyCheck implements APIFixableCheck, PomFixer {
 
     public static boolean isParentRootPOM(MavenProject mavenProject2) {
 	MavenProject parent = mavenProject2.getParent();
-	return (parent.getGroupId().equals(UAAL_GID)
-		&& parent.getArtifactId().endsWith(UAAL_AID));
+	if (parent == null)
+	    return false;
+	String parentID = parent.getArtifactId();
+	return (parent.getGroupId().equals(UAAL_GID) && parentID
+		.endsWith(UAAL_AID));
     }
     
 	public static String getSVNURL(File dir) throws Exception, SVNException {

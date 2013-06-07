@@ -23,6 +23,7 @@ import java.util.TreeMap;
 
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.model.Dependency;
+import org.apache.maven.model.DependencyManagement;
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -175,7 +176,10 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 
 	private boolean passRootCheck(MavenProject mavenProject2) {
 		Map<DependencyID,String> versionMap = getActualVersions(mavenProject2);
-		List<Dependency> lod = mavenProject2.getDependencyManagement().getDependencies();
+		DependencyManagement dm = mavenProject2.getDependencyManagement();
+		if (dm == null)	// no DependencyManagement -> no fixing
+		    return true;
+		List<Dependency> lod = dm.getDependencies();
 		Map<DependencyID,String> lodVersionMap = new TreeMap<DependencyID,String>();
 
 		// test if the version in DependencyManagement corresponds to the version of the actual artefact
