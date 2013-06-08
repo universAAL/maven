@@ -151,7 +151,10 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 
 	private boolean passNoRootCheck(MavenProject mavenProject2) {
 		// check that the pom (not the model) hasn't any versions in it.
-		List<Dependency> depMan = mavenProject2.getParent().getDependencyManagement().getDependencies();
+		DependencyManagement dm = mavenProject2.getParent().getDependencyManagement();
+		if (dm == null)	// no dependency management -> no fixing
+		    return true;
+		List<Dependency> depMan = dm.getDependencies();
 		Map<DependencyID,String> depIDMan = new TreeMap<DependencyID, String>();
 		// grather DependencyIDs form parent
 		for (Dependency dep: depMan) {
