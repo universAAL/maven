@@ -1,8 +1,7 @@
 /*
-
-        Copyright 2007-2014 AGH-CS, http://www.ki.agh.edu.pl/
-        Department of Computer Science
-        AGH University of Science and Technology
+		Copyright 2011-2014 AGH-UST, http://www.agh.edu.pl
+		Faculty of Computer Science, Electronics and Telecommunications
+		Department of Computer Science 
 
         Copyright 2007-2014 CNR-ISTI, http://isti.cnr.it
         Institute of Information Science and Technologies
