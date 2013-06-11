@@ -27,5 +27,4 @@ Licensed under The TMate Open Source License
 
 III. License Summary
 - Apache License 2.0
-- MIT License
 - The TMate Open Source License
