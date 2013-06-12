@@ -47,11 +47,11 @@ public abstract class AbstractFixableCheckMojo extends AbstractCheckMojo {
 		}
 		
 		if (failed && fix) {
-			((APIFixableCheck) check).fix(null, getLog());
+			((APIFixableCheck) check).fix(getProject(), getLog());
 		}
 		if (failed && !fix) {
 				getLog().info("This plugin is able to automatically" +
-						" fix the prbolem. just add  \"-D-Ddirective.fix\" to your command.");
+						" fix the problem. just add  \"-D-Ddirective.fix\" to your command.");
 		}
 		
 		if (failedE instanceof MojoExecutionException) {

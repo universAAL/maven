@@ -87,6 +87,10 @@ public abstract class AbstractCheckMojo extends AbstractMojo {
 
 	}
 	
+	protected org.apache.maven.project.MavenProject getProject() {
+	    return mavenProject;
+	}
+	
 	public abstract APICheck getCheck();
 	
 	/**
