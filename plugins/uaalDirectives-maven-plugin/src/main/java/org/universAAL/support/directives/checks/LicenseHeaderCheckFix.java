@@ -62,7 +62,7 @@ public class LicenseHeaderCheckFix implements APIFixableCheck, SourceChecker {
 		ArrayList<File> conflicted = se.walk(
 				mavenproject.getBasedir().getAbsolutePath() + "/src/main/java/");
 		if (conflicted.size() > 0) {
-			String m = "The following Files seem not to have a propper License Header:\n";
+			String m = "The following Files seem not to have a proper License Header:\n";
 			for (File f : conflicted) {
 				m += "\t" + f.getAbsolutePath() + "\n";
 			}
