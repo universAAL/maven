@@ -80,7 +80,10 @@ public class SVNIgnoreCheck implements APIFixableCheck {
 					SVNRevision.WORKING);
 			boolean changed = false;
 			if (pd == null) {
-			    changed = true;
+				changed = true;
+				prop = "";
+    				for (int i = 0; i < ignores.length; i++)
+					prop += ignores[i] + "\n";
 			} else {
         			prop = pd.getValue().getString();
         			log.debug("Ignore Property contains: " + prop);// .split("\n")[0]
@@ -134,8 +137,6 @@ public class SVNIgnoreCheck implements APIFixableCheck {
 		} catch (SVNException e) {
 			throw new MojoExecutionException("error setting SVN properties.", e);
 		}
-		log.info("Fixing");
-
+		log.info("Fixing ignore list");
 	}
-
 }

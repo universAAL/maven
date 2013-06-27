@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Universidad Politécnica de Madrid
+ * Copyright 2013 Universidad PolitÃ©cnica de Madrid
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public abstract class AbstractFixableCheckMojo extends AbstractCheckMojo {
 		}
 		if (failed && !fix) {
 				getLog().info("This plugin is able to automatically" +
-						" fix the problem. just add  \"-D-Ddirective.fix\" to your command.");
+						" fix the problem. just add  \"-Ddirective.fix\" to your command.");
 		}
 		
 		if (failedE instanceof MojoExecutionException) {
