@@ -79,14 +79,18 @@ public class SVNIgnoreCheck implements APIFixableCheck {
 					SVNProperty.IGNORE, SVNRevision.WORKING,
 					SVNRevision.WORKING);
 			boolean changed = false;
-			prop = pd.getValue().getString();
-			log.debug("Ignore Property contains: " + prop);// .split("\n")[0]
-			for (int i = 0; i < ignores.length; i++) {
-				if (!prop.contains(ignores[i]) && exists(mavenProject, ignores[i])) {
-					prop += ignores[i] + "\n";
-					changed = true;
-				}
-			}
+			if (pd == null) {
+			    changed = true;
+			} else {
+        			prop = pd.getValue().getString();
+        			log.debug("Ignore Property contains: " + prop);// .split("\n")[0]
+        			for (int i = 0; i < ignores.length; i++) {
+        				if (!prop.contains(ignores[i]) && exists(mavenProject, ignores[i])) {
+        					prop += ignores[i] + "\n";
+        					changed = true;
+        				}
+        			}
+        		}
 			if (changed) {
 				String err = NO_IGNORES;
 				for (int i = 0; i < ignores.length; i++) {
