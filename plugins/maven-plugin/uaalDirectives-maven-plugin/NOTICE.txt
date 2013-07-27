@@ -1,0 +1,30 @@
+universAAL Directives helper plugin for Maven
+
+Copyright 2012-2014 UPM, http://www.upm.es
+Universidad Politécnica de Madrid 
+
+
+I. Included Software
+first version of artifact by Universidad Politécnica de Madrid within the universAAL project.
+
+II. Used Software
+
+This product uses software developed at
+The Apache Software Foundation (http://www.apache.org/).
+Licensed under the Apache License 2.0.
+
+This product uses software developed at
+Junit (http://www.junit.org/).
+Licensed under Common Public License 1.0.
+
+This product uses Software developed at
+Maven Project (http://maven.apache.org/)
+Licensed under Apache Licence 2.0
+
+This product uses Software developed at
+TMate Software (http://maven.apache.org/)
+Licensed under The TMate Open Source License
+
+III. License Summary
+- Apache License 2.0
+- The TMate Open Source License
