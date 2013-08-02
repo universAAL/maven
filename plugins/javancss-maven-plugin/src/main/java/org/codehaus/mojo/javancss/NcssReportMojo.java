@@ -570,7 +570,8 @@ public class NcssReportMojo
     		if (file.isDirectory()){
     			file = lastFileModified(file);
     		}
-    		if (file.lastModified() > lastMod) {
+    		if (file != null
+    				&& file.lastModified() > lastMod) {
     			choise = file;
     			lastMod = file.lastModified();
     		}
