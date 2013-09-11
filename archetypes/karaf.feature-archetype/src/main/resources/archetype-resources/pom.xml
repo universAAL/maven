@@ -5,7 +5,7 @@
   <artifactId>${artifactId}</artifactId>
   <groupId>${groupId}</groupId>
   <version>${version}</version>
-  <name>universAAL Karaf Feature Ontologies</name>
+  <name>universAAL Karaf Feature</name>
   <properties>
     <commons-beanutils-version>1.8.3</commons-beanutils-version>
     <commons-codec-version>1.4</commons-codec-version>
