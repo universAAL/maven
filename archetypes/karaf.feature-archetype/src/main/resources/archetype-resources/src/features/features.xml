@@ -1,0 +1,20 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="universAAL-Ontologies" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
+
+	<!-- Change version of repository accordingly -->
+	<repository>mvn:org.universAAL.middleware/mw.karaf.feature/2.0.0/xml/features</repository>
+
+	<!-- sample feature -->
+<!--
+	<feature name="uAAL-Ont.PhWorld" description="The Physical World Ontolgy."
+		version="${symbol_dollar}{pom.version}" resolver='(obr)'>
+		<feature>uAAL-MW</feature> 
+		<bundle>wrap:mvn:jp.go.ipa/jgcl/1.0</bundle>
+		<bundle start-level='90' start='true'>mvn:${package}/ont.phWorld/${version}</bundle>
+	</feature>
+-->
+		
+</features>
