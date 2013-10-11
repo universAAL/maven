@@ -1,0 +1,24 @@
+universAAL Manifest plugin for Maven
+
+Copyright 2011-2014 Fraunhofer IGD, http://www.igd.fraunhofer.de
+Fraunhofer Gesellschaft - Institut für Graphische Verarbeitung 
+
+
+I. Included Software
+
+II. Used Software
+
+This product uses software developed at
+The Apache Software Foundation (http://www.apache.org/).
+Licensed under the Apache License 2.0.
+
+This product uses software developed at
+Junit (http://www.junit.org/).
+Licensed under Common Public License 1.0.
+
+This product uses Software developed at
+Maven Project (http://maven.apache.org/)
+Licensed under Apache Licence 2.0
+
+III. License Summary
+- Apache License 2.0
