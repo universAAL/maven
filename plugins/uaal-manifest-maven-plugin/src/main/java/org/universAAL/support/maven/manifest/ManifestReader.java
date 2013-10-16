@@ -21,8 +21,6 @@ package org.universAAL.support.maven.manifest;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -39,14 +37,18 @@ import org.xml.sax.SAXException;
 
 public class ManifestReader {
     private File uaalManifest;
-    private HashMap<String, ArrayList<Permission>> map = new HashMap<String, ArrayList<Permission>>();
+    private PermissionMap map = new PermissionMap();
     private XPath xpath = XPathFactory.newInstance().newXPath();
 
     public ManifestReader(String filename) {
 	uaalManifest = new File(filename);
     }
+    
+    public ManifestReader(File file) {
+	uaalManifest = file;
+    }
 
-    public HashMap<String, ArrayList<Permission>> getResult() {
+    public PermissionMap getResult() {
 	return map;
     }
 
@@ -111,24 +113,12 @@ public class ManifestReader {
 	p.serialization = extractPermissionProperty("serialization", root);
 
 	if (!p.hasNull())
-	    addElement(busName, typeName, p);
+	    map.add(busName, typeName, p);
 
 	// System.out.println(" --- busName: " + busName + "\t\ttypeName: "
 	// + typeName + "\t\tval: " + p.title + "\n" + p.serialization);
     }
 
-    private void addElement(String busName, String typeName, Permission p) {
-	String key = "app-permissions-" + busName + "-" + typeName;
-
-	ArrayList<Permission> lst;
-	lst = map.get(key);
-	if (lst == null) {
-	    lst = new ArrayList<Permission>();
-	    map.put(key, lst);
-	}
-
-	lst.add(p);
-    }
 
     /**
      * Extracts a single Property of a {@link Permission}.

@@ -19,6 +19,8 @@
  */
 package org.universAAL.support.maven.manifest;
 
+import java.io.File;
+
 import org.apache.maven.plugin.AbstractMojo;
 
 /**
@@ -27,9 +29,9 @@ import org.apache.maven.plugin.AbstractMojo;
 public class MavenPlugin extends AbstractMojo {
     /**
      * @parameter default-value=
-     *            "${project.basedir}/src/main/resources/uaal-manifest.xml"
+     *            "${project.basedir}/uaal-manifest.xml,${project.basedir}/target/uaal-manifest.xml"
      */
-    private String input;
+    private File[] input;
 
     /**
      * @parameter default-value=
@@ -37,28 +39,37 @@ public class MavenPlugin extends AbstractMojo {
      */
     private String output;
 
-    public void execute() {
-	ManifestReader reader = new ManifestReader(input);
-	getLog().debug("Reading File '" + input + "'");
-	reader.read();
-
-	ManifestWriter writer = new ManifestWriter(output);
-	getLog().debug("Writing to File '" + output + "'");
-	writer.write(reader.getResult());
-    }
-
     public void setManifestPath(String path) {
 	output = path;
     }
 
-    public void setUaalManifestPath(String uaalPath) {
+    public void setUaalManifestPath(File[] uaalPath) {
 	input = uaalPath;
     }
 
-    // public static void main(String args[]) {
-    // MavenPlugin p = new MavenPlugin();
-    // p.setUaalManifestPath("uaal-manifest.xml");
-    // p.setManifestPath("uaal-manifest.mf");
-    // p.execute();
-    // }
+    public void execute() {
+	PermissionMap perms = new PermissionMap();
+
+	for (File file : input) {
+	    getLog().debug("Reading File '" + file + "'");
+	    ManifestReader reader = new ManifestReader(file);
+	    reader.read();
+	    PermissionMap res = reader.getResult();
+	    perms.add(res);
+	}
+
+	getLog().debug("Writing to File '" + output + "'");
+	ManifestWriter writer = new ManifestWriter(output);
+	writer.write(perms);
+
+	getLog().info("Found " + perms.toString());
+    }
+
+    public static void main(String args[]) {
+	MavenPlugin p = new MavenPlugin();
+	p.setUaalManifestPath(new File[] { new File("uaal-manifest2.xml"),
+		new File("uaal-manifest3.xml") });
+	p.setManifestPath("uaal-manifest.mf");
+	p.execute();
+    }
 }
