@@ -60,11 +60,12 @@ public class PermissionMap extends HashMap<String, ArrayList<Permission>> {
     }
 
     public String toString() {
-	String s = "" + getPermissionCount() + " permissions:\n";
-
+	String s = "" + getPermissionCount() + " permissions";
+	if (keySet().size() != 0)
+	    s += ":";
 	for (String key : keySet()) {
 	    ArrayList<Permission> lst = get(key);
-	    s += "   " + key + ": " + lst.size() + "\n";
+	    s += "\n   " + key + ": " + lst.size();
 	}
 
 	return s;

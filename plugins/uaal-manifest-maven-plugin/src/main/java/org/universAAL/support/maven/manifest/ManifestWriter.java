@@ -27,13 +27,25 @@ import java.util.ArrayList;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
+import org.apache.maven.plugin.logging.Log;
+
 public class ManifestWriter {
     private File manifestOutput;
     private Manifest man;
+    private Log log;
 
-    public ManifestWriter(String filename) {
-	manifestOutput = new File(filename);
+    public ManifestWriter(Log log, File file) {
+	this.log = log;
+	manifestOutput = file;
+	try {
+	    manifestOutput.createNewFile();
+	} catch (IOException e) {
+	}
 	man = new Manifest();
+    }
+
+    public ManifestWriter(Log log, String filename) {
+	this(log, new File(filename));
     }
 
     public void write(PermissionMap map) {
@@ -58,7 +70,15 @@ public class ManifestWriter {
 	try {
 	    man.write(new FileOutputStream(manifestOutput));
 	} catch (FileNotFoundException e) {
-	    e.printStackTrace();
+	    String filename = "";
+	    try {
+		filename = manifestOutput.getCanonicalPath();
+	    } catch (IOException e1) {
+	    }
+
+	    log.info("output file (" + filename
+		    + ") could not be created, skipping manifest creation.");
+	    // e.printStackTrace();
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}

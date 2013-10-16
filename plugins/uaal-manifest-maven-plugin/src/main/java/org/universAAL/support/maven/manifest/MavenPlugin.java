@@ -20,7 +20,6 @@
 package org.universAAL.support.maven.manifest;
 
 import java.io.File;
-
 import org.apache.maven.plugin.AbstractMojo;
 
 /**
@@ -34,12 +33,11 @@ public class MavenPlugin extends AbstractMojo {
     private File[] input;
 
     /**
-     * @parameter default-value=
-     *            "${project.basedir}/src/main/resources/META-INF/uaal-manifest.mf"
+     * @parameter default-value= "${project.basedir}/target/uaal-manifest.mf"
      */
-    private String output;
+    private File output;
 
-    public void setManifestPath(String path) {
+    public void setManifestPath(File path) {
 	output = path;
     }
 
@@ -51,25 +49,27 @@ public class MavenPlugin extends AbstractMojo {
 	PermissionMap perms = new PermissionMap();
 
 	for (File file : input) {
-	    getLog().debug("Reading File '" + file + "'");
-	    ManifestReader reader = new ManifestReader(file);
-	    reader.read();
-	    PermissionMap res = reader.getResult();
-	    perms.add(res);
+	    if (file.exists()) {
+		getLog().debug("Reading file '" + file + "'");
+		ManifestReader reader = new ManifestReader(file);
+		reader.read();
+		PermissionMap res = reader.getResult();
+		perms.add(res);
+	    }
 	}
 
 	getLog().debug("Writing to File '" + output + "'");
-	ManifestWriter writer = new ManifestWriter(output);
+	ManifestWriter writer = new ManifestWriter(getLog(), output);
 	writer.write(perms);
 
 	getLog().info("Found " + perms.toString());
     }
 
-    public static void main(String args[]) {
-	MavenPlugin p = new MavenPlugin();
-	p.setUaalManifestPath(new File[] { new File("uaal-manifest2.xml"),
-		new File("uaal-manifest3.xml") });
-	p.setManifestPath("uaal-manifest.mf");
-	p.execute();
-    }
+    // public static void main(String args[]) {
+    // MavenPlugin p = new MavenPlugin();
+    // p.setUaalManifestPath(new File[] { new File("uaal-manifest2.xml"),
+    // new File("uaal-manifest3.xml") });
+    // p.setManifestPath(new File("uaal-manifest.mf"));
+    // p.execute();
+    // }
 }
