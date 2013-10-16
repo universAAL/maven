@@ -17,7 +17,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package org.universAAL.maven;
 
 import java.io.BufferedReader;
@@ -137,6 +137,12 @@ public class UaalCompositeMojo extends AbstractMojo {
     private static final String MAIN_DEPS = "target/artifact.deps";
 
     /**
+     * Default path to the properties file to which the mapping between artifact
+     * id and artifact version will be written.
+     */
+    private static final String MAIN_VERSION = "target/artifacts.versions";
+
+    /**
      * Creates output writer for given file name.
      * 
      * @param fileName
@@ -179,6 +185,24 @@ public class UaalCompositeMojo extends AbstractMojo {
 		    .write("This is an empty dummy line in order to make"
 			    + "this file possible to deploy."
 			    + "Don't use this file at any time.");
+	}
+	compositeWriter.close();
+    }
+
+    private void writeArtifactsVersions(final List mvnUrls,
+	    final String fileName) throws IOException {
+	BufferedWriter compositeWriter = createOutputWriter(fileName);
+	for (Object mvnUrl : mvnUrls) {
+	    String mvnUrlStr = (String) mvnUrl;
+	    String [] mvnUrlElems = mvnUrlStr.split("/");
+	    if (mvnUrlElems.length != 3) {
+		throw new RuntimeException("Bad mvnUrl: " + mvnUrlStr);
+	    }
+	    compositeWriter.write(mvnUrlElems[1]);
+	    compositeWriter.write(".version");
+	    compositeWriter.write("=");
+	    compositeWriter.write(mvnUrlElems[2]);
+	    compositeWriter.write(System.getProperty("line.separator"));
 	}
 	compositeWriter.close();
     }
@@ -235,7 +259,8 @@ public class UaalCompositeMojo extends AbstractMojo {
 			.createArtifactExecutionList(project,
 				new HashSet<String>(), false);
 		writeListToFile(mvnUrls, MAIN_COMPOSITE);
-
+		writeArtifactsVersions(mvnUrls, MAIN_VERSION);
+		
 		List<String> mvnUrlsOnlyDeps = new ArrayList<String>(mvnUrls);
 		if (!mvnUrlsOnlyDeps.isEmpty()) {
 		    mvnUrlsOnlyDeps.remove(mvnUrlsOnlyDeps.size() - 1);
