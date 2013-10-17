@@ -37,6 +37,12 @@ public class MavenPlugin extends AbstractMojo {
      */
     private File output;
 
+    /**
+     * @parameter default-value=
+     *            "${project.basedir}/target/classes/META-INF/MANIFEST.MF,${project.basedir}/target/test-classes/META-INF/MANIFEST.MF"
+     */
+    private File[] combine;
+
     public void setManifestPath(File path) {
 	output = path;
     }
@@ -58,11 +64,20 @@ public class MavenPlugin extends AbstractMojo {
 	    }
 	}
 
-	getLog().debug("Writing to File '" + output + "'");
-	ManifestWriter writer = new ManifestWriter(getLog(), output);
-	writer.write(perms);
-
+	if (perms.getPermissionCount() != 0) {
+	    getLog().debug("Writing to File '" + output + "'");
+	    ManifestWriter writer = new ManifestWriter(getLog(), output);
+	    writer.write(perms);
+	}
 	getLog().info("Found " + perms.toString());
+
+	// if (output.exists()) {
+	// for (File file : combine) {
+	// getLog().debug("Combine file '" + file + "'");
+	// ManifestCombine comb = new ManifestCombine(getLog(), output);
+	// comb.combine(file);
+	// }
+	// }
     }
 
     // public static void main(String args[]) {

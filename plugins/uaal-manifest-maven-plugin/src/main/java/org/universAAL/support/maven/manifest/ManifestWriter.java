@@ -37,7 +37,10 @@ public class ManifestWriter {
     public ManifestWriter(Log log, File file) {
 	this.log = log;
 	manifestOutput = file;
+	//manifestOutput = new File(file, "META-INF");
 	try {
+	    //manifestOutput.mkdirs();
+	    //manifestOutput = new File(manifestOutput, "uaal-manifest.mf");
 	    manifestOutput.createNewFile();
 	} catch (IOException e) {
 	}
@@ -61,7 +64,7 @@ public class ManifestWriter {
 	    }
 
 	    if (val.length() != 0) {
-		man.getMainAttributes().putValue("app-permissions-" + key, val);
+		man.getMainAttributes().putValue("App-permissions-" + key, val);
 		// System.out.println("-- adding key: " + key);
 	    }
 	}
