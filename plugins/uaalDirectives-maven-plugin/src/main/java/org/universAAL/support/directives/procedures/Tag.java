@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011 Universidad Politécnica de Madrid
+ * Copyright 2011 Universidad Politï¿½cnica de Madrid
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNCopySource;
 import org.tmatesoft.svn.core.wc.SVNRevision;
+import org.tmatesoft.svn.core.wc.SVNWCUtil;
 import org.universAAL.support.directives.api.APIProcedure;
 import org.universAAL.support.directives.api.AbstractCheckMojo;
 
@@ -99,7 +100,17 @@ public class Tag implements APIProcedure{
 	}
 	
 	private static boolean doTag(SVNCopySource source, String tagUrl, String msg) throws SVNException {
-		SVNClientManager cli = SVNClientManager.newInstance();
+		SVNClientManager cli = null;
+		if (System.getProperty("user") == null
+				|| System.getProperty("password") == null){
+			cli = SVNClientManager.newInstance();
+		}
+		else {
+			cli = SVNClientManager.newInstance(
+					SVNWCUtil.createDefaultOptions(true),
+					System.getProperty("user"),
+					System.getProperty("password"));
+		}
 		cli.getCopyClient().doCopy(new SVNCopySource[]{ source},
 				SVNURL.parseURIDecoded(tagUrl),
 				false, true, true, msg, null);
