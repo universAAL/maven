@@ -17,6 +17,7 @@
   <modules>
     <module>karaf.feature-archetype/</module>
     <module>module.osgi-archetype/</module>
+    <module>module.generic-archetype/</module>
     <module>pax.runner-archetype/</module>
   </modules>
 

@@ -1,0 +1,9 @@
+<archetype>
+  <id>module.osgi-archetype</id>
+  <sources>
+    <source>src/main/java/ProjectActivator.java</source>
+  </sources>
+  <testSources>
+    <source>src/test/java/AppTest.java</source>
+  </testSources>
+</archetype>
