@@ -2,10 +2,11 @@
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
 <?xml version="1.0" encoding="UTF-8"?>
-<features name="universAAL-Ontologies" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
+<features name="universAAL-Feature" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
 
-	<!-- Change version of repository accordingly -->
-	<repository>mvn:org.universAAL.middleware/mw.karaf.feature/2.0.0/xml/features</repository>
+	<!-- Import Mw and Ontologies Feature Repositories -->
+	<repository>mvn:org.universAAL.middleware/mw.karaf.feature/${mw.karaf.feature.version}/xml/features</repository>
+	<repository>mvn:org.universAAL.ontology/ont.karaf.feature/${ont.karaf.feature.version}/xml/features</repository>
 
 	<!-- sample feature -->
 <!--
@@ -13,7 +14,7 @@
 		version="${symbol_dollar}{pom.version}" resolver='(obr)'>
 		<feature>uAAL-MW</feature> 
 		<bundle>wrap:mvn:jp.go.ipa/jgcl/1.0</bundle>
-		<bundle start-level='90' start='true'>mvn:${package}/ont.phWorld/${version}</bundle>
+		<bundle start-level='60' start='true'>mvn:${package}/ont.phWorld/${version}</bundle>
 	</feature>
 -->
 		
