@@ -36,7 +36,6 @@ import org.universAAL.support.directives.procedures.UpdateRootVersionsProcedure;
  * @author amedrano
  * 
  * @goal update-roots
- * @aggregator
  */
 public class UpdateRootVersionsMojo extends AbstractProcedureMojo {
 
