@@ -17,20 +17,22 @@ package org.universAAL.support.directives.mojos;
 
 import org.universAAL.support.directives.api.APIProcedure;
 import org.universAAL.support.directives.api.AbstractProcedureMojo;
+import org.universAAL.support.directives.procedures.UpdateParentPomInteractiveProcedure;
 import org.universAAL.support.directives.procedures.UpdateRootVersionsProcedure;
 
-/** 
- * Changes the versions of the one pom and root dependencyManagement imports to the given new Version. 
- * sections changed:
+/**
+ * Changes the versions of the one pom and root dependencyManagement imports to
+ * the given new Version. sections changed:
  * <ol>
- * 	<li> the uAAL.pom parent version
- * 	<li> the imported root poms' versions in dependencyManagement
- * 	<li> the version of itest in dependencyManagement
- *  <li> the version of uaal-maven-plugin in dependencyManagement
- *  <li> the version of uaaldirectives-maven-plugin in dependencyManagement
- *  <li> the version of uaaldirectives-maven-plugin in reporting
+ * <li>the uAAL.pom parent version
+ * <li>the imported root poms' versions in dependencyManagement
+ * <li>the version of itest in dependencyManagement
+ * <li>the version of uaal-maven-plugin in dependencyManagement
+ * <li>the version of uaaldirectives-maven-plugin in dependencyManagement
+ * <li>the version of uaaldirectives-maven-plugin in reporting
  * </ol>
  * This mojo is only intended for uAAL release process.
+ * 
  * @author amedrano
  * 
  * @goal update-roots
@@ -40,26 +42,17 @@ public class UpdateRootVersionsMojo extends AbstractProcedureMojo {
 
     /**
      * The new version to set all the version references.
+     * 
      * @parameter expression="${newVersion}"
      */
     private String newVersion;
-	
-	/** {@inheritDoc} */
-	@Override
-	public APIProcedure getProcedure() {
-		if (newVersion == null 
-				|| newVersion.isEmpty()){
-			while (newVersion == null 
-				|| newVersion.isEmpty()){
-				System.out.print("\nEnter new version of super pom and root poms: ");
-				newVersion = System.console().readLine();
-				System.setProperty("newVersion", newVersion);
-			}
-			return new UpdateRootVersionsProcedure(newVersion);
-		}
-		else {
-			return new UpdateRootVersionsProcedure(newVersion);
-		}
-	}
 
+    /** {@inheritDoc} */
+    @Override
+    public APIProcedure getProcedure() {
+	if (newVersion == null || newVersion.isEmpty()) {
+	    return new UpdateParentPomInteractiveProcedure();
+	}
+	return new UpdateRootVersionsProcedure(newVersion);
+    }
 }
