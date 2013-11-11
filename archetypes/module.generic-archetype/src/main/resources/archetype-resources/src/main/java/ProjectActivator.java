@@ -4,7 +4,7 @@ import org.universAAL.middleware.container.ModuleActivator;
 import org.universAAL.middleware.container.ModuleContext;
 import org.universAAL.middleware.container.utils.LogUtils;
 
-public class ProjectActivator implements BundleActivator {
+public class ProjectActivator implements ModuleActivator {
 
 	static ModuleContext context;
 	
