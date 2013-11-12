@@ -15,103 +15,48 @@
  ******************************************************************************/
 package org.universAAL.support.directives.procedures;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.ReportPlugin;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.project.MavenProject;
 import org.universAAL.support.directives.api.APIProcedure;
 import org.universAAL.support.directives.util.PomFixer;
-import org.universAAL.support.directives.util.PomWriter;
 
 /**
  * this procedure is intended to ease Release process by:
  * <ol>
- * 	<li> changing the uAAL.pom parent version
- * 	<li> changing the imported root poms' versions in dependencyManagement
- * 	<li> changing the version of itest in dependencyManagement
- *  <li> changing the version of uaal-maven-plugin in dependencyManagement
- *  <li> changing the version of uaaldirectives-maven-plugin in dependencyManagement
- *  <li> the version of uaaldirectives-maven-plugin in reporting
+ * <li>changing the uAAL.pom parent version
+ * <li>changing the imported root poms' versions in dependencyManagement
+ * <li>changing the version of itest in dependencyManagement
+ * <li>changing the version of uaal-maven-plugin in dependencyManagement
+ * <li>changing the version of uaaldirectives-maven-plugin in
+ * dependencyManagement
+ * <li>changing the version of uaal-manifest-maven-plugin in
+ * dependencyManagement
+ * <li>the version of uaaldirectives-maven-plugin in reporting
  * </ol>
+ * 
+ * All versions are set to be the newVersion Parameter passed in the constructor.
+ * 
  * @author amedrano
- *
+ * 
  */
-public class UpdateRootVersionsProcedure implements APIProcedure, PomFixer {
+public class UpdateRootVersionsProcedure extends
+	UpdateParentPomInteractiveProcedure implements APIProcedure, PomFixer {
 
-    private static final String UAAL_GID = "org.universAAL";
+    /**
+     * the version to change uAAL.pom and root imports to.
+     */
+    private String newVersion;
 
-    private static final String UAAL_AID = "uAAL.pom";
-	
-	/**
-	 * the version to change uAAL.pom and root imports to.
-	 */
-	private String newVersion;
-	
-	public UpdateRootVersionsProcedure(String newVersion) {
-		super();
-		this.newVersion = newVersion;
-	}
+    /**
+     * Constructor.
+     * @param newVersion the new Version to use for all artifacts affected.
+     */
+    public UpdateRootVersionsProcedure(String newVersion) {
+	super();
+	this.newVersion = newVersion;
+    }
 
-	/** {@inheritDoc} */
-	public void execute(MavenProject mavenProject, Log log)
-			throws MojoExecutionException, MojoFailureException {
-
-		try {
-			log.info("Changing uAAL version and root imports to: " + newVersion);
-			new PomWriter(this, mavenProject).fix();
-		} catch (Exception e) {
-			throw new MojoExecutionException("unable to fix Version", e);
-		}
-
-	}
-
-	public void fix(Model model) {
-		//Update parent Version
-		if (model.getParent().getArtifactId().equals(UAAL_AID)
-				&& model.getParent().getGroupId().equals(UAAL_GID)){
-			model.getParent().setVersion(newVersion);
-		}
-		//Update dependency management
-		if (model.getPackaging().equals("pom")){
-			List<Dependency> deps = model.getDependencyManagement().getDependencies();
-			List<Dependency> nld = new ArrayList<Dependency>();
-			for (Dependency d : deps) {
-				//Update imports
-				if (d.getScope() != null
-						&& d.getScope().equals("import")
-						&& d.getGroupId().startsWith(UAAL_GID)){
-					d.setVersion(newVersion);
-				}
-				//update support artifacts
-				if (d.getGroupId().equals("org.universAAL.support")) {
-					if (d.getArtifactId().equals("itests")
-							|| d.getArtifactId().equals("uaal-maven-plugin")
-							|| d.getArtifactId().equals("uaalDirectives-maven-plugin")) {
-					d.setVersion(newVersion);
-				}
-				}
-				nld.add(d);			
-			}
-			model.getDependencyManagement().setDependencies(nld);
-			
-			// Updating the reportPlugin reference
-			List<ReportPlugin> rplugins = model.getReporting().getPlugins();
-			List<ReportPlugin> newRPlugins = new ArrayList<ReportPlugin>();
-			for (ReportPlugin rp : rplugins) {
-				if (rp.getGroupId().equals("org.universAAL.support")
-						&& rp.getArtifactId().equals("uaalDirectives-maven-plugin")) {
-					rp.setVersion(newVersion);
-				}
-				newRPlugins.add(rp);
-			}
-			model.getReporting().setPlugins(newRPlugins);
-		}
-	}
+    protected String ask4NewVersion(String groupID, String artifactID,
+	    String currentVersion) {
+	return newVersion;
+    }
 
 }
