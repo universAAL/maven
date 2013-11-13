@@ -18,7 +18,6 @@ package org.universAAL.support.directives.checks;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,7 +77,6 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 	 * {@inheritDoc}
 	 */
 	public void fix(MavenProject mavenProject2, Log log) throws MojoFailureException {
-		// TODO Auto-generated method stub
 		try {
 			new PomWriter(this, mavenProject2).fix();
 		} catch (Exception e) {
@@ -93,6 +91,7 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 	 * @return
 	 */
 	private boolean passCheck(MavenProject mavenProject2, Log log) {
+		toBeFixed = new ArrayList<String>();
 		if (isAparentPOM(mavenProject2, log)) {
 		    if (isOfCommonType(mavenProject2, log)){
 			return passRootCheckCommonType(mavenProject2, log);
@@ -114,17 +113,15 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 	 */
 	private boolean isAparentPOM(MavenProject mavenProject2, Log log) {
 	    boolean isAPOM = mavenProject2.getPackaging().equals("pom");
+	    boolean containsSRC = false;
 	    for (File f : mavenProject2.getBasedir().listFiles()) {
-		String rel = f.getName();
-		if (f.isDirectory()
-				&& !rel.contains(SVN_FOLDER)
-				// it is not the svn folder
-				) {
-			isAPOM = !f.getName().contains("src");
+		if (f.isDirectory()) {
+		    	containsSRC |= f.getName().contains("src");
 			log.debug(f.getName());
+			log.debug(Boolean.toString(containsSRC));
 		}
 	}
-	    return isAPOM;
+	    return isAPOM & !containsSRC;
 	}
 
 	/**
@@ -151,6 +148,10 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 		File mDir = new File(mp.getBasedir(),m);
 		log.debug("checking \n -" + mp.getBasedir().getAbsolutePath() + "\n -"+ mDir.getAbsolutePath());
 		try {
+		    /*
+		     * for all of the modules:
+		     * 	the parent folder of the module is the same as the parent POMs folder
+		     */
 		    common &= mp.getBasedir().equals(mDir.getCanonicalFile().getParentFile());
 		} catch (IOException e) {
 		    log.error(e);
@@ -164,7 +165,6 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 
 
 	private boolean passRootCheckCommonType(MavenProject mavenProject2, Log log) {
-		toBeFixed = new ArrayList<String>();
 		List<String> mods = (List<String>) mavenProject2.getModules();
 		List<File> listed = new ArrayList<File>();
 		for (String m : mods) {
@@ -192,7 +192,6 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 	}
 
 	private boolean passRootCheckSiblingType(MavenProject mavenProject2, Log log) {
-		toBeFixed = new ArrayList<String>();
 		List<String> listed = (List<String>) mavenProject2.getModules();
 		
 		//gather the existent modules
