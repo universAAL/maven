@@ -17,6 +17,9 @@
     <module>pax.runner-archetype</module>
   </modules>
 
+  <properties>
+		<uaal.site.url>ftp://depot.universaal.org/www/Resources/maven-site/${project.version}/support/archetypes</uaal.site.url>
+ </properties>
  
   <repositories>
     <repository>
