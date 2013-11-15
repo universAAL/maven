@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
+  <parent>
+  	<groupId>org.universAAL.support</groupId>
+  	<artifactId>archetypes.pom</artifactId>
+  	<version>2.0.1-SNAPSHOT</version>
+  	<relativePath>../</relativePath>
+  </parent>
   <groupId>org.universAAL.runners</groupId>
   <artifactId>pax.runner-archetype</artifactId>
   <version>2.0.0</version>
@@ -27,16 +32,4 @@
       </plugins>
     </pluginManagement>
   </build>
-  	<distributionManagement>
-		<repository>
-			<id>releases</id>
-			<name>universAAL Releases</name>
-			<url>http://depot.universaal.org/nexus/content/repositories/releases/</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshots</id>
-			<name>universAAL Snapshots</name>
-			<url>http://depot.universaal.org/nexus/content/repositories/snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
 </project>

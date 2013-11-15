@@ -3,6 +3,13 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+  	<groupId>org.universAAL</groupId>
+  	<artifactId>uAAL.pom</artifactId>
+  	<version>2.0.2-SNAPSHOT</version>
+  	<relativePath>../uAAL.pom/pom.xml</relativePath>
+  </parent>
+
   <groupId>org.universAAL.support</groupId>
   <artifactId>archetypes.pom</artifactId>
   <version>2.0.1-SNAPSHOT</version>
@@ -18,6 +25,8 @@
   </modules>
 
   <properties>
+	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<uaal.site.url>ftp://depot.universaal.org/www/Resources/maven-site/${project.version}/support/archetypes</uaal.site.url>
  </properties>
  
@@ -39,23 +48,6 @@
       <url>http://depot.universaal.org/maven-repo/releases/</url>
     </repository>
   </repositories>
-
-	<distributionManagement>
-		<repository>
-			<id>releases</id>
-			<name>universAAL Releases</name>
-			<url>http://depot.universaal.org/nexus/content/repositories/releases/</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshots</id>
-			<name>universAAL Snapshots</name>
-			<url>http://depot.universaal.org/nexus/content/repositories/snapshots/</url>
-		</snapshotRepository>
-		<site>
-			<id>depot.universaal.org</id>
-			<url>${uaal.site.url}</url>
-		</site>
-	</distributionManagement>
 
 </project>
 
