@@ -20,12 +20,12 @@ public class ProjectActivator implements ModuleActivator {
 
 
 	public void stop(ModuleContext ctxt) throws Exception {
-		LogUtils.logDebug(context, getClass(), "start", "Stopping.");
+		LogUtils.logDebug(context, getClass(), "stop", "Stopping.");
 		/*
 		 * close uAAL stuff
 		 */
 		
-		LogUtils.logDebug(context, getClass(), "start", "Stopped.");
+		LogUtils.logDebug(context, getClass(), "stop", "Stopped.");
 
 	}
 

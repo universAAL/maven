@@ -23,12 +23,12 @@ public class ProjectActivator implements BundleActivator {
 
 
 	public void stop(BundleContext arg0) throws Exception {
-		LogUtils.logDebug(context, getClass(), "start", "Stopping.");
+		LogUtils.logDebug(context, getClass(), "stop", "Stopping.");
 		/*
 		 * close uAAL stuff
 		 */
 		
-		LogUtils.logDebug(context, getClass(), "start", "Stopped.");
+		LogUtils.logDebug(context, getClass(), "stop", "Stopped.");
 
 	}
 
