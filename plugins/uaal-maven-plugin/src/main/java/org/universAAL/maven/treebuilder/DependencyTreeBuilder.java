@@ -1332,7 +1332,7 @@ public class DependencyTreeBuilder {
 	    try {
 		List<String> separatedGroupId = extractSeparatedGroupIds(project);
 
-		// Tutaj wystarczy dodaæ tworzenie nowej listy
+		// Here you can simply add to create a new list
 		List remoteRepositories = projectDesc.remoteRepositories;
 
 		// If artifact is marked in pom as a bundle then it is changed
