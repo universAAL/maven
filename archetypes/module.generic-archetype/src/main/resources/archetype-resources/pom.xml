@@ -12,6 +12,10 @@
   <version>${version}</version>
   <packaging>bundle</packaging>
 
+  <properties>
+    <separatedGroupIds>org.universAAL.middleware</separatedGroupIds>
+  </properties>
+
   <dependencies>
 	<dependency>
 		<groupId>junit</groupId>
