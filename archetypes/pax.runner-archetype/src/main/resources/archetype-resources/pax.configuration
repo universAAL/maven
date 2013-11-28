@@ -7,4 +7,4 @@
 --sp=sun.reflect,sun.misc,sun.audio
 --downloadFeedback=false
 #configure the SLP port with XXX (>1024 if you are not admin)
---vmOptions=-Dfelix.system.properties=file:felix/system.properties 
+--vmOptions=-Dfile.encoding=UTF-8 -Dfelix.system.properties=file:felix/system.properties 
