@@ -76,7 +76,9 @@ public class FelixDepCheckFix implements APIFixableCheck,PomFixer{
 	List<Dependency> deps = model.getDependencies();
 	List<Dependency> newDeps = new ArrayList<Dependency>();
 	for (Dependency d : deps) {
-	    if (d.getGroupId().equals("org.apache.felix")){
+	    if (d.getGroupId().equals("org.apache.felix")
+		    && (d.getArtifactId().equals("org.osgi.core") 
+			    || d.getArtifactId().equals("org.osgi.compendium"))){
 		d.setGroupId("org.osgi");
 	    }
 	    newDeps.add(d);
