@@ -213,9 +213,11 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 
 	private Map<DependencyID, String> getActualVersions(MavenProject mavenProject2) {
 		TreeMap<DependencyID,String> versionMap = new TreeMap<DependencyID, String>();
+		boolean containsSubPOMProjects = includesPOMSubProjects(mavenProject2);
 		for (MavenProject mavenProject : reactorProjects) {
 			if (mavenProject.getVersion() != null 
-					&& !mavenProject.getPackaging().equals("pom")) {
+					&& (!mavenProject.getPackaging().equals("pom") 
+						|| containsSubPOMProjects)) {
 				// Check if its a pom, add it if not!
 				versionMap.put( new DependencyID(mavenProject.getGroupId(), mavenProject.getArtifactId())
 				,mavenProject.getVersion());
@@ -224,6 +226,21 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 			}
 		}
 		return versionMap;
+	}
+
+	/**
+	 * @param mavenProject2
+	 * @return
+	 */
+	private boolean includesPOMSubProjects(MavenProject mavenProject2) {
+	    DependencyManagement dm = mavenProject2.getDependencyManagement();
+	    for (Dependency d : dm.getDependencies()) {
+		if (d.getType().equals("pom")
+			|| d.getType().equals("cfg")){
+		    return true;
+		}
+	    }
+	    return false;
 	}
 
 	public void fix(Model model) {
