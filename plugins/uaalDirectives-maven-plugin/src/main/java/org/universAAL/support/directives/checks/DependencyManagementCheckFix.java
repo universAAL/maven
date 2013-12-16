@@ -234,10 +234,11 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 	 */
 	private boolean includesPOMSubProjects(MavenProject mavenProject2) {
 	    DependencyManagement dm = mavenProject2.getDependencyManagement();
-	    for (Dependency d : dm.getDependencies()) {
-		if (d.getType().equals("pom")
-			|| d.getType().equals("cfg")){
-		    return true;
+	    if (dm != null) {
+		for (Dependency d : dm.getDependencies()) {
+		    if (d.getType().equals("pom") || d.getType().equals("cfg")) {
+			return true;
+		    }
 		}
 	    }
 	    return false;
