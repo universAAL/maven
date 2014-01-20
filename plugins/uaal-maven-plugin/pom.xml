@@ -3,14 +3,14 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-      <groupId>org.universAAL.support</groupId>
-      <artifactId>maven-plugins.pom</artifactId>
-      <version>2.0.1-SNAPSHOT</version>
-      <relativePath>../</relativePath>
+    <groupId>org.universAAL.support</groupId>
+    <artifactId>maven-plugins.pom</artifactId>
+    <version>3.0.0</version>
+    <relativePath>../</relativePath>
   </parent>
   <groupId>org.universAAL.support</groupId>
   <artifactId>uaal-maven-plugin</artifactId>
-  <version>2.0.2-SNAPSHOT</version>
+  <version>3.0.0</version>
   <packaging>maven-plugin</packaging>
   <name>universAAL Support Maven Plugin</name>
   <description>Maven plugin for resolution and running uAAL artifacts</description>
@@ -21,15 +21,15 @@
     <maven.compile.target>1.5</maven.compile.target>
   </properties>
   <dependencyManagement>
-  	<dependencies>
-  		<dependency>
-  			<groupId>org.universAAL.support</groupId>
-  			<artifactId>itests.pom</artifactId>
-  			<version>2.0.2-SNAPSHOT</version>
-  			<type>pom</type>
-  			<scope>import</scope>
-  		</dependency>
-  	</dependencies>
+    <dependencies>
+      <dependency>
+        <groupId>org.universAAL.support</groupId>
+        <artifactId>itests.pom</artifactId>
+        <version>3.0.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
   </dependencyManagement>
   <dependencies>
     <dependency>

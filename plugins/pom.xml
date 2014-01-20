@@ -5,20 +5,27 @@
   <parent>
     <groupId>org.universAAL</groupId>
     <artifactId>uAAL.pom</artifactId>
-    <version>2.0.2-SNAPSHOT</version>
+    <version>3.0.0</version>
   </parent>
   <groupId>org.universAAL.support</groupId>
   <artifactId>maven-plugins.pom</artifactId>
-  <version>2.0.1-SNAPSHOT</version>
+  <version>3.0.0</version>
   <packaging>pom</packaging>
   <name>universAAL Maven Plugins</name>
   <description>The set of maven plugins to be used to buld universAAL projects.</description>
   <modules>
-    <!-- <module>javancss-maven-plugin</module> -->
     <module>uaal-maven-plugin</module>
     <module>uaal-manifest-maven-plugin</module>
     <module>uaalDirectives-maven-plugin</module>
-  </modules> 
+  </modules>
+  <scm>
+    <connection>${svn.base}/maven-plugins</connection>
+    <developerConnection>${svn.base}/maven-plugins</developerConnection>
+    <url>${svn.base.url}maven-plugins</url>
+  </scm>
+  <properties>
+    <gforge.project.name>support</gforge.project.name>
+  </properties>
   <repositories>
     <repository>
       <releases>
@@ -37,6 +44,4 @@
       <url>http://depot.universaal.org/maven-repo/releases/</url>
     </repository>
   </repositories>
-
 </project>
-
