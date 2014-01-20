@@ -5,12 +5,12 @@
   <parent>
     <groupId>org.universAAL.support</groupId>
     <artifactId>archetypes.pom</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.1-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
   <groupId>org.universAAL.samples</groupId>
   <artifactId>karaf.feature-archetype</artifactId>
-  <version>3.0.0</version>
+  <version>3.0.1-SNAPSHOT</version>
   <packaging>maven-archetype</packaging>
   <name>Archetype - create an empty karaf feature repository, ready for adding features and then install and deploy it.</name>
   <licenses>
