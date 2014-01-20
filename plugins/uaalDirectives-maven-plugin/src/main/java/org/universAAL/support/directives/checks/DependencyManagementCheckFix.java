@@ -281,7 +281,8 @@ public class DependencyManagementCheckFix implements APIFixableCheck, PomFixer{
 				dep.setVersion(toBeFixed.get(key));
 				getLog().info("Fixing: " + dep.getGroupId() + ":" + dep.getArtifactId()
 						+ " to: " + toBeFixed.get(key));
-				Dependency d = key.toDependency();
+				//Dependency d = key.toDependency();
+				Dependency d = dep;
 				d.setVersion(toBeFixed.get(key));
 				newDep.add(d);
 				//toBeFixed.remove(key);

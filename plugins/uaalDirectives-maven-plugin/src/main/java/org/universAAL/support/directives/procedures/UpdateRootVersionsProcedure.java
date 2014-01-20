@@ -54,6 +54,7 @@ public class UpdateRootVersionsProcedure extends
 	this.newVersion = newVersion;
     }
 
+    @Override
     protected String ask4NewVersion(String groupID, String artifactID,
 	    String currentVersion) {
 	return newVersion;
