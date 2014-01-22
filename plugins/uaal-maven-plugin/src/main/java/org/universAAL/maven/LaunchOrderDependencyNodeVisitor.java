@@ -355,7 +355,8 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport
 				    .get(stringifyNoVersion(keptArtifact)));
 		}
 		if (keptNode == null) {
-		    throw new IllegalStateException("Cannot find keptNode");
+		    throw new IllegalStateException("Cannot find keptNode\n"
+			    + "check: " +stringifyNoVersion(keptArtifact));
 		}
 		if (node.getState() == DependencyNode.OMITTED_FOR_CONFLICT) {
 		    throwConflictException(node, keptNode,
