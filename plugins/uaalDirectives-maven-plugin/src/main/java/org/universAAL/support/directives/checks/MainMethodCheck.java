@@ -37,10 +37,7 @@ import org.universAAL.support.directives.util.SourceExplorer;
  */
 public class MainMethodCheck implements SourceChecker, APICheck {
 
-	public static String COMMENT_REGEXP = "(?://.*)";
-	// TODO capture /**/ style comments:
-			//"(/\\*(?:.|[\\n\\r])*?\\*/)|(?://.*)";
-			//"(?:/\\*(?:[^*]|(?:\\*+[^*/]))*\\*+/)|(?://.*)";
+	public static String COMMENT_REGEXP = "(?:/\\*(?:[^*]|(?:\\*+[^*/]))*\\*+/)|(?://.*)";
 	
 	public static String MAIN_REGEXP = "(public\\s+)?static\\s+(public\\s+)?void\\s+main\\s*\\(\\s*String(\\s*\\[\\])?\\s+\\w+(\\s*\\[\\])?\\)";
 	
@@ -70,7 +67,7 @@ public class MainMethodCheck implements SourceChecker, APICheck {
 	public boolean passesTest(File sourceFile) {
 		try {
 			String code = FileUtils.readFileToString(sourceFile);
-			code = COMMENT_PATTERN.matcher(code).replaceAll(" ");
+			code = COMMENT_PATTERN.matcher(code).replaceAll("");
 			Matcher m = MAIN_PATTERN.matcher(code);
 			return !m.find();
 		} catch (IOException e) {

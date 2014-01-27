@@ -36,13 +36,6 @@ import org.universAAL.support.directives.util.PomWriter;
  */
 public class FelixDepCheckFix implements APIFixableCheck,PomFixer{
 
-    /**
-     * 
-     */
-    public FelixDepCheckFix() {
-	// TODO Auto-generated constructor stub
-    }
-
     /** {@ inheritDoc}	 */
     public boolean check(MavenProject mavenproject, Log log)
 	    throws MojoExecutionException, MojoFailureException {

@@ -87,7 +87,7 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 	/**
 	 * check whether there are any versions defined or dependencyManagement points to correct versions
 	 * @param mavenProject2
-	 * @param log TODO
+	 * @param log log element to output log.
 	 * @return
 	 */
 	private boolean passCheck(MavenProject mavenProject2, Log log) {
@@ -108,7 +108,7 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 	/**
 	 * Checks the project is a POM and a parent POM (ie it has no source).
 	 * @param mavenProject2
-	 * @param log TODO
+	 * @param log log element to output log info.
 	 * @return
 	 */
 	private boolean isAparentPOM(MavenProject mavenProject2, Log log) {

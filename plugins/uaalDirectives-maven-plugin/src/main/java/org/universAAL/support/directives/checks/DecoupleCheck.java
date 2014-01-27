@@ -93,7 +93,6 @@ public class DecoupleCheck implements APICheck, SourceChecker {
 				br = new BufferedReader(new FileReader(f));
 				return lookForLinesWith(br, ".*import.*");
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return null;
@@ -112,10 +111,8 @@ public class DecoupleCheck implements APICheck, SourceChecker {
 					System.out.flush();
 				}
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return null;
@@ -131,7 +128,6 @@ public class DecoupleCheck implements APICheck, SourceChecker {
 					}
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return matches;

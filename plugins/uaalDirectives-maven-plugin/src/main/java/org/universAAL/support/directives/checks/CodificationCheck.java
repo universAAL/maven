@@ -55,7 +55,6 @@ public class CodificationCheck implements APICheck, SourceChecker {
 
 	/** {@ inheritDoc}	 */
 	public boolean passesTest(File sourceFile) {
-		// TODO Auto-generated method stub
 		int lineNo = 1;
 		BufferedReader br;
 		try {
@@ -74,7 +73,6 @@ public class CodificationCheck implements APICheck, SourceChecker {
 			lineMap.put(sourceFile, new Integer(lineNo));
 			return false;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return false;

@@ -76,7 +76,7 @@ public class LicenseHeaderCheckFix implements APIFixableCheck, SourceChecker {
 	/** {@inheritDoc} */
 	public void fix(MavenProject mavenProject, Log log)
 			throws MojoExecutionException, MojoFailureException {
-		// TODO Auto-generated method stub
+		// TODO needs owner and year to be able to add the header.
 
 	}		
 
