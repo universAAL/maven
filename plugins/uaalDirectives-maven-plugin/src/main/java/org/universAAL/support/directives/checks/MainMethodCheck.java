@@ -36,14 +36,11 @@ import org.universAAL.support.directives.util.SourceExplorer;
  *
  */
 public class MainMethodCheck implements SourceChecker, APICheck {
-
-	public static String COMMENT_REGEXP = "(?:/\\*(?:[^*]|(?:\\*+[^*/]))*\\*+/)|(?://.*)";
 	
-	public static String MAIN_REGEXP = "(public\\s+)?static\\s+(public\\s+)?void\\s+main\\s*\\(\\s*String(\\s*\\[\\])?\\s+\\w+(\\s*\\[\\])?\\)";
+	public static String MAIN_REGEXP = "(public\\s+)?static\\s+(public\\s+)?void\\s+main\\s*\\(\\s*String(\\s*\\[\\])?\\s+\\w+(\\s*\\[\\])?\\s*\\)";
 	
 	private static Pattern MAIN_PATTERN = Pattern.compile(MAIN_REGEXP);
 	
-	private static Pattern COMMENT_PATTERN = Pattern.compile(COMMENT_REGEXP);
 	
 	/** {@ inheritDoc}	 */
 	public boolean check(MavenProject mavenproject, Log log)
@@ -67,7 +64,7 @@ public class MainMethodCheck implements SourceChecker, APICheck {
 	public boolean passesTest(File sourceFile) {
 		try {
 			String code = FileUtils.readFileToString(sourceFile);
-			code = COMMENT_PATTERN.matcher(code).replaceAll("");
+			code = new CommentRemoverStateMachine().removeComments(code);
 			Matcher m = MAIN_PATTERN.matcher(code);
 			return !m.find();
 		} catch (IOException e) {
@@ -76,4 +73,60 @@ public class MainMethodCheck implements SourceChecker, APICheck {
 		}
 	}
 
+	public static class CommentRemoverStateMachine {
+	    
+	    int state = 0;
+	    
+	    int nextState(char c){
+		switch (state) {
+		case 0:
+		    if (c == '/')
+			return 1;
+		    else
+			return 0;
+		case 1:
+		    if (c=='/')
+			return 2;
+		    else if (c=='*')
+			return 3;
+		    else
+			return 0;
+		case 2:
+		    if (c =='\n')
+			return 0;
+		    else
+			return 2;
+		case 3:
+		    if (c == '*')
+			return 4;
+		    else 
+			return 3;
+		case 4:
+		    if (c=='/')
+			return 5;
+		    else if (c=='*')
+			return 4;
+		    else
+			return 3;
+		case 5:
+		    return 0;
+		default:
+		    break;
+		}
+		return 0;
+	    }
+	    
+	    String removeComments(String s){
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < s.length(); i++) {
+		    state = nextState(s.charAt(i));
+		    if (state == 0){
+			sb.append(s.charAt(i));
+		    }
+		}
+		return sb.toString();
+	    }
+	    
+	}
+	
 }

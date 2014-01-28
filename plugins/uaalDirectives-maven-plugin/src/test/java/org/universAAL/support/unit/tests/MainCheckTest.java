@@ -38,4 +38,9 @@ public class MainCheckTest extends TestCase{
 	MainMethodCheck mmc = new MainMethodCheck();
 	assertFalse(mmc.passesTest(new File("./src/test/resources/WithMain.java")));
     }
+    
+    public void testMain2(){
+	MainMethodCheck mmc = new MainMethodCheck();
+	assertFalse(mmc.passesTest(new File("./src/test/resources/GUIPacketSniffer.java")));
+    }
 }
