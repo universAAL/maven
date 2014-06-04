@@ -71,8 +71,9 @@ public class UpdateParentPomInteractiveProcedure implements APIProcedure,
     }
 
     public void fix(Model model) {
-	// Update parent Version
-	if (model.getParent().getArtifactId().equals(UAAL_AID)
+	// Update parent Version, if there is a parent (in case of uAAL.pom)
+	if (model.getParent() != null
+		&& model.getParent().getArtifactId().equals(UAAL_AID)
 		&& model.getParent().getGroupId().equals(UAAL_GID)) {
 	    model.getParent().setVersion(
 		    ask4NewVersion(model.getParent().getGroupId(), model
