@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<archetype-descriptor xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd" name="ont.karaf.feature"
+<archetype-descriptor xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd" name="universAAL Karaf Feature Archetype"
     xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <fileSets>
@@ -9,20 +9,17 @@
         <include>**/*.xml</include>
       </includes>
     </fileSet>
-    <fileSet encoding="UTF-8">
-      <directory>.settings</directory>
-      <includes>
-        <include>**/*.prefs</include>
-      </includes>
-    </fileSet>
     <fileSet filtered="true" encoding="UTF-8">
       <directory></directory>
       <includes>
-        <include>.classpath</include>
-        <include>.project</include>
         <include>ASL2.0.txt</include>
         <include>NOTICE.txt</include>
       </includes>
     </fileSet>
   </fileSets>
+  <requiredProperties>
+  	<requiredProperty key="platform-version">
+  		<defaultValue>${platform.version}</defaultValue>
+  	</requiredProperty>
+  </requiredProperties>
 </archetype-descriptor>
