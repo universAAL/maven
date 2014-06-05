@@ -9,6 +9,10 @@
 	<!-- version is here equal to the level of version of the middleware -->
 	<name>Runner Folder</name>
 
+	<properties>
+		<platform.version>${platform-version}</platform.version>
+	</properties>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -19,22 +23,22 @@
 					<args>pax.configuration</args>
 					<provision>
 						<!-- MW -->
-							<provision>scan-composite:mvn:org.universAAL.middleware/mw.composite/2.0.0/composite</provision>
+							<provision>scan-composite:mvn:org.universAAL.middleware/mw.composite/${platform.version}/composite</provision>
 						<!-- Ontologies -->
-							<provision>scan-composite:mvn:org.universAAL.ontology/ont.composite/2.0.0/composite</provision>
+							<provision>scan-composite:mvn:org.universAAL.ontology/ont.composite/${platform.version}/composite</provision>
 						<!-- Platform -->
-							<!-- <provision>scan-composite:mvn:org.universAAL.context/ctxt.che/2.0.0/composite</provision> -->
-							<!-- <provision>scan-composite:mvn:org.universAAL.context/ctxt.che.mobile/2.0.0/composite</provision> -->
-							<!-- <provision>scan-composite:mvn:org.universAAL.ui/ui.dm/2.0.0/composite</provision> -->
-							<!-- <provision>scan-composite:mvn:org.universAAL.ui/ui.dm.mobile/2.0.0/composite</provision> -->
-							<!-- <provision>scan-composite:mvn:org.universAAL.ui/ui.handler.gui/2.0.0/composite</provision> -->
-							<!-- <provision>scan-composite:mvn:org.universAAL.ui/ui.handler.web/2.0.0/composite</provision> -->
-							<!-- <provision>scan-composite:mvn:org.universAAL.ui/ui.handler.gui.swing/2.0.0/composite</provision> -->
+							<!-- <provision>scan-composite:mvn:org.universAAL.context/ctxt.che/${platform.version}/composite</provision> -->
+							<!-- <provision>scan-composite:mvn:org.universAAL.context/ctxt.che.mobile/${platform.version}/composite</provision> -->
+							<!-- <provision>scan-composite:mvn:org.universAAL.ui/ui.dm/${platform.version}/composite</provision> -->
+							<!-- <provision>scan-composite:mvn:org.universAAL.ui/ui.dm.mobile/${platform.version}/composite</provision> -->
+							<!-- <provision>scan-composite:mvn:org.universAAL.ui/ui.handler.gui/${platform.version}/composite</provision> -->
+							<!-- <provision>scan-composite:mvn:org.universAAL.ui/ui.handler.web/${platform.version}/composite</provision> -->
+							<!-- <provision>scan-composite:mvn:org.universAAL.ui/ui.handler.gui.swing/${platform.version}/composite</provision> -->
 
 						<!-- Services -->
-							<!-- <provision>scan-composite:mvn:org.universAAL.samples/smp.lighting.server/2.0.0/composite</provision> -->
-							<!-- <provision>scan-composite:mvn:org.universAAL.samples/smp.lighting.client/2.0.0/composite</provision> -->
-							<!-- <provision>scan-composite:mvn:org.universAAL.samples/smp.heating/2.0.0/composite</provision> -->
+							<!-- <provision>scan-composite:mvn:org.universAAL.samples/smp.lighting.server/${platform.version}/composite</provision> -->
+							<!-- <provision>scan-composite:mvn:org.universAAL.samples/smp.lighting.client/${platform.version}/composite</provision> -->
+							<!-- <provision>scan-composite:mvn:org.universAAL.samples/smp.heating/${platform.version}/composite</provision> -->
 						<!-- Whatever you want, like: -->
 							<!-- <provision>{opt:wrap}:mvn:{groupId}/{artifactId}/{version}@{opt:#level | nostart | noupdate}</provision> -->
 

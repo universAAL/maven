@@ -13,7 +13,26 @@
   <version>3.0.1-SNAPSHOT</version>
   <packaging>maven-archetype</packaging>
   <name>Archetype - create an external Pax runner run configuration.</name>
-  <build>
+	<properties>
+		<platform.version>${project.version}</platform.version>
+	</properties>
+	<build>
+	<resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>META-INF/maven/archetype-metadata.xml</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+        <includes>
+          <include>**/*.*</include>
+        </includes>
+      </resource>
+      </resources>
     <extensions>
       <extension>
         <groupId>org.apache.maven.archetype</groupId>
