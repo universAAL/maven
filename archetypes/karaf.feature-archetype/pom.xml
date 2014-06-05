@@ -1,56 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.universAAL.support</groupId>
-		<artifactId>archetypes.pom</artifactId>
-		<version>3.0.1-SNAPSHOT</version>
-		<relativePath>../</relativePath>
-	</parent>
-	<groupId>org.universAAL.samples</groupId>
-	<artifactId>karaf.feature-archetype</artifactId>
-	<version>3.0.1-SNAPSHOT</version>
-	<packaging>maven-archetype</packaging>
-	<name>Archetype - create an empty karaf feature repository, ready for adding features and then install and deploy it.</name>
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-	<properties>
-		<platform.version>${project.version}</platform.version>
-	</properties>
-	<build>
-	<resources>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.universAAL.support</groupId>
+    <artifactId>archetypes.pom</artifactId>
+    <version>3.1.0</version>
+    <relativePath>../</relativePath>
+  </parent>
+  <groupId>org.universAAL.samples</groupId>
+  <artifactId>karaf.feature-archetype</artifactId>
+  <version>3.1.0</version>
+  <packaging>maven-archetype</packaging>
+  <name>Archetype - create an empty karaf feature repository, ready for adding features and then install and deploy it.</name>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <properties>
+    <platform.version>${project.version}</platform.version>
+  </properties>
+  <build>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ftp</artifactId>
+      </extension>
+      <extension>
+        <groupId>org.apache.maven.archetype</groupId>
+        <artifactId>archetype-packaging</artifactId>
+        <version>2.2</version>
+      </extension>
+    </extensions>
+    <resources>
       <resource>
-        <directory>src/main/resources</directory>
         <filtering>true</filtering>
+        <directory>src/main/resources</directory>
         <includes>
           <include>META-INF/maven/archetype-metadata.xml</include>
         </includes>
       </resource>
       <resource>
-        <directory>src/main/resources</directory>
         <filtering>false</filtering>
+        <directory>src/main/resources</directory>
         <includes>
           <include>**/*.*</include>
         </includes>
       </resource>
-      </resources>
-		<extensions>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ftp</artifactId>
-			</extension>
-			<extension>
-				<groupId>org.apache.maven.archetype</groupId>
-				<artifactId>archetype-packaging</artifactId>
-				<version>2.2</version>
-			</extension>
-		</extensions>
-	</build>
+    </resources>
+  </build>
 </project>

@@ -5,12 +5,12 @@
   <parent>
     <groupId>org.universAAL</groupId>
     <artifactId>uAAL.pom</artifactId>
-    <version>3.0.1-SNAPSHOT</version>
+    <version>3.1.0</version>
     <relativePath>../uAAL.pom/pom.xml</relativePath>
   </parent>
   <groupId>org.universAAL.support</groupId>
   <artifactId>archetypes.pom</artifactId>
-  <version>3.0.1-SNAPSHOT</version>
+  <version>3.1.0</version>
   <packaging>pom</packaging>
   <name>universAAL Maven Archetypes</name>
   <description>The set of maven archetypes to use as proyect templates.</description>
@@ -20,17 +20,17 @@
     <module>module.generic-archetype</module>
     <module>pax.runner-archetype</module>
   </modules>
-  <properties>
-    <gforge.project.name>support</gforge.project.name>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <uaal.site.url>ftp://depot.universaal.org/www/Resources/maven-site/${project.version}/support/archetypes</uaal.site.url>
-  </properties>
   <scm>
     <connection>${svn.base}/archetypes</connection>
     <developerConnection>${svn.base}/archetypes</developerConnection>
     <url>${svn.base.url}archetypes</url>
   </scm>
+  <properties>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <gforge.project.name>support</gforge.project.name>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <uaal.site.url>ftp://depot.universaal.org/www/Resources/maven-site/${project.version}/support/archetypes</uaal.site.url>
+  </properties>
   <repositories>
     <repository>
       <releases>

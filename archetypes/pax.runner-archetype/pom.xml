@@ -5,34 +5,18 @@
   <parent>
     <groupId>org.universAAL.support</groupId>
     <artifactId>archetypes.pom</artifactId>
-    <version>3.0.1-SNAPSHOT</version>
+    <version>3.1.0</version>
     <relativePath>../</relativePath>
   </parent>
   <groupId>org.universAAL.runners</groupId>
   <artifactId>pax.runner-archetype</artifactId>
-  <version>3.0.1-SNAPSHOT</version>
+  <version>3.1.0</version>
   <packaging>maven-archetype</packaging>
   <name>Archetype - create an external Pax runner run configuration.</name>
-	<properties>
-		<platform.version>${project.version}</platform.version>
-	</properties>
-	<build>
-	<resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-        <includes>
-          <include>META-INF/maven/archetype-metadata.xml</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>false</filtering>
-        <includes>
-          <include>**/*.*</include>
-        </includes>
-      </resource>
-      </resources>
+  <properties>
+    <platform.version>${project.version}</platform.version>
+  </properties>
+  <build>
     <extensions>
       <extension>
         <groupId>org.apache.maven.archetype</groupId>
@@ -40,6 +24,22 @@
         <version>2.2</version>
       </extension>
     </extensions>
+    <resources>
+      <resource>
+        <filtering>true</filtering>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>META-INF/maven/archetype-metadata.xml</include>
+        </includes>
+      </resource>
+      <resource>
+        <filtering>false</filtering>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*.*</include>
+        </includes>
+      </resource>
+    </resources>
     <pluginManagement>
       <plugins>
         <plugin>
