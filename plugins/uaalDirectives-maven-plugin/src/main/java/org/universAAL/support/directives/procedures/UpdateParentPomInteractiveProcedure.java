@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
+import org.apache.maven.model.Parent;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.ReportPlugin;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -147,6 +148,15 @@ public class UpdateParentPomInteractiveProcedure implements APIProcedure,
 		newRPlugins.add(rp);
 	    }
 	    model.getReporting().setPlugins(newRPlugins);
+	}
+	
+	// update samples ont.tutorial
+	if (model.getGroupId().equals("org.universAAL.ontology")
+			&& model.getArtifactId().equals("ont.tutorial")){
+		Parent p = model.getParent();
+		p.setVersion(ask4NewVersion(p.getGroupId(),
+				p.getArtifactId(), p.getVersion()));
+		model.setParent(p);
 	}
     }
 
