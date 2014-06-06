@@ -1,0 +1,21 @@
+﻿universAAL Maven Archetype for creating OSGi universAAL modules.
+
+Copyright 2012-2014 UPM, http://www.upm.es
+Universidad Politécnica de Madrid 
+
+
+I. Included Software
+first version of artifact by Universidad Politécnica de Madrid within the universAAL project.
+
+II. Used Software
+
+This product uses software developed at
+The Apache Software Foundation (http://www.apache.org/).
+Licensed under the Apache License 2.0.
+
+This product uses Software developed at
+Maven Project (http://maven.apache.org/)
+Licensed under Apache Licence 2.0
+
+III. License Summary
+- Apache License 2.0
