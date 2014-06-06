@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
+import org.apache.maven.model.Plugin;
 import org.apache.maven.model.ReportPlugin;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -81,30 +82,48 @@ public class UpdateParentPomInteractiveProcedure implements APIProcedure,
 			    .getVersion()));
 	}
 	// Update dependencyManagement
-	if (model.getDependencyManagement() != null
-		&& model.getDependencyManagement().getDependencies() != null) {
-	    List<Dependency> deps = model.getDependencyManagement()
-		    .getDependencies();
-	    List<Dependency> nld = new ArrayList<Dependency>();
-	    for (Dependency d : deps) {
-		// Update imports
-		if (d.getScope() != null && d.getScope().equals("import")) {
-		    d.setVersion(ask4NewVersion(d.getGroupId(),
-			    d.getArtifactId(), d.getVersion()));
+		if (model.getDependencyManagement() != null
+				&& model.getDependencyManagement().getDependencies() != null) {
+			List<Dependency> deps = model.getDependencyManagement()
+					.getDependencies();
+			List<Dependency> nld = new ArrayList<Dependency>();
+			for (Dependency d : deps) {
+				// Update imports
+				if (d.getScope() != null && d.getScope().equals("import")) {
+					d.setVersion(ask4NewVersion(d.getGroupId(),
+							d.getArtifactId(), d.getVersion()));
+				}
+				// update support artifacts
+				if (d.getGroupId().equals("org.universAAL.support")
+						&& ((d.getArtifactId().equals("itests")
+							|| d.getArtifactId().equals("uaal-maven-plugin")
+							|| d.getArtifactId().equals("uaalDirectives-maven-plugin") 
+							|| d.getArtifactId().equals("uaal-manifest-maven-plugin")))) {
+					d.setVersion(ask4NewVersion(d.getGroupId(),
+							d.getArtifactId(), d.getVersion()));
+				}
+				nld.add(d);
+			}
+			model.getDependencyManagement().setDependencies(nld);
 		}
-		// update support artifacts
-		if (d.getGroupId().equals("org.universAAL.support")) {
-		    if (d.getArtifactId().equals("itests")
-			|| d.getArtifactId().equals("uaal-maven-plugin")
-			|| d.getArtifactId().equals("uaalDirectives-maven-plugin")
-			|| d.getArtifactId().equals("uaal-manifest-maven-plugin")) {
-			d.setVersion(ask4NewVersion(d.getGroupId(),
-				d.getArtifactId(), d.getVersion()));
-		    }
+	
+	//update plugin management
+	if (model.getBuild() != null
+			&& model.getBuild().getPluginManagement() != null){
+		List<Plugin> plugins = model.getBuild().getPluginManagement().getPlugins();
+		List<Plugin> newPlugins = new ArrayList<Plugin>();
+		for (Plugin p : plugins) {
+			// update uAAL plugins
+			if (p.getGroupId().equals("org.universAAL.support")
+						&& ( p.getArtifactId().equals("uaal-maven-plugin")
+							|| p.getArtifactId().equals("uaalDirectives-maven-plugin") 
+							|| p.getArtifactId().equals("uaal-manifest-maven-plugin"))) {
+			    p.setVersion(ask4NewVersion(p.getGroupId(),
+					p.getArtifactId(), p.getVersion()));
+			}
+			newPlugins.add(p);
 		}
-		nld.add(d);
-	    }
-	    model.getDependencyManagement().setDependencies(nld);
+		model.getBuild().getPluginManagement().setPlugins(newPlugins);
 	}
 	
 	// Update reportPlugin
