@@ -102,6 +102,12 @@ public class UpdateParentPomInteractiveProcedure implements APIProcedure,
 					d.setVersion(ask4NewVersion(d.getGroupId(),
 							d.getArtifactId(), d.getVersion()));
 				}
+				// update SCHEMAS
+				if (d.getGroupId().equals("org.universAAL.middleware")
+						&& d.getArtifactId().equals("mw.schemas")){
+					d.setVersion(ask4NewVersion(d.getGroupId(),
+							d.getArtifactId(), d.getVersion()));
+				}
 				nld.add(d);
 			}
 			model.getDependencyManagement().setDependencies(nld);
