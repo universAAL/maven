@@ -226,7 +226,7 @@ public class ExecutionListCreator {
 	Iterator<RootNode> rootNodesIterator = rootNodes.iterator();
 	while (rootNodesIterator.hasNext()) {
 	    RootNode rootNode = rootNodesIterator.next();
-	    log.info("Dependency tree for artifact: "
+	    log.debug("Dependency tree for artifact: "
 		    + rootNode.rootNode.getArtifact()
 		    + System.getProperty("line.separator")
 		    + rootNode.rootNode.toString());

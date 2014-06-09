@@ -267,21 +267,21 @@ public class UaalCompositeMojo extends AbstractMojo {
 		}
 		writeListToFile(mvnUrlsOnlyDeps, MAIN_DEPS);
 
-		getLog().info("");
-		getLog().info(MAIN_COMPOSITE + ":");
-		getLog().info("");
+		getLog().debug("");
+		getLog().debug(MAIN_COMPOSITE + ":");
+		getLog().debug("");
 		int x = 1;
 		for (String mvnUrl : mvnUrls) {
-		    getLog().info(String.format("%2d. %s", x++, mvnUrl));
+		    getLog().debug(String.format("%2d. %s", x++, mvnUrl));
 		}
 
-		getLog().info("");
-		getLog().info("");
-		getLog().info(MAIN_DEPS + ":");
-		getLog().info("");
+		getLog().debug("");
+		getLog().debug("");
+		getLog().debug(MAIN_DEPS + ":");
+		getLog().debug("");
 		x = 1;
 		for (String mvnUrl : mvnUrlsOnlyDeps) {
-		    getLog().info(String.format("%2d. %s", x++, mvnUrl));
+		    getLog().debug(String.format("%2d. %s", x++, mvnUrl));
 		}
 
 	    }

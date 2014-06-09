@@ -193,10 +193,10 @@ public class UaalTestMojo extends AbstractMojo {
 		List<String> mvnUrls = execListCreator
 			.createArtifactExecutionList(project,
 				separatedArtifactDepsOfRoot, true);
-		getLog().info(IntegrationTestConsts.TEST_COMPOSITE + ":");
+		getLog().debug(IntegrationTestConsts.TEST_COMPOSITE + ":");
 		int x = 1;
 		for (String mvnUrl : mvnUrls) {
-		    getLog().info(String.format("%2d. %s", x++, mvnUrl));
+		    getLog().debug(String.format("%2d. %s", x++, mvnUrl));
 		}
 
 		File targetDir = new File(baseDirectory, "target");
