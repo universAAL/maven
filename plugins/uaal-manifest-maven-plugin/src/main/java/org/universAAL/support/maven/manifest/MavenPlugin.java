@@ -37,11 +37,12 @@ public class MavenPlugin extends AbstractMojo {
      */
     private File output;
 
-    /**
-     * @parameter default-value=
-     *            "${project.basedir}/target/classes/META-INF/MANIFEST.MF,${project.basedir}/target/test-classes/META-INF/MANIFEST.MF"
-     */
-    private File[] combine;
+    // /**
+    // * @parameter default-value=
+    // *
+    // "${project.basedir}/target/classes/META-INF/MANIFEST.MF,${project.basedir}/target/test-classes/META-INF/MANIFEST.MF"
+    // */
+    // private File[] combine;
 
     public void setManifestPath(File path) {
 	output = path;
