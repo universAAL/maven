@@ -37,11 +37,16 @@ public class TagMojo extends AbstractProcedureMojo{
      * @parameter expression="${tagWorkingCopy}" default-value="false"
      */
     private boolean tagRemoteHead;
+    
+    /**
+     * @parameter expression="${baseURL}" 
+     */
+    private String baseURL;
 
 
 	/** {@inheritDoc} */
 	@Override
 	public APIProcedure getProcedure() {
-		return new Tag(tagRemoteHead);
+		return new Tag(tagRemoteHead, baseURL);
 	}
 }

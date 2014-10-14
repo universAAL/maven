@@ -32,98 +32,108 @@ import org.universAAL.support.directives.api.AbstractCheckMojo;
 
 /**
  * Tags the project in an appropiate tag URL, in concordance to T2.3 Directives.
+ * 
  * @author amedrano
  */
-public class Tag implements APIProcedure{
+public class Tag implements APIProcedure {
 
     /**
      * Message content when tag fails
      */
-    private static final String NOT_TAGGED = 
-	    "Failed Trying to tag the project try again manually.\n";
-
+    private static final String NOT_TAGGED = "Failed Trying to tag the project try again manually.\n";
 
     private boolean tagRemoteHead;
-    
-    
-    public Tag(boolean tagRemoteHead) {
-		super();
-		this.tagRemoteHead = tagRemoteHead;
-	}
 
-	/** {@inheritDoc} */
-	public void execute(MavenProject mavenProject, Log log)
-			throws MojoExecutionException, MojoFailureException {
-		String url = mavenProject.getScm().getDeveloperConnection();
-		String tagUrl = getTagURL(mavenProject);
-		log.info("Tagging: " + url + "  ->  " + tagUrl);
-		if (tagRemoteHead) {
-			if (!performTag(url, tagUrl, "Automatic tag of " 
-					+ mavenProject.getArtifactId() + " version: " + mavenProject.getVersion())) {
-				throw new MojoExecutionException(NOT_TAGGED);
-			}			
-		}
-		else {
-			if (!performWCTag(mavenProject.getBasedir(), tagUrl, "Automatic tag of " 
-					+ mavenProject.getArtifactId() + " version: " + mavenProject.getVersion())) {
-				throw new MojoExecutionException(NOT_TAGGED);
-			}
-		}
+    private String baseURL;
+
+    public Tag(boolean tagRemoteHead) {
+	this(tagRemoteHead, null);
+    }
+
+    public Tag(boolean tagRemoteHead, String baseURL) {
+	super();
+	this.tagRemoteHead = tagRemoteHead;
+	this.baseURL = baseURL;
+    }
+
+    /** {@inheritDoc} */
+    public void execute(MavenProject mavenProject, Log log)
+	    throws MojoExecutionException, MojoFailureException {
+	if (baseURL == null) {
+	    baseURL = mavenProject.getScm().getDeveloperConnection();
 	}
-	
-	/**
-	 * parses the scm url to generate an appropiate tag URL, in concordance to T2.3 Directives
-	 * @return
-	 */
-	public static String getTagURL(MavenProject mavenProject) {
-		String scmUrl = mavenProject.getScm().getDeveloperConnection();
-		scmUrl = scmUrl.replace("scm:", "").replace("svn:", "");
-		String tagUrl = scmUrl.split("trunk")[0];
-		tagUrl += "tags/";
-		if (AbstractCheckMojo.isSnapshot(mavenProject)) {
-			tagUrl += "SNAPSHOT/" + mavenProject.getArtifactId() + "-" + mavenProject.getVersion();
-		}
-		else {
-			tagUrl += mavenProject.getVersion() + scmUrl.split("trunk")[1];
-		}
-		return tagUrl;		
+	String tagUrl = getTagURL(mavenProject);
+	log.info("Tagging: " + baseURL + "  ->  " + tagUrl);
+	if (tagRemoteHead) {
+	    if (!performTag(baseURL, tagUrl,
+		    "Automatic tag of " + mavenProject.getArtifactId()
+			    + " version: " + mavenProject.getVersion())) {
+		throw new MojoExecutionException(NOT_TAGGED);
+	    }
+	} else {
+	    if (!performWCTag(mavenProject.getBasedir(), tagUrl,
+		    "Automatic tag of " + mavenProject.getArtifactId()
+			    + " version: " + mavenProject.getVersion())) {
+		throw new MojoExecutionException(NOT_TAGGED);
+	    }
 	}
-	
-	public boolean performTag(String url, String tagUrl, String msg) {
-		try {
-			SVNCopySource source = new SVNCopySource(SVNRevision.HEAD, SVNRevision.HEAD, SVNURL.parseURIDecoded(url));
-			return doTag(source, tagUrl, msg);
-		} catch (SVNException e) {
-			e.printStackTrace();
-			return false;
-		}
+    }
+
+    /**
+     * parses the scm url to generate an appropiate tag URL, in concordance to
+     * T2.3 Directives
+     * 
+     * @return
+     */
+    public static String getTagURL(MavenProject mavenProject) {
+	String scmUrl = mavenProject.getScm().getDeveloperConnection();
+	scmUrl = scmUrl.replace("scm:", "").replace("svn:", "");
+	String tagUrl = scmUrl.split("trunk")[0];
+	tagUrl += "tags/";
+	if (AbstractCheckMojo.isSnapshot(mavenProject)) {
+	    tagUrl += "SNAPSHOT/" + mavenProject.getArtifactId() + "-"
+		    + mavenProject.getVersion();
+	} else {
+	    tagUrl += mavenProject.getVersion() + scmUrl.split("trunk")[1];
 	}
-	
-	private static boolean doTag(SVNCopySource source, String tagUrl, String msg) throws SVNException {
-		SVNClientManager cli = null;
-		if (System.getProperty("user") == null
-				|| System.getProperty("password") == null){
-			cli = SVNClientManager.newInstance();
-		}
-		else {
-			cli = SVNClientManager.newInstance(
-					SVNWCUtil.createDefaultOptions(true),
-					System.getProperty("user"),
-					System.getProperty("password"));
-		}
-		cli.getCopyClient().doCopy(new SVNCopySource[]{ source},
-				SVNURL.parseURIDecoded(tagUrl),
-				false, true, true, msg, null);
-		return true;
+	return tagUrl;
+    }
+
+    public boolean performTag(String url, String tagUrl, String msg) {
+	try {
+	    SVNCopySource source = new SVNCopySource(SVNRevision.HEAD,
+		    SVNRevision.HEAD, SVNURL.parseURIDecoded(url));
+	    return doTag(source, tagUrl, msg);
+	} catch (SVNException e) {
+	    e.printStackTrace();
+	    return false;
 	}
-	
-	public boolean performWCTag(File wd, String tagUrl, String msg) {
-		try {
-			SVNCopySource source = new SVNCopySource(SVNRevision.WORKING, SVNRevision.WORKING, wd);			
-			return doTag(source, tagUrl, msg);
-		} catch (SVNException e) {
-			e.printStackTrace();
-			return false;
-		}
+    }
+
+    private static boolean doTag(SVNCopySource source, String tagUrl, String msg)
+	    throws SVNException {
+	SVNClientManager cli = null;
+	if (System.getProperty("user") == null
+		|| System.getProperty("password") == null) {
+	    cli = SVNClientManager.newInstance();
+	} else {
+	    cli = SVNClientManager.newInstance(
+		    SVNWCUtil.createDefaultOptions(true),
+		    System.getProperty("user"), System.getProperty("password"));
 	}
+	cli.getCopyClient().doCopy(new SVNCopySource[] { source },
+		SVNURL.parseURIDecoded(tagUrl), false, true, true, msg, null);
+	return true;
+    }
+
+    public boolean performWCTag(File wd, String tagUrl, String msg) {
+	try {
+	    SVNCopySource source = new SVNCopySource(SVNRevision.WORKING,
+		    SVNRevision.WORKING, wd);
+	    return doTag(source, tagUrl, msg);
+	} catch (SVNException e) {
+	    e.printStackTrace();
+	    return false;
+	}
+    }
 }
