@@ -151,12 +151,15 @@ public class UpdateParentPomInteractiveProcedure implements APIProcedure,
 	}
 	
 	// update samples ont.tutorial
-	if (model.getGroupId().equals("org.universAAL.ontology")
-			&& model.getArtifactId().equals("ont.tutorial")){
-		Parent p = model.getParent();
-		p.setVersion(ask4NewVersion(p.getGroupId(),
-				p.getArtifactId(), p.getVersion()));
-		model.setParent(p);
+	try {
+	    if (model.getGroupId().equals("org.universAAL.ontology")
+	    		&& model.getArtifactId().equals("ont.tutorial")){
+	    	Parent p = model.getParent();
+	    	p.setVersion(ask4NewVersion(p.getGroupId(),
+	    			p.getArtifactId(), p.getVersion()));
+	    	model.setParent(p);
+	    }
+	} catch (Exception e) {
 	}
     }
 
