@@ -60,28 +60,4 @@
 		</proxy>
 	</proxies -->
 
-<!--
-	<servers>
-		<server>
-			<id>releases</id>
-			<username>deployment</username>
-			<password>uaal_49_nexus</password>
-		</server>
-		<server>
-			<id>snapshots</id>
-			<username>deployment</username>
-			<password>uaal_49_nexus</password>
-		</server>
-		<server>
-			<id>uaal-thirdparty</id>
-			<username>pdepl</username>
-			<password>dirtypond</password>
-		</server>
-		<server>
-			<id>uaal-thirdparty-snapshots</id>
-			<username>pdepl</username>
-			<password>dirtypond</password>
-		</server> 
-	</servers>
-	-->
 </settings>
