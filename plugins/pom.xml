@@ -18,14 +18,6 @@
     <module>uaal-manifest-maven-plugin</module>
     <module>uaalDirectives-maven-plugin</module>
   </modules>
-  <scm>
-    <connection>${svn.base}/maven-plugin</connection>
-    <developerConnection>${svn.base}/maven-plugin</developerConnection>
-    <url>${svn.base.url}maven-plugin</url>
-  </scm>
-  <properties>
-    <gforge.project.name>support</gforge.project.name>
-  </properties>
   <repositories>
     <repository>
       <releases>

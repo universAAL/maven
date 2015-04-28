@@ -31,9 +31,6 @@ import org.universAAL.support.directives.checks.LicenseHeaderCheckFix;
 import org.universAAL.support.directives.checks.MainMethodCheck;
 import org.universAAL.support.directives.checks.MavenCoordinateCheck;
 import org.universAAL.support.directives.checks.ModulesCheckFix;
-import org.universAAL.support.directives.checks.ParentGForgePropertyCheck;
-import org.universAAL.support.directives.checks.SVNCheck;
-import org.universAAL.support.directives.checks.SVNIgnoreCheck;
 
 
 
@@ -47,9 +44,6 @@ import org.universAAL.support.directives.checks.SVNIgnoreCheck;
  * @see DependencyManagementCheckMojo
  * @see ModulesCheckMojo
  * @see NamingCheckMojo
- * @see ParentGForgePropertyCheckMojo
- * @see SVNCheckMojo
- * @see SVNIgnoreCheckMojo
  * @see LicenseMojo
  */
 public class DirectiveCheckMojo extends AbstractFixableCheckMojo {
@@ -74,10 +68,7 @@ public class DirectiveCheckMojo extends AbstractFixableCheckMojo {
 			List<APICheck> list = new ArrayList<APICheck>();
 			list.add(new ModulesCheckFix());
 			list.add(new DependencyManagementCheckFix(mavenProjectBuilder, localRepository));
-			list.add(new ParentGForgePropertyCheck());
 			list.add(new MavenCoordinateCheck());
-			list.add(new SVNCheck());
-			list.add(new SVNIgnoreCheck());
 			list.add(new DecoupleCheck());
 			list.add(new LicenseFileCheckFix());
 			list.add(new LicenseHeaderCheckFix());

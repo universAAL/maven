@@ -20,16 +20,9 @@
     <module>module.generic-archetype</module>
     <module>pax.runner-archetype</module>
   </modules>
-  <scm>
-    <connection>${svn.base}/archetypes</connection>
-    <developerConnection>${svn.base}/archetypes</developerConnection>
-    <url>${svn.base.url}archetypes</url>
-  </scm>
   <properties>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <gforge.project.name>support</gforge.project.name>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <uaal.site.url>ftp://depot.universaal.org/www/Resources/maven-site/${project.version}/support/archetypes</uaal.site.url>
   </properties>
   <repositories>
     <repository>

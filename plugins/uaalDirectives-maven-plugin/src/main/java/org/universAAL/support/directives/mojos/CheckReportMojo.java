@@ -43,9 +43,6 @@ import org.universAAL.support.directives.checks.LicenseHeaderCheckFix;
 import org.universAAL.support.directives.checks.MainMethodCheck;
 import org.universAAL.support.directives.checks.MavenCoordinateCheck;
 import org.universAAL.support.directives.checks.ModulesCheckFix;
-import org.universAAL.support.directives.checks.ParentGForgePropertyCheck;
-import org.universAAL.support.directives.checks.SVNCheck;
-import org.universAAL.support.directives.checks.SVNIgnoreCheck;
 
 /**
  * This Mojo executes all checks upon a project.
@@ -57,9 +54,6 @@ import org.universAAL.support.directives.checks.SVNIgnoreCheck;
  * @see DependencyManagementCheckMojo
  * @see ModulesCheckMojo
  * @see NamingCheckMojo
- * @see ParentGForgePropertyCheckMojo
- * @see SVNCheckMojo
- * @see SVNIgnoreCheckMojo
  * @see LicenseMojo
  */
 public class CheckReportMojo extends AbstractMavenReport {
@@ -152,10 +146,7 @@ public class CheckReportMojo extends AbstractMavenReport {
 		APICheck [] cs	= {
 				new ModulesCheckFix(),
 				new DependencyManagementCheckFix(mavenProjectBuilder, localRepository),
-				new ParentGForgePropertyCheck(),
 				new MavenCoordinateCheck(),
-				new SVNCheck(),
-				new SVNIgnoreCheck(),
 				new DecoupleCheck(),
 				new LicenseFileCheckFix(),
 				new LicenseHeaderCheckFix(),
