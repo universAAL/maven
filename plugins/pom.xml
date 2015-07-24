@@ -13,6 +13,25 @@
     <module>uaal-manifest-maven-plugin</module>
     <module>uaalDirectives-maven-plugin</module>
   </modules>
+  <properties>
+    <uaal.site.url>ftp://depot.universaal.org/www/Resources/maven-site/${project.version}</uaal.site.url>
+  </properties>
+  <distributionManagement>
+    <repository>
+      <id>releases</id>
+      <name>universAAL Releases</name>
+      <url>http://depot.universaal.org/nexus/content/repositories/releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>snapshots</id>
+      <name>universAAL Snapshots</name>
+      <url>http://depot.universaal.org/nexus/content/repositories/snapshots/</url>
+    </snapshotRepository>
+    <site>
+      <id>depot.universaal.org</id>
+      <url>${uaal.site.url}</url>
+    </site>
+  </distributionManagement>
   <repositories>
     <repository>
       <releases>
