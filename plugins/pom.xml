@@ -15,6 +15,9 @@
   </modules>
   <properties>
     <uaal.site.url>ftp://depot.universaal.org/www/Resources/maven-site/${project.version}</uaal.site.url>
+    <remoteOBR></remoteOBR>
+    <maven.compile.source>1.5</maven.compile.source>
+    <maven.compile.target>1.5</maven.compile.target>
   </properties>
   <distributionManagement>
     <repository>
@@ -50,4 +53,18 @@
       <url>http://depot.universaal.org/maven-repo/releases/</url>
     </repository>
   </repositories>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.3</version>
+        <configuration>
+          <source>${maven.compile.source}</source>
+          <target>${maven.compile.target}</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
