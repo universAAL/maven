@@ -5,11 +5,11 @@
   <parent>
     <groupId>org.universAAL</groupId>
     <artifactId>uAAL.pom</artifactId>
-    <version>3.4.0</version>
+    <version>3.4.1-SNAPSHOT</version>
   </parent>
   <groupId>org.universAAL.support</groupId>
   <artifactId>maven.pom</artifactId>
-  <version>3.4.0</version>
+  <version>3.4.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>universAAL Maven Suite</name>
   <modules>
@@ -18,7 +18,7 @@
   </modules>
   <scm>
     <connection>scm:git:https://github.com/universAAL/maven.git</connection>
-	<developerConnection>scm:git:git@github.com:universAAL/maven.git</developerConnection>
+    <developerConnection>scm:git:git@github.com:universAAL/maven.git</developerConnection>
   </scm>
   <properties>
     <remoteOBR></remoteOBR>
