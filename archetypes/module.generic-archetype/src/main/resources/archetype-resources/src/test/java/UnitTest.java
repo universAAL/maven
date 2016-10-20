@@ -5,17 +5,23 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * Unit test for simple App.
+ * UnitTest Class, a collection of unitary tests of different methods in the module.
+ * 
+ * For each set of test create a <code>public void *test()</code> method, then 
+ * check the correct status by adding assertions.
+ * 
+ * @see TestCase
+ * @see <a href=http://junit.org/junit4/> JUnit framework</a>
+ *
  */
-public class AppTest 
-    extends TestCase
+public class UnitTest extends TestCase
 {
     /**
      * Create the test case
      *
      * @param testName name of the test case
      */
-    public AppTest( String testName )
+    public UnitTest( String testName )
     {
         super( testName );
     }
@@ -25,7 +31,7 @@ public class AppTest
      */
     public static Test suite()
     {
-        return new TestSuite( AppTest.class );
+        return new TestSuite( UnitTest.class );
     }
 
     /**
