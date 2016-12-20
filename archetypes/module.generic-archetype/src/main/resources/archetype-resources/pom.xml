@@ -1,11 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.universAAL.support.samples</groupId>
-		<artifactId>samples.pom</artifactId>
-		<version>${platform-version}</version>
-	</parent>
 
   <groupId>${groupId}</groupId>
   <artifactId>${artifactId}</artifactId>
@@ -20,26 +15,33 @@
 	<dependency>
 		<groupId>junit</groupId>
 		<artifactId>junit</artifactId>
+        <version>4.11</version>
+        <scope>test</scope>
 	</dependency>  	 	
     <dependency>
 		<groupId>org.universAAL.support</groupId>
 		<artifactId>itests</artifactId>
+		<version>${platform-version}</version>
     </dependency>	
   	<dependency>
   		<groupId>org.universAAL.middleware</groupId>
   		<artifactId>mw.bus.context.core</artifactId>
+		<version>${platform-version}</version>
   	</dependency>   	
   	<dependency>
   		<groupId>org.universAAL.middleware</groupId>
   		<artifactId>mw.bus.service.core</artifactId>
+		<version>${platform-version}</version>
   	</dependency>  	
   	<dependency>
   		<groupId>org.universAAL.middleware</groupId>
   		<artifactId>mw.bus.ui.core</artifactId>
+		<version>${platform-version}</version>
   	</dependency> 
   	<dependency>
   		<groupId>org.universAAL.ontology</groupId>
   		<artifactId>ont.phWorld</artifactId>
+		<version>${platform-version}</version>
   	</dependency>
   </dependencies>
 
@@ -58,4 +60,22 @@
 	</plugins>
   </build>
   
+  <repositories>
+    <repository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <id>uaal-snapshots</id>
+      <name>universAAL Snapshot Repositories</name>
+      <url>http://depot.universaal.org/maven-repo/snapshots/</url>
+    </repository>
+    <repository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>uaal</id>
+      <name>universAAL Repositories</name>
+      <url>http://depot.universaal.org/maven-repo/releases/</url>
+    </repository>
+  </repositories>
 </project>
