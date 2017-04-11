@@ -15,11 +15,7 @@
  ******************************************************************************/
 package org.universAAL.support.directives.checks;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -30,6 +26,7 @@ import org.apache.maven.project.MavenProject;
 import org.universAAL.support.directives.api.APICheck;
 import org.universAAL.support.directives.util.SourceChecker;
 import org.universAAL.support.directives.util.SourceExplorer;
+import org.universAAL.support.directives.util.SourceFileReader;
 
 /**
  * This checker will test whether the uAAL projects are being properly decoupled
@@ -62,13 +59,13 @@ public class DecoupleCheck implements APICheck, SourceChecker {
 		}
 
 		public boolean passesTest(File f) {
-			String pack = readPackage(f);
+			String pack = SourceFileReader.readPackage(f);
 			if (!pack.matches(OSGI_MATCH)) {
 				/*
 				 * If package does not match OSGI_MATCH then check if any of the
 				 * imports matches OSGI_MATCH
 				 */
-				ArrayList<String> imports = readImports(f);
+				ArrayList<String> imports = SourceFileReader.readImports(f);
 				Iterator<String> I = imports.iterator();
 				if (I.hasNext()) {
 					String imp = I.next();
@@ -85,52 +82,6 @@ public class DecoupleCheck implements APICheck, SourceChecker {
 				return true;
 			}
 
-		}
-
-		private static ArrayList<String> readImports(File f) {
-			BufferedReader br;
-			try {
-				br = new BufferedReader(new FileReader(f));
-				return lookForLinesWith(br, ".*import.*");
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
-
-		private static String readPackage(File f) {
-			BufferedReader br;
-			try {
-				br = new BufferedReader(new FileReader(f));
-				ArrayList<String> r = lookForLinesWith(br, ".*package.*");
-				br.close();
-				if (r.size() > 0) {
-					return r.get(0);
-				} else {
-					System.out.println("no package found for " + f.getName());
-					System.out.flush();
-				}
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
-
-		private static ArrayList<String> lookForLinesWith(BufferedReader f, String regExp) {
-			ArrayList<String> matches = new ArrayList<String>();
-			String s;
-			try {
-				while ((s = f.readLine()) != null) {
-					if (s.matches(regExp)) {
-						matches.add(s);
-					}
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return matches;
 		}
 
 }
