@@ -37,12 +37,12 @@ import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
-import org.sonatype.inject.Parameters;
 import org.universAAL.itests.conf.IntegrationTestConsts;
 import org.universAAL.maven.treebuilder.ExecutionListCreator;
 
@@ -162,10 +162,15 @@ public class UaalTestMojo extends AbstractMojo {
     public final void execute() throws MojoExecutionException,
 	    MojoFailureException {
 	try {
-	    if ( skipTests() ) {
-		getLog().info("Creation of composite file for itests skipped");
-		return;
-	    } 
+		if ( skipTests() ) {
+			getLog().info("Creation of composite file for itests skipped");
+			return;
+		} 
+	    if ( projectHasItestsDependency() ) {
+			getLog().info("Creation of composite file for itests skipped.\n" +
+					"There is no itests dependency detected, thus no need to generate test composite.");
+			return;
+		    } 
 	    if ("pom".equals(project.getArtifact().getType())) {
 		getLog().info(
 			System.getProperty("line.separator")
@@ -245,5 +250,19 @@ public class UaalTestMojo extends AbstractMojo {
      */
     private boolean skipTests() {
 	return skip || skipTests;
+    }
+    
+    private boolean projectHasItestsDependency(){
+    	/*
+		 * Check the Itest dependency
+		 */
+		List<Dependency> deps = project.getDependencies();
+		boolean containsItests = false;
+		while (deps.iterator().hasNext() && !containsItests) {
+			Dependency d = (Dependency) deps.iterator().next();
+			containsItests |= d.getArtifactId().equals("itests")
+					&& d.getGroupId().equals("org.universAAL.support");
+		}
+		return containsItests;
     }
 }
