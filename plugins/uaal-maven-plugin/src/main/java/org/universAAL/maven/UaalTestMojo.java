@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -166,7 +167,7 @@ public class UaalTestMojo extends AbstractMojo {
 			getLog().info("Creation of composite file for itests skipped");
 			return;
 		} 
-	    if ( projectHasItestsDependency() ) {
+	    if ( !projectHasItestsDependency() ) {
 			getLog().info("Creation of composite file for itests skipped.\n" +
 					"There is no itests dependency detected, thus no need to generate test composite.");
 			return;
@@ -258,8 +259,9 @@ public class UaalTestMojo extends AbstractMojo {
 		 */
 		List<Dependency> deps = project.getDependencies();
 		boolean containsItests = false;
-		while (deps.iterator().hasNext() && !containsItests) {
-			Dependency d = (Dependency) deps.iterator().next();
+		Iterator i = deps.iterator();
+		while (i.hasNext() && !containsItests) {
+			Dependency d = (Dependency) i.next();
 			containsItests |= d.getArtifactId().equals("itests")
 					&& d.getGroupId().equals("org.universAAL.support");
 		}

@@ -26,7 +26,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
-import org.universAAL.support.directives.api.APICheck;
 import org.universAAL.support.directives.api.APIFixableCheck;
 import org.universAAL.support.directives.util.PomFixer;
 import org.universAAL.support.directives.util.PomWriter;
@@ -57,8 +56,9 @@ public class ItestsCheckFix implements APIFixableCheck, SourceChecker, PomFixer 
 		 */
 		List<Dependency> deps = mavenProject.getDependencies();
 		boolean containsItests = false;
-		while (deps.iterator().hasNext() && !containsItests) {
-			Dependency d = (Dependency) deps.iterator().next();
+		Iterator i = deps.iterator();
+		while (i.hasNext() && !containsItests) {
+			Dependency d = (Dependency) i.next();
 			containsItests |= d.getArtifactId().equals("itests")
 					&& d.getGroupId().equals("org.universAAL.support");
 		}
@@ -82,6 +82,7 @@ public class ItestsCheckFix implements APIFixableCheck, SourceChecker, PomFixer 
 	public boolean passesTest(File f) {
 		/*
 		 * Check if any of the imports matches ITEST_MATCH
+		 * file is added if return false.
 		 */
 		ArrayList<String> imports = SourceFileReader.readImports(f);
 		Iterator<String> I = imports.iterator();
@@ -90,7 +91,7 @@ public class ItestsCheckFix implements APIFixableCheck, SourceChecker, PomFixer 
 			while (I.hasNext() && !imp.matches(ITEST_MATCH)) {
 				imp = I.next();
 			}
-			return imp.matches(ITEST_MATCH);
+			return !imp.matches(ITEST_MATCH);
 		} else {
 			// If file has no imports then it passes
 			return true;
@@ -122,8 +123,9 @@ public class ItestsCheckFix implements APIFixableCheck, SourceChecker, PomFixer 
 			 */
 			List<Dependency> deps = model.getDependencies();
 			Dependency itestDep = null;
-			while (deps.iterator().hasNext() && itestDep == null) {
-				Dependency d = (Dependency) deps.iterator().next();
+			Iterator i = deps.iterator();
+			while (i.hasNext() && itestDep == null) {
+				Dependency d = (Dependency)i.next();
 				if (d.getArtifactId().equals("itests")
 						&& d.getGroupId().equals("org.universAAL.support")) {
 					itestDep = d;
