@@ -22,6 +22,7 @@ package org.universAAL.maven.treebuilder;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -59,6 +60,7 @@ import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
 import org.universAAL.maven.FilteringVisitorSupport;
+import org.universAAL.maven.UaalCompositeMojo;
 
 /**
  * Class builds one big dependency tree for given list of artifacts. Each
@@ -99,6 +101,10 @@ public class DependencyTreeBuilder {
     private ArtifactRepository localRepository;
 
     private boolean includeTestRuntimes = false;
+    
+    private boolean useMwComposite = false;
+    
+    public String mwVersion = null;
 
     /**
      * If the root artifact has one of separatedGroupIds then this list will
@@ -125,11 +131,12 @@ public class DependencyTreeBuilder {
     public DependencyTreeBuilder(final ArtifactFactory artifactFactory,
 	    final MavenProjectBuilder mavenProjectBuilder,
 	    final ArtifactRepository localRepository,
-	    final boolean includeTestRuntimes) {
+	    final boolean includeTestRuntimes, boolean useMwComposite) {
 	this.artifactFactory = artifactFactory;
 	this.mavenProjectBuilder = mavenProjectBuilder;
 	this.localRepository = localRepository;
 	this.includeTestRuntimes = includeTestRuntimes;
+	this.useMwComposite = useMwComposite;
     }
 
     /**
@@ -762,6 +769,31 @@ public class DependencyTreeBuilder {
 	    ArtifactMetadataRetrievalException, SecurityException,
 	    NoSuchFieldException, IllegalArgumentException,
 	    IllegalAccessException {
+	// check for MW bundle; return if a mw bundle
+	boolean out = false;
+	//System.out.println(" --oa   " + originatingArtifact.getArtifactId());
+	if (out) System.out.println(" --node " + node.getArtifact().getArtifactId() + "    " + node.getArtifact().getGroupId());
+	if (useMwComposite && UaalCompositeMojo.MW_GROUP_ID.equals(node.getArtifact().getGroupId())) {
+	    if (!node.getArtifact().getArtifactId().contains("karaf.feature")) {
+		String thisVersion = node.getArtifact().getVersion();
+		if (mwVersion == null) {
+		    mwVersion = thisVersion;
+		} else {
+		    if (!mwVersion.equals(thisVersion))
+			throw new IllegalStateException(
+				"The dependencies have two different version of middleware bundles: " + mwVersion
+					+ " and " + thisVersion);
+		}
+		if (out) System.out.println(" -- return");
+		if (out) System.out.println();
+		return;
+	    } else {
+		if (out) System.out.println(" -- node contains karaf.feature");
+	    }
+	}
+	if (out) System.out.println();
+	
+	// no MW bundle -> go on with recurse
 	try {
 
 	    fireEvent(ResolutionListener.TEST_ARTIFACT, listener, node);

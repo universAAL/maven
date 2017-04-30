@@ -221,7 +221,7 @@ public class ExecutionListCreator {
      * @return execution list - list of strings representing mvnUrls of bundles
      *         which should be launched
      */
-    private List processTreeIntoFlatList(final List<RootNode> rootNodes,
+    private List<String> processTreeIntoFlatList(final List<RootNode> rootNodes,
 	    final Artifact dontResolve) {
 	Iterator<RootNode> rootNodesIterator = rootNodes.iterator();
 	while (rootNodesIterator.hasNext()) {
@@ -326,10 +326,10 @@ public class ExecutionListCreator {
      */
     public List createArtifactExecutionList(final MavenProject mavenProject,
 	    final Set<String> separatedArtifactDepsOfRootMvnUrls,
-	    final boolean includeTestRuntimes) throws Exception {
+	    final boolean includeTestRuntimes, boolean useMwComposite) throws Exception {
 	DependencyTreeBuilder treeBuilder = new DependencyTreeBuilder(
 		artifactFactory, mavenProjectBuilder, localRepository,
-		includeTestRuntimes);
+		includeTestRuntimes, useMwComposite);
 	List<ArtifactRepository> finalRemoteRpositories = addMissingRepositories(mavenProject
 		.getRemoteArtifactRepositories());
 	List<RootNode> rootNodes = treeBuilder.buildDependencyTree(
@@ -347,12 +347,24 @@ public class ExecutionListCreator {
 	if (rootNodes.size() != 1) {
 	    throw new IllegalStateException("rootNodes.size() != 1");
 	}
+
 	List<RootNode> realRootNodes = new ArrayList<RootNode>();
 	RootNode theRootNode = rootNodes.get(0);
 	theRootNode.remoteRepositories = finalRemoteRpositories;
 	realRootNodes.add(theRootNode);
-	return processTreeIntoFlatList(realRootNodes, mavenProject
+	List<String> mvnUrls = processTreeIntoFlatList(realRootNodes, mavenProject
 		.getArtifact());
+
+	// add the mw composite (to the beginning)
+	if (useMwComposite) {
+	    if (treeBuilder.mwVersion == null) {
+		log.warn("A middleware composite should be used, but no middleware bundle was found.");
+	    } else {
+		mvnUrls.add(0, "mvn:org.universAAL.middleware/mw.composite/" + treeBuilder.mwVersion + "/composite");
+	    }
+	}
+	
+	return mvnUrls;
     }
 
     /**
@@ -385,7 +397,7 @@ public class ExecutionListCreator {
 	    throws Exception {
 	DependencyTreeBuilder treeBuilder = new DependencyTreeBuilder(
 		artifactFactory, mavenProjectBuilder, localRepository,
-		includeTestRuntimes);
+		includeTestRuntimes, false);
 	List<RootNode> rootNodes = parseProvisionsAndBuiltTree(provisions,
 		defaultTransitive, treeBuilder);
 	return processTreeIntoFlatList(rootNodes, null);

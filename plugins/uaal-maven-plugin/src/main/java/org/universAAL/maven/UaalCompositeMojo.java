@@ -119,6 +119,15 @@ public class UaalCompositeMojo extends AbstractMojo {
     private File baseDirectory;
 
     /**
+     * Set this to "true" to use mw composite for the composite of all bundles
+     * above the mw. If this parameter is false, then all bundles are resolved.
+     * 
+     * @since 3.5.0
+     * @parameter expression="${useMwComposite}" default-value="true"
+     */    
+    private boolean useMwComposite;
+
+    /**
      * Directives configured via <configuration> in pom file, setting the
      * startlevel and/or nostart parameters to specified artifacts
      * 
@@ -141,7 +150,9 @@ public class UaalCompositeMojo extends AbstractMojo {
      * id and artifact version will be written.
      */
     private static final String MAIN_VERSION = "target/artifacts.versions";
-
+    
+    public static final String MW_GROUP_ID = "org.universAAL.middleware";
+    
     /**
      * Creates output writer for given file name.
      * 
@@ -177,8 +188,11 @@ public class UaalCompositeMojo extends AbstractMojo {
 	for (Object mvnUrl : mvnUrls) {
 	    hasWrittenSth = true;
 	    String mvnUrlStr = (String) mvnUrl;
-	    compositeWriter.write("scan-bundle:" + mvnUrlStr
-		    + System.getProperty("line.separator"));
+	    if (mvnUrlStr.endsWith("/composite")) {
+		compositeWriter.write("scan-composite:" + mvnUrlStr + System.getProperty("line.separator"));
+	    } else {
+		compositeWriter.write("scan-bundle:" + mvnUrlStr + System.getProperty("line.separator"));
+	    }
 	}
 	if (!hasWrittenSth) {
 	    compositeWriter
@@ -195,7 +209,7 @@ public class UaalCompositeMojo extends AbstractMojo {
 	for (Object mvnUrl : mvnUrls) {
 	    String mvnUrlStr = (String) mvnUrl;
 	    String [] mvnUrlElems = mvnUrlStr.split("/");
-	    if (mvnUrlElems.length != 3) {
+	    if (mvnUrlElems.length < 3) {
 		throw new RuntimeException("Bad mvnUrl: " + mvnUrlStr);
 	    }
 	    compositeWriter.write(mvnUrlElems[1]);
@@ -255,9 +269,14 @@ public class UaalCompositeMojo extends AbstractMojo {
 			mavenProjectBuilder, localRepository,
 			remoteRepositories, artifactResolver,
 			throwExceptionOnConflictStr, startArtifacts);
+		boolean mwcomp = useMwComposite;
+		//System.out.println(" --  useMwComposite: " + mwcomp);
+		if (MW_GROUP_ID.equals(project.getGroupId()))
+		    mwcomp = false;
+		//System.out.println(" --  useMwComposite: " + mwcomp);
 		List<String> mvnUrls = execListCreator
 			.createArtifactExecutionList(project,
-				new HashSet<String>(), false);
+				new HashSet<String>(), false, mwcomp);
 		writeListToFile(mvnUrls, MAIN_COMPOSITE);
 		writeArtifactsVersions(mvnUrls, MAIN_VERSION);
 		

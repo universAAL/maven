@@ -198,7 +198,7 @@ public class UaalTestMojo extends AbstractMojo {
 		Set<String> separatedArtifactDepsOfRoot = new HashSet<String>();
 		List<String> mvnUrls = execListCreator
 			.createArtifactExecutionList(project,
-				separatedArtifactDepsOfRoot, true);
+				separatedArtifactDepsOfRoot, true, false);
 		getLog().debug(IntegrationTestConsts.TEST_COMPOSITE + ":");
 		int x = 1;
 		for (String mvnUrl : mvnUrls) {
