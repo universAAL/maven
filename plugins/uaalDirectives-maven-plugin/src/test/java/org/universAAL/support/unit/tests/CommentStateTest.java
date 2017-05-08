@@ -40,7 +40,7 @@ public class CommentStateTest extends TestCase {
 		String comment = Pattern.compile("(^//*|/$|\\n\\s*//|\\*)").matcher(s).replaceAll("");
 		comment = Pattern.compile("\\s\\s*").matcher(comment).replaceAll(" ")
 				.replace("\n", "");
-		System.out.println("[" + comment + "]");
+		//System.out.println("[" + comment + "]");
 	}
 	
 	private static String STUFF = "\tpackage org.universAAL.support.unit.tests;\n\n"+
