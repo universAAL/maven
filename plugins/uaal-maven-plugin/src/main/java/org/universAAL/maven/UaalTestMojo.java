@@ -234,10 +234,13 @@ public class UaalTestMojo extends AbstractMojo {
 		    separatedArtifactDepsWriter.close();
 		}
 
-		Artifact runDirArtifact = execListCreator
-			.parseMvnUrlWithType(IntegrationTestConsts.getRunDirMvnUrl());
-		artifactResolver.resolve(runDirArtifact, remoteRepositories,
-			localRepository);
+		try {
+		    Artifact runDirArtifact = execListCreator
+			    .parseMvnUrlWithType(IntegrationTestConsts.getRunDirMvnUrl());
+		    artifactResolver.resolve(runDirArtifact, remoteRepositories, localRepository);
+		} catch (Exception e) {
+		    getLog().warn("getRunDirMvnUrl (itests-rundir) could not be resolved", e);
+		}
 	    }
 	} catch (Exception e) {
 	    getLog().error(e);
