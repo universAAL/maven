@@ -1,0 +1,8 @@
+org.universAAL.maven
+org.universAAL.maven.treebuilder
+org.universAAL.support.directives.api
+org.universAAL.support.directives.checks
+org.universAAL.support.directives.mojos
+org.universAAL.support.directives.procedures
+org.universAAL.support.directives.util
+org.universAAL.support.maven.manifest

@@ -1,0 +1,18 @@
+<map id="G" name="G">
+<area shape="rect" id="c4311" href="../checks/ItestsCheckFix.html" title="org.universAAL.support.directives.checks.ItestsCheckFix" alt="" coords="16,118,125,143"/>
+<area shape="rect" id="node1" href="../checks/ItestsCheckFix.html" title="&lt;TABLE&gt;" alt="" coords="5,107,136,155"/>
+<area shape="rect" id="c4319" href="../checks/ModulesCheckFix.html" title="org.universAAL.support.directives.checks.ModulesCheckFix" alt="" coords="171,118,296,143"/>
+<area shape="rect" id="node2" href="../checks/ModulesCheckFix.html" title="&lt;TABLE&gt;" alt="" coords="160,107,307,155"/>
+<area shape="rect" id="c4321" href="../checks/DependencyManagementCheckFix.html" title="org.universAAL.support.directives.checks.DependencyManagementCheckFix" alt="" coords="341,118,566,143"/>
+<area shape="rect" id="node3" href="../checks/DependencyManagementCheckFix.html" title="&lt;TABLE&gt;" alt="" coords="331,107,576,155"/>
+<area shape="rect" id="c4322" href="../checks/FelixDepCheckFix.html" title="org.universAAL.support.directives.checks.FelixDepCheckFix" alt="" coords="610,118,739,143"/>
+<area shape="rect" id="node4" href="../checks/FelixDepCheckFix.html" title="&lt;TABLE&gt;" alt="" coords="600,107,749,155"/>
+<area shape="rect" id="c4338" href="../procedures/UpdateRootVersionsProcedure.html" title="org.universAAL.support.directives.procedures.UpdateRootVersionsProcedure" alt="" coords="878,214,1079,239"/>
+<area shape="rect" id="node5" href="../procedures/UpdateRootVersionsProcedure.html" title="&lt;TABLE&gt;" alt="" coords="868,203,1089,251"/>
+<area shape="rect" id="c4339" href="../procedures/ChangeVersionProcedure.html" title="org.universAAL.support.directives.procedures.ChangeVersionProcedure" alt="" coords="834,118,1003,143"/>
+<area shape="rect" id="node6" href="../procedures/ChangeVersionProcedure.html" title="&lt;TABLE&gt;" alt="" coords="824,107,1013,155"/>
+<area shape="rect" id="c4340" href="../procedures/UpdateParentPomInteractiveProcedure.html" title="org.universAAL.support.directives.procedures.UpdateParentPomInteractiveProcedure" alt="" coords="1048,118,1296,143"/>
+<area shape="rect" id="node7" href="../procedures/UpdateParentPomInteractiveProcedure.html" title="&lt;TABLE&gt;" alt="" coords="1037,107,1307,155"/>
+<area shape="rect" id="c4346" href="./PomFixer.html" title="org.universAAL.support.directives.util.PomFixer" alt="" coords="632,11,717,53"/>
+<area shape="rect" id="node8" href="./PomFixer.html" title="&lt;TABLE&gt;" alt="" coords="621,6,728,58"/>
+</map>

@@ -1,0 +1,16 @@
+<map id="G" name="G">
+<area shape="rect" id="c388" href="./MavenPlugin.html" title="org.universAAL.support.maven.manifest.MavenPlugin" alt="" coords="16,17,112,42"/>
+<area shape="rect" id="node1" href="./MavenPlugin.html" title="&lt;TABLE&gt;" alt="" coords="5,5,123,53"/>
+<area shape="rect" id="c389" href="./ManifestWriter.html" title="org.universAAL.support.maven.manifest.ManifestWriter" alt="" coords="157,17,262,42"/>
+<area shape="rect" id="node2" href="./ManifestWriter.html" title="&lt;TABLE&gt;" alt="" coords="147,5,272,53"/>
+<area shape="rect" id="c390" href="./ManifestCombine.html" title="org.universAAL.support.maven.manifest.ManifestCombine" alt="" coords="307,17,429,42"/>
+<area shape="rect" id="node3" href="./ManifestCombine.html" title="&lt;TABLE&gt;" alt="" coords="296,5,440,53"/>
+<area shape="rect" id="c391" href="./Permission.html" title="org.universAAL.support.maven.manifest.Permission" alt="" coords="475,17,560,42"/>
+<area shape="rect" id="node4" href="./Permission.html" title="&lt;TABLE&gt;" alt="" coords="464,5,571,53"/>
+<area shape="rect" id="c392" href="./PermissionMap.html" title="org.universAAL.support.maven.manifest.PermissionMap" alt="" coords="605,17,715,42"/>
+<area shape="rect" id="node5" href="./PermissionMap.html" title="&lt;TABLE&gt;" alt="" coords="595,5,725,53"/>
+<area shape="rect" id="c393" href="./ManifestReader.html" title="org.universAAL.support.maven.manifest.ManifestReader" alt="" coords="759,17,873,42"/>
+<area shape="rect" id="node6" href="./ManifestReader.html" title="&lt;TABLE&gt;" alt="" coords="749,5,883,53"/>
+<area shape="rect" id="c394" href="./HelpMojo.html" title="org.universAAL.support.maven.manifest.HelpMojo" alt="" coords="917,17,993,42"/>
+<area shape="rect" id="node7" href="./HelpMojo.html" title="&lt;TABLE&gt;" alt="" coords="907,5,1003,53"/>
+</map>

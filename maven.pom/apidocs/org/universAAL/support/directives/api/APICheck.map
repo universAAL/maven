@@ -1,0 +1,14 @@
+<map id="G" name="G">
+<area shape="rect" id="c561" href="./APIFixableCheck.html" title="org.universAAL.support.directives.api.APIFixableCheck" alt="" coords="16,113,139,154"/>
+<area shape="rect" id="node1" href="./APIFixableCheck.html" title="&lt;TABLE&gt;" alt="" coords="5,107,149,159"/>
+<area shape="rect" id="c562" href="./APICheck.html" title="org.universAAL.support.directives.api.APICheck" alt="" coords="395,11,480,53"/>
+<area shape="rect" id="node2" href="./APICheck.html" title="&lt;TABLE&gt;" alt="" coords="384,6,491,58"/>
+<area shape="rect" id="c578" href="../checks/CodificationCheck.html" title="org.universAAL.support.directives.checks.CodificationCheck" alt="" coords="184,121,312,146"/>
+<area shape="rect" id="node3" href="../checks/CodificationCheck.html" title="&lt;TABLE&gt;" alt="" coords="173,109,323,157"/>
+<area shape="rect" id="c580" href="../checks/MavenCoordinateCheck.html" title="org.universAAL.support.directives.checks.MavenCoordinateCheck" alt="" coords="357,121,518,146"/>
+<area shape="rect" id="node4" href="../checks/MavenCoordinateCheck.html" title="&lt;TABLE&gt;" alt="" coords="347,109,528,157"/>
+<area shape="rect" id="c582" href="../checks/MainMethodCheck.html" title="org.universAAL.support.directives.checks.MainMethodCheck" alt="" coords="562,121,691,146"/>
+<area shape="rect" id="node5" href="../checks/MainMethodCheck.html" title="&lt;TABLE&gt;" alt="" coords="552,109,701,157"/>
+<area shape="rect" id="c588" href="../checks/DecoupleCheck.html" title="org.universAAL.support.directives.checks.DecoupleCheck" alt="" coords="735,121,849,146"/>
+<area shape="rect" id="node6" href="../checks/DecoupleCheck.html" title="&lt;TABLE&gt;" alt="" coords="725,109,859,157"/>
+</map>
