@@ -12,6 +12,7 @@
   </properties>
 
   <dependencies>
+    <!-- DEPENDENCIES for TESTS -->
 	<dependency>
 		<groupId>junit</groupId>
 		<artifactId>junit</artifactId>
@@ -22,7 +23,16 @@
 		<groupId>org.universAAL.support</groupId>
 		<artifactId>itests</artifactId>
 		<version>${platform-version}</version>
+        <scope>test</scope>
     </dependency>	
+    <dependency>
+       <groupId>org.universAAL.middleware</groupId>
+       <artifactId>mw.bus.junit</artifactId>
+		<version>${platform-version}</version>
+       <scope>test</scope>
+    </dependency>
+	
+    <!-- DEPENDENCIES for universAAL IoT Buses -->
   	<dependency>
   		<groupId>org.universAAL.middleware</groupId>
   		<artifactId>mw.bus.context.core</artifactId>
@@ -38,6 +48,8 @@
   		<artifactId>mw.bus.ui.core</artifactId>
 		<version>${platform-version}</version>
   	</dependency> 
+	
+    <!-- DEPENDENCIES for Ontologies -->
   	<dependency>
   		<groupId>org.universAAL.ontology</groupId>
   		<artifactId>ont.phWorld</artifactId>
