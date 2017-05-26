@@ -1,4 +1,4 @@
-package org.universAAL.ontology.test;
+package ${package};
 
 import org.universAAL.middleware.bus.junit.OntTestCase;
 
