@@ -112,61 +112,61 @@
 <th>Line</th></tr>
 <tr class="b">
 <td>maybe its better to just pass the range through to retrieval and use a transformation?</td>
-<td>497</td></tr>
+<td>471</td></tr>
 <tr class="a">
 <td>might be better to have source.retrieve() throw a specific exception for this situation and catch here rather than have it return null</td>
-<td>577</td></tr>
+<td>543</td></tr>
 <tr class="b">
 <td>Does this check need to happen here? Had to add the same call below when we iterate on child nodes -- will that suffice?</td>
-<td>802</td></tr>
+<td>756</td></tr>
 <tr class="a">
 <td>shouldn't need to double up on this work, only done for simplicity of handling recommended version but the restriction is identical</td>
-<td>822</td></tr>
+<td>774</td></tr>
 <tr class="b">
 <td>ick. this forces the OCE that should have come from the previous call. It is still correct</td>
-<td>828</td></tr>
+<td>779</td></tr>
 <tr class="a">
 <td>use as conflict resolver(s), chain</td>
-<td>917</td></tr>
+<td>845</td></tr>
 <tr class="b">
 <td>should this be part of mediation? previous one is more dominant</td>
-<td>919</td></tr>
+<td>847</td></tr>
 <tr class="a">
 <td>we probably want to warn the user that he is building an artifact with different values than in dependencyManagement</td>
-<td>1091</td></tr>
+<td>993</td></tr>
 <tr class="b">
 <th>org.universAAL.maven.treebuilder.DependencyTreeResolutionListener</th>
 <th>Line</th></tr>
 <tr class="a">
 <td>remove when ResolutionListenerForDepMgmt merged into ResolutionListener</td>
-<td>286</td></tr>
+<td>275</td></tr>
 <tr class="b">
 <td>remove the node that tried to impose its scope and add some info</td>
-<td>338</td></tr>
+<td>324</td></tr>
 <tr class="a">
 <td>track version selection from range in node (MNG-3093)</td>
-<td>353</td></tr>
+<td>338</td></tr>
 <tr class="b">
 <td>track range restriction in node (MNG-3093)</td>
-<td>367</td></tr>
+<td>350</td></tr>
 <tr class="a">
 <th>org.universAAL.support.directives.checks.LicenseFileCheckFix</th>
 <th>Line</th></tr>
 <tr class="b">
 <td>use mavenProject.getDependencies() to generate notice.</td>
-<td>103</td></tr>
+<td>99</td></tr>
 <tr class="a">
 <th>org.universAAL.support.directives.checks.LicenseHeaderCheckFix</th>
 <th>Line</th></tr>
 <tr class="b">
 <td>needs owner and year to be able to add the header.</td>
-<td>79</td></tr>
+<td>74</td></tr>
 <tr class="a">
 <th>org.universAAL.support.directives.mojos.CheckReportMojo</th>
 <th>Line</th></tr>
 <tr class="b">
 <td>use Regexp to find and replace (in case there is something else in the line)</td>
-<td>352</td></tr></table></div></div>
+<td>346</td></tr></table></div></div>
       </div>
     </div>
     <div class="clear">
