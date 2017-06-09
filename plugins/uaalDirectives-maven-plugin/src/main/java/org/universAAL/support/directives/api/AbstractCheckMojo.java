@@ -23,11 +23,12 @@ import org.apache.maven.project.MavenProject;
 
 /**
  * Abstract Mojo that performs a {@link APICheck}.
+ * 
  * @author amedrano
  *
  */
 public abstract class AbstractCheckMojo extends AbstractMojo {
-	
+
 	/**
 	 * 
 	 */
@@ -36,39 +37,41 @@ public abstract class AbstractCheckMojo extends AbstractMojo {
 	/**
 	 * When set to true with the <code>-DfailOnMissMatch</code> maven option;
 	 * the execution will fail, instead of just stating a warning. <BR>
-	 * It is useful to run maven with the <code>-fn</code> option over a project aggregation,
-	 * this way all non-compliant modules are listed.
+	 * It is useful to run maven with the <code>-fn</code> option over a project
+	 * aggregation, this way all non-compliant modules are listed.
+	 * 
 	 * @parameter expression="${failOnMissMatch}" default-value="false"
 	 */
 	private boolean failOnMissMatch;
 
 	/**
-     * The maven project.
-     * @parameter default-value="${project}"
-     * @required
-     * @readonly
-     */
+	 * The maven project.
+	 * 
+	 * @parameter default-value="${project}"
+	 * @required
+	 * @readonly
+	 */
 	private org.apache.maven.project.MavenProject mavenProject;
 
 	protected boolean failed;
 
 	protected APICheck check;
-	
+
 	/** {@inheritDoc} */
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		check = getCheck();
 		failed = false;
 		AbstractMojoExecutionException failedE = null;
-		
+
 		try {
 			if (!check.check(mavenProject, getLog())) {
 				failed = true;
 			}
 		} catch (AbstractMojoExecutionException e) {
 			failed = true;
-			failedE= e;
+			failedE = e;
 		}
-		
+
 		if (failed && failOnMissMatch) {
 			if (failedE == null) {
 				throw new MojoFailureException(CHECK_FAILED);
@@ -86,16 +89,18 @@ public abstract class AbstractCheckMojo extends AbstractMojo {
 		}
 
 	}
-	
+
 	protected org.apache.maven.project.MavenProject getProject() {
-	    return mavenProject;
+		return mavenProject;
 	}
-	
+
 	public abstract APICheck getCheck();
-	
+
 	/**
 	 * Check whether the project is at snapshot version
-	 * @param mp The {@link MavenProject} descriptor
+	 * 
+	 * @param mp
+	 *            The {@link MavenProject} descriptor
 	 * @return True if the version contains SNAPSHOT
 	 */
 	static public boolean isSnapshot(MavenProject mp) {

@@ -59,205 +59,187 @@ import org.universAAL.maven.treebuilder.ExecutionListCreator;
  */
 public class UaalTestMojo extends AbstractMojo {
 
-    /**
-     * @component
-     * @required
-     * @readonly
-     */
-    private ArtifactFactory artifactFactory;
+	/**
+	 * @component
+	 * @required
+	 * @readonly
+	 */
+	private ArtifactFactory artifactFactory;
 
-    /**
-     * @component
-     * @required
-     * @readonly
-     */
-    private ArtifactResolver artifactResolver;
+	/**
+	 * @component
+	 * @required
+	 * @readonly
+	 */
+	private ArtifactResolver artifactResolver;
 
-    /**
-     * @component
-     * @required
-     * @readonly
-     */
-    private ArtifactMetadataSource artifactMetadataSource;
+	/**
+	 * @component
+	 * @required
+	 * @readonly
+	 */
+	private ArtifactMetadataSource artifactMetadataSource;
 
-    /**
-     * @parameter default-value="${project}"
-     * @required
-     * @readonly
-     */
-    private MavenProject project;
+	/**
+	 * @parameter default-value="${project}"
+	 * @required
+	 * @readonly
+	 */
+	private MavenProject project;
 
-    /**
-     * @parameter default-value="${ignore.dep.conflict}"
-     * @readonly
-     */
-    private String throwExceptionOnConflictStr;
+	/**
+	 * @parameter default-value="${ignore.dep.conflict}"
+	 * @readonly
+	 */
+	private String throwExceptionOnConflictStr;
 
-    /**
-     * @component
-     * @required
-     * @readonly
-     */
-    private MavenProjectBuilder mavenProjectBuilder;
+	/**
+	 * @component
+	 * @required
+	 * @readonly
+	 */
+	private MavenProjectBuilder mavenProjectBuilder;
 
-    /**
-     * List of Remote Repositories used by the resolver.
-     * 
-     * @parameter expression="${project.remoteArtifactRepositories}"
-     * @readonly
-     * @required
-     */
-    private List remoteRepositories;
+	/**
+	 * List of Remote Repositories used by the resolver.
+	 * 
+	 * @parameter expression="${project.remoteArtifactRepositories}"
+	 * @readonly
+	 * @required
+	 */
+	private List remoteRepositories;
 
-    /**
-     * Location of the local repository.
-     * 
-     * @parameter expression="${localRepository}"
-     * @readonly
-     * @required
-     */
-    private ArtifactRepository localRepository;
+	/**
+	 * Location of the local repository.
+	 * 
+	 * @parameter expression="${localRepository}"
+	 * @readonly
+	 * @required
+	 */
+	private ArtifactRepository localRepository;
 
-    /**
-     * @parameter default-value="${basedir}"
-     * @readonly
-     * @required
-     */
-    private File baseDirectory;
-    
-    /**
-     * Set this to "true" to bypass unit tests entirely. 
-     * You can also the skipTests parameter instead.
-     * 
-     * @since 1.3.2
-     * @parameter expression="${maven.test.skip}" defaultValue="false"
-     */    
-    private boolean skip;
-    
-    /**
-     * Set this to "true" to bypass unit tests entirely. 
-     * You can also the skipTests parameter instead.
-     * 
-     * @since 1.3.2
-     * @parameter expression="${skipTests}" defaultValue="false"
-     */    
-    private boolean skipTests;
-    
-    
-    /**
-     * Directives configured via <configuration> in pom file, setting the
-     * startlevel and/or nostart parameters to specified artifacts
-     * 
-     * @parameter
-     */
-    private StartSpec[] startArtifacts;
+	/**
+	 * @parameter default-value="${basedir}"
+	 * @readonly
+	 * @required
+	 */
+	private File baseDirectory;
 
-    /**
-     * Execute.
-     * 
-     * @throws MojoExecutionException
-     *             MojoExecutionException
-     * @throws MojoFailureException
-     *             MojoFailureException
-     */
-    public final void execute() throws MojoExecutionException,
-	    MojoFailureException {
-	try {
-		if ( skipTests() ) {
-			getLog().info("Creation of composite file for itests skipped");
-			return;
-		} 
-	    if ( !projectHasItestsDependency() ) {
-			getLog().info("Creation of composite file for itests skipped.\n" +
-					"There is no itests dependency detected, thus no need to generate test composite.");
-			return;
-		    } 
-	    if ("pom".equals(project.getArtifact().getType())) {
-		getLog().info(
-			System.getProperty("line.separator")
-				+ System.getProperty("line.separator")
-				+ "Since this is a parent POM creating"
-				+ "composite file for itests is abandoned"
-				+ System.getProperty("line.separator")
-				+ System.getProperty("line.separator"));
-	    } else {
-		getLog().info(
-			System.getProperty("line.separator")
-				+ System.getProperty("line.separator")
-				+ "Creating composite file for itests "
-				+ "- output generated in "
-				+ IntegrationTestConsts.TEST_COMPOSITE
-				+ System.getProperty("line.separator")
-				+ System.getProperty("line.separator"));
+	/**
+	 * Set this to "true" to bypass unit tests entirely. You can also the
+	 * skipTests parameter instead.
+	 * 
+	 * @since 1.3.2
+	 * @parameter expression="${maven.test.skip}" defaultValue="false"
+	 */
+	private boolean skip;
 
-		ExecutionListCreator execListCreator = new ExecutionListCreator(
-			getLog(), artifactMetadataSource, artifactFactory,
-			mavenProjectBuilder, localRepository,
-			remoteRepositories, artifactResolver,
-			throwExceptionOnConflictStr, startArtifacts);
-		Set<String> separatedArtifactDepsOfRoot = new HashSet<String>();
-		List<String> mvnUrls = execListCreator
-			.createArtifactExecutionList(project,
-				separatedArtifactDepsOfRoot, true, false);
-		getLog().debug(IntegrationTestConsts.TEST_COMPOSITE + ":");
-		int x = 1;
-		for (String mvnUrl : mvnUrls) {
-		    getLog().debug(String.format("%2d. %s", x++, mvnUrl));
-		}
+	/**
+	 * Set this to "true" to bypass unit tests entirely. You can also the
+	 * skipTests parameter instead.
+	 * 
+	 * @since 1.3.2
+	 * @parameter expression="${skipTests}" defaultValue="false"
+	 */
+	private boolean skipTests;
 
-		File targetDir = new File(baseDirectory, "target");
-		targetDir.mkdirs();
+	/**
+	 * Directives configured via <configuration> in pom file, setting the
+	 * startlevel and/or nostart parameters to specified artifacts
+	 * 
+	 * @parameter
+	 */
+	private StartSpec[] startArtifacts;
 
-		File generatedCompositeFile = new File(baseDirectory,
-			IntegrationTestConsts.TEST_COMPOSITE);
-		BufferedWriter compositeWriter = new BufferedWriter(
-			new OutputStreamWriter(new FileOutputStream(
-				generatedCompositeFile, false)));
-		for (Object mvnUrl : mvnUrls) {
-		    String mvnUrlStr = (String) mvnUrl;
-		    compositeWriter.write("scan-bundle:" + mvnUrlStr
-			    + System.getProperty("line.separator"));
-		}
-		compositeWriter.close();
-
-		if (!separatedArtifactDepsOfRoot.isEmpty()) {
-		    File separatedArtifactDepsFile = new File(baseDirectory,
-			    IntegrationTestConsts.SEPARATED_ARTIFACT_DEPS);
-		    BufferedWriter separatedArtifactDepsWriter = new BufferedWriter(
-			    new OutputStreamWriter(new FileOutputStream(
-				    separatedArtifactDepsFile, false)));
-		    for (String separatedArtifactMvnUrl : separatedArtifactDepsOfRoot) {
-			separatedArtifactDepsWriter
-				.write(separatedArtifactMvnUrl
-					+ System.getProperty("line.separator"));
-		    }
-		    separatedArtifactDepsWriter.close();
-		}
-
+	/**
+	 * Execute.
+	 * 
+	 * @throws MojoExecutionException
+	 *             MojoExecutionException
+	 * @throws MojoFailureException
+	 *             MojoFailureException
+	 */
+	public final void execute() throws MojoExecutionException, MojoFailureException {
 		try {
-		    Artifact runDirArtifact = execListCreator
-			    .parseMvnUrlWithType(IntegrationTestConsts.getRunDirMvnUrl());
-		    artifactResolver.resolve(runDirArtifact, remoteRepositories, localRepository);
+			if (skipTests()) {
+				getLog().info("Creation of composite file for itests skipped");
+				return;
+			}
+			if (!projectHasItestsDependency()) {
+				getLog().info("Creation of composite file for itests skipped.\n"
+						+ "There is no itests dependency detected, thus no need to generate test composite.");
+				return;
+			}
+			if ("pom".equals(project.getArtifact().getType())) {
+				getLog().info(System.getProperty("line.separator") + System.getProperty("line.separator")
+						+ "Since this is a parent POM creating" + "composite file for itests is abandoned"
+						+ System.getProperty("line.separator") + System.getProperty("line.separator"));
+			} else {
+				getLog().info(System.getProperty("line.separator") + System.getProperty("line.separator")
+						+ "Creating composite file for itests " + "- output generated in "
+						+ IntegrationTestConsts.TEST_COMPOSITE + System.getProperty("line.separator")
+						+ System.getProperty("line.separator"));
+
+				ExecutionListCreator execListCreator = new ExecutionListCreator(getLog(), artifactMetadataSource,
+						artifactFactory, mavenProjectBuilder, localRepository, remoteRepositories, artifactResolver,
+						throwExceptionOnConflictStr, startArtifacts);
+				Set<String> separatedArtifactDepsOfRoot = new HashSet<String>();
+				List<String> mvnUrls = execListCreator.createArtifactExecutionList(project, separatedArtifactDepsOfRoot,
+						true, false);
+				getLog().debug(IntegrationTestConsts.TEST_COMPOSITE + ":");
+				int x = 1;
+				for (String mvnUrl : mvnUrls) {
+					getLog().debug(String.format("%2d. %s", x++, mvnUrl));
+				}
+
+				File targetDir = new File(baseDirectory, "target");
+				targetDir.mkdirs();
+
+				File generatedCompositeFile = new File(baseDirectory, IntegrationTestConsts.TEST_COMPOSITE);
+				BufferedWriter compositeWriter = new BufferedWriter(
+						new OutputStreamWriter(new FileOutputStream(generatedCompositeFile, false)));
+				for (Object mvnUrl : mvnUrls) {
+					String mvnUrlStr = (String) mvnUrl;
+					compositeWriter.write("scan-bundle:" + mvnUrlStr + System.getProperty("line.separator"));
+				}
+				compositeWriter.close();
+
+				if (!separatedArtifactDepsOfRoot.isEmpty()) {
+					File separatedArtifactDepsFile = new File(baseDirectory,
+							IntegrationTestConsts.SEPARATED_ARTIFACT_DEPS);
+					BufferedWriter separatedArtifactDepsWriter = new BufferedWriter(
+							new OutputStreamWriter(new FileOutputStream(separatedArtifactDepsFile, false)));
+					for (String separatedArtifactMvnUrl : separatedArtifactDepsOfRoot) {
+						separatedArtifactDepsWriter
+								.write(separatedArtifactMvnUrl + System.getProperty("line.separator"));
+					}
+					separatedArtifactDepsWriter.close();
+				}
+
+				try {
+					Artifact runDirArtifact = execListCreator
+							.parseMvnUrlWithType(IntegrationTestConsts.getRunDirMvnUrl());
+					artifactResolver.resolve(runDirArtifact, remoteRepositories, localRepository);
+				} catch (Exception e) {
+					getLog().warn("getRunDirMvnUrl (itests-rundir) could not be resolved", e);
+				}
+			}
 		} catch (Exception e) {
-		    getLog().warn("getRunDirMvnUrl (itests-rundir) could not be resolved", e);
+			getLog().error(e);
+			throw new RuntimeException(e);
 		}
-	    }
-	} catch (Exception e) {
-	    getLog().error(e);
-	    throw new RuntimeException(e);
 	}
-    }
-    
-    /**
-     * 
-     * @return true if either test has to be skipped
-     */
-    private boolean skipTests() {
-	return skip || skipTests;
-    }
-    
-    private boolean projectHasItestsDependency(){
-    	/*
+
+	/**
+	 * 
+	 * @return true if either test has to be skipped
+	 */
+	private boolean skipTests() {
+		return skip || skipTests;
+	}
+
+	private boolean projectHasItestsDependency() {
+		/*
 		 * Check the Itest dependency
 		 */
 		List<Dependency> deps = project.getDependencies();
@@ -265,9 +247,8 @@ public class UaalTestMojo extends AbstractMojo {
 		Iterator i = deps.iterator();
 		while (i.hasNext() && !containsItests) {
 			Dependency d = (Dependency) i.next();
-			containsItests |= d.getArtifactId().equals("itests")
-					&& d.getGroupId().equals("org.universAAL.support");
+			containsItests |= d.getArtifactId().equals("itests") && d.getGroupId().equals("org.universAAL.support");
 		}
 		return containsItests;
-    }
+	}
 }

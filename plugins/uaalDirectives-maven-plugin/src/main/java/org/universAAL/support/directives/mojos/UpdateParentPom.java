@@ -31,22 +31,21 @@ import org.universAAL.support.directives.api.AggregatedCheck;
 import org.universAAL.support.directives.checks.DependencyManagementCheckFix;
 import org.universAAL.support.directives.checks.ModulesCheckFix;
 
-
 /**
  * Executes modules-check, and dependencyManagement-check (in that order).
  * Specially useful to check, and fix, paren POM files.
+ * 
  * @author amedrano
  * @goal update-root-children
  */
 public class UpdateParentPom extends AbstractProcedureMojo {
-	
-    /** @component */
+
+	/** @component */
 	private MavenProjectBuilder mavenProjectBuilder;
-	
-	/**@parameter default-value="${localRepository}" */
+
+	/** @parameter default-value="${localRepository}" */
 	private ArtifactRepository localRepository;
 
-	
 	@Override
 	public APIProcedure getProcedure() {
 		return new UpdateProcedure();
@@ -54,8 +53,7 @@ public class UpdateParentPom extends AbstractProcedureMojo {
 
 	public class UpdateProcedure extends AggregatedCheck implements APIProcedure {
 
-		public void execute(MavenProject mavenProject, Log log)
-				throws MojoExecutionException, MojoFailureException {
+		public void execute(MavenProject mavenProject, Log log) throws MojoExecutionException, MojoFailureException {
 			try {
 				this.check(mavenProject, log);
 			} catch (Exception e) {
@@ -70,7 +68,7 @@ public class UpdateParentPom extends AbstractProcedureMojo {
 			l.add(new DependencyManagementCheckFix(mavenProjectBuilder, localRepository));
 			return l;
 		}
-		
+
 	}
 
 }

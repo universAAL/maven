@@ -20,30 +20,31 @@ import org.universAAL.support.directives.api.AbstractCheckMojo;
 import org.universAAL.support.directives.checks.MavenCoordinateCheck;
 
 /**
- * Checks that the groupId, artifactID, Version, and Name are compliant with the naming conventions.
- * <Br>
- * These conventions are specified by defining respectively the following properties:
+ * Checks that the groupId, artifactID, Version, and Name are compliant with the
+ * naming conventions. <Br>
+ * These conventions are specified by defining respectively the following
+ * properties:
  * <ul>
- * 		<li>artifactIdMatchString
- * 		<li>groupIdMatchString
- * 		<li>versionMatchString
- * 		<li>nameMatchString
+ * <li>artifactIdMatchString
+ * <li>groupIdMatchString
+ * <li>versionMatchString
+ * <li>nameMatchString
  * </ul>
- * These properties are defined in <a href="http://docs.oracle.com/javase/tutorial/essential/regex/">
- * standard java regexp</a> language; by default they take the value ".*" (anything) if not defined. 
- * These properties shoud be defined in parent POMs.
+ * These properties are defined in
+ * <a href="http://docs.oracle.com/javase/tutorial/essential/regex/"> standard
+ * java regexp</a> language; by default they take the value ".*" (anything) if
+ * not defined. These properties shoud be defined in parent POMs.
+ * 
  * @author amedrano
  *
  * @goal name-check
  */
 public class NamingCheckMojo extends AbstractCheckMojo {
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public APICheck getCheck() {
 		return new MavenCoordinateCheck();
 	}
-	
-
 
 }

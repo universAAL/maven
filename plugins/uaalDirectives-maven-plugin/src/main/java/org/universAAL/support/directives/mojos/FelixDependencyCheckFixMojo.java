@@ -22,7 +22,9 @@ import org.universAAL.support.directives.api.AbstractFixableCheckMojo;
 import org.universAAL.support.directives.checks.FelixDepCheckFix;
 
 /**
- * This Mojo checks (and fixes, if configured to do so) explicit Dependencies to Felix.
+ * This Mojo checks (and fixes, if configured to do so) explicit Dependencies to
+ * Felix.
+ * 
  * @author amedrano
  * 
  * @goal felix-check
@@ -30,7 +32,7 @@ import org.universAAL.support.directives.checks.FelixDepCheckFix;
  * @phase process-sources
  */
 public class FelixDependencyCheckFixMojo extends AbstractFixableCheckMojo {
-	
+
 	/** {@inheritDoc} */
 	public APIFixableCheck getFix() {
 		return new FelixDepCheckFix();

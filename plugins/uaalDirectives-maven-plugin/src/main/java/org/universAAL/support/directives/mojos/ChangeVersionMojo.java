@@ -19,12 +19,13 @@ import org.universAAL.support.directives.api.APIProcedure;
 import org.universAAL.support.directives.api.AbstractProcedureMojo;
 import org.universAAL.support.directives.procedures.ChangeVersionProcedure;
 
-/** 
- * Changes the version of a project to the given new Version.
- * This doesn't affect submodules's parent version, this mojo should be used in conjunction with 
- * <a href="http://mojo.codehaus.org/versions-maven-plugin/">Versions Maven Plugin</a>
- * (Specially usefull is the versions:update-child-modules, which updates the parent's 
- * version of all modules)
+/**
+ * Changes the version of a project to the given new Version. This doesn't
+ * affect submodules's parent version, this mojo should be used in conjunction
+ * with <a href="http://mojo.codehaus.org/versions-maven-plugin/">Versions Maven
+ * Plugin</a> (Specially usefull is the versions:update-child-modules, which
+ * updates the parent's version of all modules)
+ * 
  * @author amedrano
  * 
  * @goal change-version
@@ -32,25 +33,23 @@ import org.universAAL.support.directives.procedures.ChangeVersionProcedure;
  */
 public class ChangeVersionMojo extends AbstractProcedureMojo {
 
-    /**
-     * The new version to which to set the POM file.
-     * @parameter expression="${newVersion}"
-     */
-    private String newVersion;
-	
+	/**
+	 * The new version to which to set the POM file.
+	 * 
+	 * @parameter expression="${newVersion}"
+	 */
+	private String newVersion;
+
 	/** {@inheritDoc} */
 	@Override
 	public APIProcedure getProcedure() {
-		if (newVersion == null 
-				|| newVersion.isEmpty()){
-			while (newVersion == null 
-				|| newVersion.isEmpty()){
+		if (newVersion == null || newVersion.isEmpty()) {
+			while (newVersion == null || newVersion.isEmpty()) {
 				System.out.print("\nEnter new version: ");
 				newVersion = System.console().readLine();
 			}
 			return new ChangeVersionProcedure(newVersion);
-		}
-		else {
+		} else {
 			return new ChangeVersionProcedure(newVersion);
 		}
 	}

@@ -26,66 +26,66 @@ import org.apache.maven.plugin.AbstractMojo;
  * @goal uaalManifest
  */
 public class MavenPlugin extends AbstractMojo {
-    /**
-     * @parameter default-value=
-     *            "${project.basedir}/uaal-manifest.xml,${project.basedir}/target/uaal-manifest.xml"
-     */
-    private File[] input;
+	/**
+	 * @parameter default-value=
+	 *            "${project.basedir}/uaal-manifest.xml,${project.basedir}/target/uaal-manifest.xml"
+	 */
+	private File[] input;
 
-    /**
-     * @parameter default-value= "${project.basedir}/target/uaal-manifest.mf"
-     */
-    private File output;
+	/**
+	 * @parameter default-value= "${project.basedir}/target/uaal-manifest.mf"
+	 */
+	private File output;
 
-    // /**
-    // * @parameter default-value=
-    // *
-    // "${project.basedir}/target/classes/META-INF/MANIFEST.MF,${project.basedir}/target/test-classes/META-INF/MANIFEST.MF"
-    // */
-    // private File[] combine;
+	// /**
+	// * @parameter default-value=
+	// *
+	// "${project.basedir}/target/classes/META-INF/MANIFEST.MF,${project.basedir}/target/test-classes/META-INF/MANIFEST.MF"
+	// */
+	// private File[] combine;
 
-    public void setManifestPath(File path) {
-	output = path;
-    }
-
-    public void setUaalManifestPath(File[] uaalPath) {
-	input = uaalPath;
-    }
-
-    public void execute() {
-	PermissionMap perms = new PermissionMap();
-
-	for (File file : input) {
-	    if (file.exists()) {
-		getLog().debug("Reading file '" + file + "'");
-		ManifestReader reader = new ManifestReader(file);
-		reader.read();
-		PermissionMap res = reader.getResult();
-		perms.add(res);
-	    }
+	public void setManifestPath(File path) {
+		output = path;
 	}
 
-	if (perms.getPermissionCount() != 0) {
-	    getLog().debug("Writing to File '" + output + "'");
-	    ManifestWriter writer = new ManifestWriter(getLog(), output);
-	    writer.write(perms);
+	public void setUaalManifestPath(File[] uaalPath) {
+		input = uaalPath;
 	}
-	getLog().info("Found " + perms.toString());
 
-	// if (output.exists()) {
-	// for (File file : combine) {
-	// getLog().debug("Combine file '" + file + "'");
-	// ManifestCombine comb = new ManifestCombine(getLog(), output);
-	// comb.combine(file);
-	// }
-	// }
-    }
+	public void execute() {
+		PermissionMap perms = new PermissionMap();
 
-    // public static void main(String args[]) {
-    // MavenPlugin p = new MavenPlugin();
-    // p.setUaalManifestPath(new File[] { new File("uaal-manifest2.xml"),
-    // new File("uaal-manifest3.xml") });
-    // p.setManifestPath(new File("uaal-manifest.mf"));
-    // p.execute();
-    // }
+		for (File file : input) {
+			if (file.exists()) {
+				getLog().debug("Reading file '" + file + "'");
+				ManifestReader reader = new ManifestReader(file);
+				reader.read();
+				PermissionMap res = reader.getResult();
+				perms.add(res);
+			}
+		}
+
+		if (perms.getPermissionCount() != 0) {
+			getLog().debug("Writing to File '" + output + "'");
+			ManifestWriter writer = new ManifestWriter(getLog(), output);
+			writer.write(perms);
+		}
+		getLog().info("Found " + perms.toString());
+
+		// if (output.exists()) {
+		// for (File file : combine) {
+		// getLog().debug("Combine file '" + file + "'");
+		// ManifestCombine comb = new ManifestCombine(getLog(), output);
+		// comb.combine(file);
+		// }
+		// }
+	}
+
+	// public static void main(String args[]) {
+	// MavenPlugin p = new MavenPlugin();
+	// p.setUaalManifestPath(new File[] { new File("uaal-manifest2.xml"),
+	// new File("uaal-manifest3.xml") });
+	// p.setManifestPath(new File("uaal-manifest.mf"));
+	// p.execute();
+	// }
 }

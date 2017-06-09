@@ -28,17 +28,14 @@ import org.universAAL.support.directives.api.APIProcedure;
 public class IncreaseVersionProcedure implements APIProcedure {
 
 	/** {@inheritDoc} */
-	public void execute(MavenProject mavenProject, Log log)
-			throws MojoExecutionException, MojoFailureException {
-		new ChangeVersionProcedure(nextDevelopmentVersion(mavenProject.getVersion()))
-		.execute(mavenProject, log);
+	public void execute(MavenProject mavenProject, Log log) throws MojoExecutionException, MojoFailureException {
+		new ChangeVersionProcedure(nextDevelopmentVersion(mavenProject.getVersion())).execute(mavenProject, log);
 
 	}
-	
+
 	public static String nextDevelopmentVersion(String version) {
-		String[] numbers =  version.replace("-SNAPSHOT", "").split("\\.");
-		String newVersion = numbers[0] + '.' + numbers[1] + '.' 
-				+ Integer.toString((Integer.parseInt(numbers[2]) + 1))
+		String[] numbers = version.replace("-SNAPSHOT", "").split("\\.");
+		String newVersion = numbers[0] + '.' + numbers[1] + '.' + Integer.toString((Integer.parseInt(numbers[2]) + 1))
 				+ "-SNAPSHOT";
 		return newVersion;
 	}

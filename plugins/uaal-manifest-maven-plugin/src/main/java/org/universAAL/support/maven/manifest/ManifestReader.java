@@ -36,105 +36,103 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class ManifestReader {
-    private File uaalManifest;
-    private PermissionMap map = new PermissionMap();
-    private XPath xpath = XPathFactory.newInstance().newXPath();
+	private File uaalManifest;
+	private PermissionMap map = new PermissionMap();
+	private XPath xpath = XPathFactory.newInstance().newXPath();
 
-    public ManifestReader(String filename) {
-	uaalManifest = new File(filename);
-    }
-    
-    public ManifestReader(File file) {
-	uaalManifest = file;
-    }
-
-    public PermissionMap getResult() {
-	return map;
-    }
-
-    /**
-     * Reads the File {@link #uaalManifest} as xml and parses it to
-     * {@link Document} using JAXP with a {@link DocumentBuilder}.
-     * 
-     * @return the parsed {@link #uaalManifest} File
-     */
-    public void read() {
-	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-	DocumentBuilder builder = null;
-	Document manifest = null;
-	try {
-	    builder = factory.newDocumentBuilder();
-	    manifest = builder.parse(uaalManifest);
-	} catch (ParserConfigurationException e) {
-	    throw new RuntimeException(e);
-	} catch (SAXException e) {
-	    throw new RuntimeException(e);
-	} catch (IOException e) {
-	    throw new RuntimeException(e);
+	public ManifestReader(String filename) {
+		uaalManifest = new File(filename);
 	}
 
-	Node root = null;
-	try {
-	    root = (Node) xpath.evaluate("application/permissions", manifest,
-		    XPathConstants.NODE);
-	} catch (XPathExpressionException e) {
-	    throw new RuntimeException(e);
+	public ManifestReader(File file) {
+		uaalManifest = file;
 	}
-	if (root == null)
-	    return;
 
-	NodeList busChildren = root.getChildNodes();
-	for (int i = 0; i < busChildren.getLength(); i++) {
-	    Node busChild = busChildren.item(i);
-	    if (busChild.getNodeType() == Node.ELEMENT_NODE) {
-		String busName = busChild.getNodeName();
-		busName = busName.replace("-", "_");
-		busName = busName.replace(":", "_");
-		busName = busName.replace(".", "_");
-		NodeList typeChildren = busChild.getChildNodes();
-		for (int j = 0; j < typeChildren.getLength(); j++) {
-		    Node typeChild = typeChildren.item(j);
-		    if (typeChild.getNodeType() == Node.ELEMENT_NODE) {
-			String typeName = typeChild.getNodeName();
-			typeName = typeName.replace("-", "_");
-			typeName = typeName.replace(":", "_");
-			typeName = typeName.replace(".", "_");
-			readElement(busName, typeName, typeChild);
-		    }
+	public PermissionMap getResult() {
+		return map;
+	}
+
+	/**
+	 * Reads the File {@link #uaalManifest} as xml and parses it to
+	 * {@link Document} using JAXP with a {@link DocumentBuilder}.
+	 * 
+	 * @return the parsed {@link #uaalManifest} File
+	 */
+	public void read() {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = null;
+		Document manifest = null;
+		try {
+			builder = factory.newDocumentBuilder();
+			manifest = builder.parse(uaalManifest);
+		} catch (ParserConfigurationException e) {
+			throw new RuntimeException(e);
+		} catch (SAXException e) {
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
-	    }
+
+		Node root = null;
+		try {
+			root = (Node) xpath.evaluate("application/permissions", manifest, XPathConstants.NODE);
+		} catch (XPathExpressionException e) {
+			throw new RuntimeException(e);
+		}
+		if (root == null)
+			return;
+
+		NodeList busChildren = root.getChildNodes();
+		for (int i = 0; i < busChildren.getLength(); i++) {
+			Node busChild = busChildren.item(i);
+			if (busChild.getNodeType() == Node.ELEMENT_NODE) {
+				String busName = busChild.getNodeName();
+				busName = busName.replace("-", "_");
+				busName = busName.replace(":", "_");
+				busName = busName.replace(".", "_");
+				NodeList typeChildren = busChild.getChildNodes();
+				for (int j = 0; j < typeChildren.getLength(); j++) {
+					Node typeChild = typeChildren.item(j);
+					if (typeChild.getNodeType() == Node.ELEMENT_NODE) {
+						String typeName = typeChild.getNodeName();
+						typeName = typeName.replace("-", "_");
+						typeName = typeName.replace(":", "_");
+						typeName = typeName.replace(".", "_");
+						readElement(busName, typeName, typeChild);
+					}
+				}
+			}
+		}
 	}
-    }
 
-    private void readElement(String busName, String typeName, Node root) {
-	Permission p = new Permission();
-	p.title = extractPermissionProperty("title", root);
-	p.description = extractPermissionProperty("description", root);
-	p.serialization = extractPermissionProperty("serialization", root);
+	private void readElement(String busName, String typeName, Node root) {
+		Permission p = new Permission();
+		p.title = extractPermissionProperty("title", root);
+		p.description = extractPermissionProperty("description", root);
+		p.serialization = extractPermissionProperty("serialization", root);
 
-	if (!p.hasNull())
-	    map.add(busName, typeName, p);
+		if (!p.hasNull())
+			map.add(busName, typeName, p);
 
-	// System.out.println(" --- busName: " + busName + "\t\ttypeName: "
-	// + typeName + "\t\tval: " + p.title + "\n" + p.serialization);
-    }
-
-
-    /**
-     * Extracts a single Property of a {@link Permission}.
-     * 
-     * @param property
-     *            the Property to be extracted
-     * @param from
-     *            the Entry representing a Permission the Property should be
-     *            extracted from
-     * @return the extracted Property
-     */
-    private String extractPermissionProperty(String property, Node from) {
-	try {
-	    return xpath.evaluate("normalize-space(" + property + ")", from);
-	} catch (XPathExpressionException e) {
-	    throw new RuntimeException(e);
+		// System.out.println(" --- busName: " + busName + "\t\ttypeName: "
+		// + typeName + "\t\tval: " + p.title + "\n" + p.serialization);
 	}
-    }
+
+	/**
+	 * Extracts a single Property of a {@link Permission}.
+	 * 
+	 * @param property
+	 *            the Property to be extracted
+	 * @param from
+	 *            the Entry representing a Permission the Property should be
+	 *            extracted from
+	 * @return the extracted Property
+	 */
+	private String extractPermissionProperty(String property, Node from) {
+		try {
+			return xpath.evaluate("normalize-space(" + property + ")", from);
+		} catch (XPathExpressionException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

@@ -26,9 +26,9 @@ import org.universAAL.support.directives.checks.LicenseFileCheckFix;
 import org.universAAL.support.directives.checks.LicenseHeaderCheckFix;
 
 /**
- * This Mojo checks (and fixes, if configured to do so) for license files.
- * those that should exists (like ASL2.0.txt, MITX.txt, and NOTICE.txt),
- * as well as those that should not exist (like LICENSE.txt).
+ * This Mojo checks (and fixes, if configured to do so) for license files. those
+ * that should exists (like ASL2.0.txt, MITX.txt, and NOTICE.txt), as well as
+ * those that should not exist (like LICENSE.txt).
  * 
  * @author amedrano
  * @goal license-check
@@ -40,7 +40,7 @@ public class LicenseMojo extends AbstractFixableCheckMojo {
 	@Override
 	public APIFixableCheck getFix() {
 		return new AggregatedCheck() {
-			
+
 			@Override
 			public List<APICheck> getCheckList() {
 				ArrayList<APICheck> list = new ArrayList<APICheck>();

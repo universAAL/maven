@@ -29,19 +29,19 @@ import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
  * 
  */
 public class ScopeArtifactFilter implements ArtifactFilter {
-    public boolean include(final Artifact artifact) {
-	if (Artifact.SCOPE_COMPILE.equals(artifact.getScope())) {
-	    return true;
-	} else if (Artifact.SCOPE_RUNTIME.equals(artifact.getScope())) {
-	    return true;
-	} else if (Artifact.SCOPE_TEST.equals(artifact.getScope())) {
-	    return false;
-	} else if (Artifact.SCOPE_PROVIDED.equals(artifact.getScope())) {
-	    return true;
-	} else if (Artifact.SCOPE_SYSTEM.equals(artifact.getScope())) {
-	    return false;
-	} else {
-	    return true;
+	public boolean include(final Artifact artifact) {
+		if (Artifact.SCOPE_COMPILE.equals(artifact.getScope())) {
+			return true;
+		} else if (Artifact.SCOPE_RUNTIME.equals(artifact.getScope())) {
+			return true;
+		} else if (Artifact.SCOPE_TEST.equals(artifact.getScope())) {
+			return false;
+		} else if (Artifact.SCOPE_PROVIDED.equals(artifact.getScope())) {
+			return true;
+		} else if (Artifact.SCOPE_SYSTEM.equals(artifact.getScope())) {
+			return false;
+		} else {
+			return true;
+		}
 	}
-    }
 }

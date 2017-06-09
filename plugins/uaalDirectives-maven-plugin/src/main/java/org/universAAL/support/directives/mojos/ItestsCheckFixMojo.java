@@ -22,7 +22,7 @@ import org.universAAL.support.directives.api.AbstractFixableCheckMojo;
 import org.universAAL.support.directives.checks.ItestsCheckFix;
 
 /**
- * This Mojo checks (and fixes, if configured to do so) Dependencies for Itests 
+ * This Mojo checks (and fixes, if configured to do so) Dependencies for Itests
  * when there are no IntegrationTest implementations.
  * 
  * @author amedrano
@@ -32,7 +32,7 @@ import org.universAAL.support.directives.checks.ItestsCheckFix;
  * @phase process-sources
  */
 public class ItestsCheckFixMojo extends AbstractFixableCheckMojo {
-	
+
 	/** {@inheritDoc} */
 	public APIFixableCheck getFix() {
 		return new ItestsCheckFix();

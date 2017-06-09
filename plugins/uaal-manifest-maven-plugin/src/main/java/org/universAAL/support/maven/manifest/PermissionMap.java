@@ -23,51 +23,51 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PermissionMap extends HashMap<String, ArrayList<Permission>> {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public void add(String busName, String typeName, Permission p) {
-	String key = busName + "-" + typeName;
+	public void add(String busName, String typeName, Permission p) {
+		String key = busName + "-" + typeName;
 
-	ArrayList<Permission> lst;
-	lst = get(key);
-	if (lst == null) {
-	    lst = new ArrayList<Permission>();
-	    put(key, lst);
+		ArrayList<Permission> lst;
+		lst = get(key);
+		if (lst == null) {
+			lst = new ArrayList<Permission>();
+			put(key, lst);
+		}
+
+		lst.add(p);
 	}
 
-	lst.add(p);
-    }
+	public void add(PermissionMap el) {
+		for (String key : el.keySet()) {
+			ArrayList<Permission> lst = get(key);
+			if (lst == null) {
+				lst = new ArrayList<Permission>();
+				put(key, lst);
+			}
 
-    public void add(PermissionMap el) {
-	for (String key : el.keySet()) {
-	    ArrayList<Permission> lst = get(key);
-	    if (lst == null) {
-		lst = new ArrayList<Permission>();
-		put(key, lst);
-	    }
-
-	    lst.addAll(el.get(key));
-	}
-    }
-
-    public int getPermissionCount() {
-	int cnt = 0;
-	for (String key : keySet()) {
-	    ArrayList<Permission> lst = get(key);
-	    cnt += lst.size();
-	}
-	return cnt;
-    }
-
-    public String toString() {
-	String s = "" + getPermissionCount() + " permissions";
-	if (keySet().size() != 0)
-	    s += ":";
-	for (String key : keySet()) {
-	    ArrayList<Permission> lst = get(key);
-	    s += "\n   " + key + ": " + lst.size();
+			lst.addAll(el.get(key));
+		}
 	}
 
-	return s;
-    }
+	public int getPermissionCount() {
+		int cnt = 0;
+		for (String key : keySet()) {
+			ArrayList<Permission> lst = get(key);
+			cnt += lst.size();
+		}
+		return cnt;
+	}
+
+	public String toString() {
+		String s = "" + getPermissionCount() + " permissions";
+		if (keySet().size() != 0)
+			s += ":";
+		for (String key : keySet()) {
+			ArrayList<Permission> lst = get(key);
+			s += "\n   " + key + ": " + lst.size();
+		}
+
+		return s;
+	}
 }

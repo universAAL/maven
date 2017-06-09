@@ -37,22 +37,17 @@ public class MavenCoordinateCheck implements APICheck {
 	private static final String GROUP_ID_MATCH_PROP = "groupIdMatchString";
 	private static final String ARTIFACT_ID_MATCH_PROP = "artifactIdMatchString";
 	private static final String DEFAULT_MATCH = ".*";
-	
+
 	private static final String DOES_NOT_MATCH_CONVENTION = "\ndoes not match convention: ";
 
 	/** {@inheritDoc} */
-	public boolean check(MavenProject mavenProject, Log log)
-			throws MojoExecutionException, MojoFailureException {
+	public boolean check(MavenProject mavenProject, Log log) throws MojoExecutionException, MojoFailureException {
 
-		String artifactIdMatchString = 
-				mavenProject.getProperties().getProperty(ARTIFACT_ID_MATCH_PROP, DEFAULT_MATCH);
-		String groupIdMatchString = 
-				mavenProject.getProperties().getProperty(GROUP_ID_MATCH_PROP, DEFAULT_MATCH);
-		String nameMatchString = 
-				mavenProject.getProperties().getProperty(NAME_MATCH_PROP, DEFAULT_MATCH);
-		String versionMatchString = 
-				mavenProject.getProperties().getProperty(VERSION_MATCH_PROP, DEFAULT_MATCH);
-		
+		String artifactIdMatchString = mavenProject.getProperties().getProperty(ARTIFACT_ID_MATCH_PROP, DEFAULT_MATCH);
+		String groupIdMatchString = mavenProject.getProperties().getProperty(GROUP_ID_MATCH_PROP, DEFAULT_MATCH);
+		String nameMatchString = mavenProject.getProperties().getProperty(NAME_MATCH_PROP, DEFAULT_MATCH);
+		String versionMatchString = mavenProject.getProperties().getProperty(VERSION_MATCH_PROP, DEFAULT_MATCH);
+
 		Pattern pAId = Pattern.compile(artifactIdMatchString);
 		Pattern pGId = Pattern.compile(groupIdMatchString);
 		Pattern pVer = Pattern.compile(versionMatchString);
@@ -66,24 +61,20 @@ public class MavenCoordinateCheck implements APICheck {
 		StringBuffer message = new StringBuffer();
 
 		if (!mAId.find()) {
-			message.append("ArtifactId: " + mavenProject.getArtifactId() 
-					+ DOES_NOT_MATCH_CONVENTION 
+			message.append("ArtifactId: " + mavenProject.getArtifactId() + DOES_NOT_MATCH_CONVENTION
 					+ artifactIdMatchString + "\n");
 		}
 		if (!mGId.find()) {
-			message.append("GroupId: " + mavenProject.getGroupId() 
-					+ DOES_NOT_MATCH_CONVENTION 
-					+ groupIdMatchString + "\n");
+			message.append(
+					"GroupId: " + mavenProject.getGroupId() + DOES_NOT_MATCH_CONVENTION + groupIdMatchString + "\n");
 		}
 		if (!mVer.find()) {
-			message.append("Version: " + mavenProject.getVersion() 
-					+ DOES_NOT_MATCH_CONVENTION 
-					+ versionMatchString + "\n");
+			message.append(
+					"Version: " + mavenProject.getVersion() + DOES_NOT_MATCH_CONVENTION + versionMatchString + "\n");
 		}
 		if (!mNam.find()) {
-			message.append("Artifact Name: " + mavenProject.getName()
-					+ DOES_NOT_MATCH_CONVENTION 
-					+ nameMatchString + "\n");
+			message.append(
+					"Artifact Name: " + mavenProject.getName() + DOES_NOT_MATCH_CONVENTION + nameMatchString + "\n");
 		}
 
 		if (message.length() > 0) {
@@ -94,18 +85,16 @@ public class MavenCoordinateCheck implements APICheck {
 			pomFileModel = PomWriter.readPOMFile(mavenProject);
 		} catch (Exception e) {
 		}
-		
-		if (!mavenProject.getPackaging().equals("pom")
-				&& pomFileModel != null
+
+		if (!mavenProject.getPackaging().equals("pom") && pomFileModel != null
 				&& (pomFileModel.getProperties().containsKey(ARTIFACT_ID_MATCH_PROP)
 						|| pomFileModel.getProperties().containsKey(GROUP_ID_MATCH_PROP)
 						|| pomFileModel.getProperties().containsKey(VERSION_MATCH_PROP)
-						|| pomFileModel.getProperties().containsKey(NAME_MATCH_PROP))){
+						|| pomFileModel.getProperties().containsKey(NAME_MATCH_PROP))) {
 			throw new MojoFailureException("This project has declared naming conventions when it shoudln't.\n"
 					+ "This is probably an attempt to skip this directive, SHAME ON YOU!");
 		}
-	
-		
+
 		return true;
 	}
 }

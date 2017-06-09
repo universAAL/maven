@@ -27,43 +27,39 @@ import org.apache.maven.project.MavenProject;
 import org.universAAL.support.directives.api.APIFixableCheck;
 
 /**
- * Check that ASL2.0.txt and NOTICE.txt files Exists.
- * Also checks that LICENSE.txt does not exist.
+ * Check that ASL2.0.txt and NOTICE.txt files Exists. Also checks that
+ * LICENSE.txt does not exist.
+ * 
  * @author amedrano
  *
  */
 public class LicenseFileCheckFix implements APIFixableCheck {
 
-	private static final String[] files = {
-		"ASL2.0.txt",
-		//"MITX.txt",
-		"NOTICE.txt", // NOTICE should always be last!
+	private static final String[] files = { "ASL2.0.txt",
+			// "MITX.txt",
+			"NOTICE.txt", // NOTICE should always be last!
 	};
-	
-	private static final String[] exFiles = {
-		"LICENSE.txt",
-		"LICENCE.txt",
-	};
-	
+
+	private static final String[] exFiles = { "LICENSE.txt", "LICENCE.txt", };
+
 	private static final String NOT_FOUND = "License File does not exist: ";
 
 	private static final String FOUND = "License File exist (where it should not): ";
-	
+
 	/** {@inheritDoc} */
-	public boolean check(MavenProject mavenproject, Log log)
-			throws MojoExecutionException, MojoFailureException {
+	public boolean check(MavenProject mavenproject, Log log) throws MojoExecutionException, MojoFailureException {
 		String message = "";
 		if (mavenproject.getPackaging().equals("pom")) {
 			return true;
 		}
-		for (int i = 0; i < files.length ; i++) {
-			if (!new File(mavenproject.getBasedir(), files[i]).exists() ) {
+		for (int i = 0; i < files.length; i++) {
+			if (!new File(mavenproject.getBasedir(), files[i]).exists()) {
 				message += NOT_FOUND + files[i] + "\n";
 			}
 		}
-		for (int i = 0; i < exFiles.length ; i++) {
-			if (new File(mavenproject.getBasedir(), exFiles[i]).exists() ) {
-				message += FOUND + exFiles[i]+ "\n";
+		for (int i = 0; i < exFiles.length; i++) {
+			if (new File(mavenproject.getBasedir(), exFiles[i]).exists()) {
+				message += FOUND + exFiles[i] + "\n";
 			}
 		}
 		if (!message.isEmpty()) {
@@ -73,28 +69,28 @@ public class LicenseFileCheckFix implements APIFixableCheck {
 	}
 
 	/** {@inheritDoc} */
-	public void fix(MavenProject mavenProject, Log log)
-			throws MojoExecutionException, MojoFailureException {
+	public void fix(MavenProject mavenProject, Log log) throws MojoExecutionException, MojoFailureException {
 		// does not try NOTICE.txt!
-		for (int i = 0; i < files.length-1; i++) {
+		for (int i = 0; i < files.length - 1; i++) {
 			File lf = new File(mavenProject.getBasedir(), files[i]);
-			if (!lf.exists() ) {
+			if (!lf.exists()) {
 				try {
 					copyFile(files[i], lf);
-				} catch (IOException e) {	}
+				} catch (IOException e) {
+				}
 			}
 		}
-		if (!new File(mavenProject.getBasedir(), files[files.length-1]).exists()) {
+		if (!new File(mavenProject.getBasedir(), files[files.length - 1]).exists()) {
 			generateNoticeFile(mavenProject);
 		}
-		for (int i = 0; i < exFiles.length ; i++) {
+		for (int i = 0; i < exFiles.length; i++) {
 			File lf = new File(mavenProject.getBasedir(), exFiles[i]);
-			if (lf.exists() ) {
+			if (lf.exists()) {
 				lf.delete();
 			}
 		}
 	}
-	
+
 	/**
 	 * @param mavenProject
 	 */
@@ -104,29 +100,28 @@ public class LicenseFileCheckFix implements APIFixableCheck {
 	}
 
 	private void copyFile(String sourceName, File destFile) throws IOException {
-	    if(!destFile.exists()) {
-	        destFile.createNewFile();
-	    } else {
-	    	throw new IOException("Destination File: " + destFile.getName() + " exists.");
-	    }
+		if (!destFile.exists()) {
+			destFile.createNewFile();
+		} else {
+			throw new IOException("Destination File: " + destFile.getName() + " exists.");
+		}
 
-	    JarInputStream is = new JarInputStream(getClass().getResourceAsStream(sourceName));
-	    FileOutputStream os = new FileOutputStream(destFile);
+		JarInputStream is = new JarInputStream(getClass().getResourceAsStream(sourceName));
+		FileOutputStream os = new FileOutputStream(destFile);
 
-	    try {
-	    	int c;
-	    	while ((c = is.read()) != -1) {
-                os.write(c);
-             }
-	    }
-	    finally {
-	        if(is != null) {
-	        	is.close();
-	        }
-	        if(os != null) {
-	        	os.close();
-	        }
-	    }
+		try {
+			int c;
+			while ((c = is.read()) != -1) {
+				os.write(c);
+			}
+		} finally {
+			if (is != null) {
+				is.close();
+			}
+			if (os != null) {
+				os.close();
+			}
+		}
 	}
 
 }

@@ -30,60 +30,58 @@ import java.util.jar.Manifest;
 import org.apache.maven.plugin.logging.Log;
 
 public class ManifestWriter {
-    private File manifestOutput;
-    private Manifest man;
-    private Log log;
+	private File manifestOutput;
+	private Manifest man;
+	private Log log;
 
-    public ManifestWriter(Log log, File file) {
-	this.log = log;
-	manifestOutput = file;
-	//manifestOutput = new File(file, "META-INF");
-	try {
-	    //manifestOutput.mkdirs();
-	    //manifestOutput = new File(manifestOutput, "uaal-manifest.mf");
-	    manifestOutput.createNewFile();
-	} catch (IOException e) {
-	}
-	man = new Manifest();
-    }
-
-    public ManifestWriter(Log log, String filename) {
-	this(log, new File(filename));
-    }
-
-    public void write(PermissionMap map) {
-	// prepare manifest file
-	man.getMainAttributes().putValue(
-		Attributes.Name.MANIFEST_VERSION.toString(), "1.0");
-	for (String key : map.keySet()) {
-	    ArrayList<Permission> lst = map.get(key);
-
-	    String val = "";
-	    for (Permission p : lst) {
-		val += p;
-	    }
-
-	    if (val.length() != 0) {
-		man.getMainAttributes().putValue("App-permissions-" + key, val);
-		// System.out.println("-- adding key: " + key);
-	    }
+	public ManifestWriter(Log log, File file) {
+		this.log = log;
+		manifestOutput = file;
+		// manifestOutput = new File(file, "META-INF");
+		try {
+			// manifestOutput.mkdirs();
+			// manifestOutput = new File(manifestOutput, "uaal-manifest.mf");
+			manifestOutput.createNewFile();
+		} catch (IOException e) {
+		}
+		man = new Manifest();
 	}
 
-	// write to file
-	try {
-	    man.write(new FileOutputStream(manifestOutput));
-	} catch (FileNotFoundException e) {
-	    String filename = "";
-	    try {
-		filename = manifestOutput.getCanonicalPath();
-	    } catch (IOException e1) {
-	    }
-
-	    log.info("output file (" + filename
-		    + ") could not be created, skipping manifest creation.");
-	    // e.printStackTrace();
-	} catch (IOException e) {
-	    e.printStackTrace();
+	public ManifestWriter(Log log, String filename) {
+		this(log, new File(filename));
 	}
-    }
+
+	public void write(PermissionMap map) {
+		// prepare manifest file
+		man.getMainAttributes().putValue(Attributes.Name.MANIFEST_VERSION.toString(), "1.0");
+		for (String key : map.keySet()) {
+			ArrayList<Permission> lst = map.get(key);
+
+			String val = "";
+			for (Permission p : lst) {
+				val += p;
+			}
+
+			if (val.length() != 0) {
+				man.getMainAttributes().putValue("App-permissions-" + key, val);
+				// System.out.println("-- adding key: " + key);
+			}
+		}
+
+		// write to file
+		try {
+			man.write(new FileOutputStream(manifestOutput));
+		} catch (FileNotFoundException e) {
+			String filename = "";
+			try {
+				filename = manifestOutput.getCanonicalPath();
+			} catch (IOException e1) {
+			}
+
+			log.info("output file (" + filename + ") could not be created, skipping manifest creation.");
+			// e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

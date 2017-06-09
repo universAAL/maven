@@ -20,24 +20,27 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 /**
- * Abstract Procedure Mojo, wraps procedures over maven projects ({@link APIProcedure}).
+ * Abstract Procedure Mojo, wraps procedures over maven projects
+ * ({@link APIProcedure}).
+ * 
  * @author amedrano
- * @requiresDirectInvocation 
+ * @requiresDirectInvocation
  */
 public abstract class AbstractProcedureMojo extends AbstractMojo {
 
 	/**
-     * The maven project.
-     * @parameter default-value="${project}"
-     * @required
-     */
+	 * The maven project.
+	 * 
+	 * @parameter default-value="${project}"
+	 * @required
+	 */
 	private org.apache.maven.project.MavenProject mavenProject;
-	
+
 	/** {@inheritDoc} */
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		getProcedure().execute(mavenProject, getLog());
 	}
-	
+
 	public abstract APIProcedure getProcedure();
 
 }

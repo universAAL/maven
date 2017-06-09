@@ -36,30 +36,29 @@ public class PomWriter {
 
 	PomFixer fixer;
 	MavenProject pom;
-	
+
 	public PomWriter(PomFixer pf, MavenProject mp) {
 		fixer = pf;
 		pom = mp;
 	}
-	
-	public void fix() throws Exception{
-			// Reading
-			Model model = readPOMFile(pom);
 
-			// Editing
-			fixer.fix(model);
+	public void fix() throws Exception {
+		// Reading
+		Model model = readPOMFile(pom);
 
-			// Writing
-			MavenXpp3Writer writer = new MavenXpp3Writer();
+		// Editing
+		fixer.fix(model);
 
-			writer.write(new OutputStreamWriter(new FileOutputStream(new File(
-					pom.getFile().getAbsolutePath()))), model);
+		// Writing
+		MavenXpp3Writer writer = new MavenXpp3Writer();
+
+		writer.write(new OutputStreamWriter(new FileOutputStream(new File(pom.getFile().getAbsolutePath()))), model);
 	}
-	
-	public static Model readPOMFile(MavenProject pom) throws FileNotFoundException, IOException, XmlPullParserException {
+
+	public static Model readPOMFile(MavenProject pom)
+			throws FileNotFoundException, IOException, XmlPullParserException {
 		MavenXpp3Reader reader = new MavenXpp3Reader();
-		FileInputStream fis = new FileInputStream(new File(pom
-				.getFile().getAbsolutePath()));
+		FileInputStream fis = new FileInputStream(new File(pom.getFile().getAbsolutePath()));
 		Model model = reader.read(fis);
 		fis.close();
 		return model;

@@ -56,187 +56,176 @@ import org.universAAL.maven.treebuilder.ExecutionListCreator;
  */
 public class UaalRunnerMojo extends AbstractMojo implements Contextualizable {
 
-    /**
-     * The Maven Project Object.
-     * 
-     * @parameter expression="${project}"
-     * @required
-     * @readonly
-     */
-    private MavenProject project;
+	/**
+	 * The Maven Project Object.
+	 * 
+	 * @parameter expression="${project}"
+	 * @required
+	 * @readonly
+	 */
+	private MavenProject project;
 
-    /**
-     * The Maven Session Object.
-     * 
-     * @parameter expression="${session}"
-     * @required
-     * @readonly
-     */
-    private MavenSession session;
+	/**
+	 * The Maven Session Object.
+	 * 
+	 * @parameter expression="${session}"
+	 * @required
+	 * @readonly
+	 */
+	private MavenSession session;
 
-    /**
-     * The Maven PluginManager Object.
-     * 
-     * @component
-     * @optional
-     */
-    private PluginManager pluginManager;
+	/**
+	 * The Maven PluginManager Object.
+	 * 
+	 * @component
+	 * @optional
+	 */
+	private PluginManager pluginManager;
 
-    /**
-     * Artifact factory.
-     * 
-     * @component
-     * @required
-     * @readonly
-     */
-    private ArtifactFactory artifactFactory;
+	/**
+	 * Artifact factory.
+	 * 
+	 * @component
+	 * @required
+	 * @readonly
+	 */
+	private ArtifactFactory artifactFactory;
 
-    /**
-     * Artifact resolver.
-     * 
-     * @component
-     * @required
-     * @readonly
-     */
-    private ArtifactResolver artifactResolver;
+	/**
+	 * Artifact resolver.
+	 * 
+	 * @component
+	 * @required
+	 * @readonly
+	 */
+	private ArtifactResolver artifactResolver;
 
-    /**
-     * @component
-     * @required
-     * @readonly
-     */
-    private ArtifactMetadataSource artifactMetadataSource;
+	/**
+	 * @component
+	 * @required
+	 * @readonly
+	 */
+	private ArtifactMetadataSource artifactMetadataSource;
 
-    /**
-     * @parameter expression="${ignore.dep.conflict}" default-value="false"
-     * @readonly
-     */
-    private String throwExceptionOnConflictStr;
+	/**
+	 * @parameter expression="${ignore.dep.conflict}" default-value="false"
+	 * @readonly
+	 */
+	private String throwExceptionOnConflictStr;
 
-    /**
-     * @component
-     * @required
-     * @readonly
-     */
-    private MavenProjectBuilder mavenProjectBuilder;
+	/**
+	 * @component
+	 * @required
+	 * @readonly
+	 */
+	private MavenProjectBuilder mavenProjectBuilder;
 
-    /**
-     * List of Remote Repositories used by the resolver.
-     * 
-     * @parameter expression="${project.remoteArtifactRepositories}"
-     * @readonly
-     * @required
-     */
-    private List remoteRepositories;
+	/**
+	 * List of Remote Repositories used by the resolver.
+	 * 
+	 * @parameter expression="${project.remoteArtifactRepositories}"
+	 * @readonly
+	 * @required
+	 */
+	private List remoteRepositories;
 
-    /**
-     * Location of the local repository.
-     * 
-     * @parameter expression="${localRepository}"
-     * @readonly
-     * @required
-     */
-    protected ArtifactRepository localRepository;
+	/**
+	 * Location of the local repository.
+	 * 
+	 * @parameter expression="${localRepository}"
+	 * @readonly
+	 * @required
+	 */
+	protected ArtifactRepository localRepository;
 
-    /**
-     * @parameter expression="${run.args}"
-     */
-    private String args;
+	/**
+	 * @parameter expression="${run.args}"
+	 */
+	private String args;
 
-    /**
-     * @parameter expression="${run.provision}"
-     */
-    private String[] provision;
+	/**
+	 * @parameter expression="${run.provision}"
+	 */
+	private String[] provision;
 
-    /**
-     * @parameter expression="${run.transitive}" default-value="true"
-     * @optional
-     */
-    private String transitive;
+	/**
+	 * @parameter expression="${run.transitive}" default-value="true"
+	 * @optional
+	 */
+	private String transitive;
 
-    /**
-     * @parameter expression="${separatedGroupIds}"
-     */
-    private String[] separatedGroupIds;
+	/**
+	 * @parameter expression="${separatedGroupIds}"
+	 */
+	private String[] separatedGroupIds;
 
-    /**
-     * Directives configured via <configuration> in pom file, setting the
-     * startlevel and/or nostart parameters to specified artifacts
-     * 
-     * @parameter
-     */
-    private StartSpec[] startArtifacts;
+	/**
+	 * Directives configured via <configuration> in pom file, setting the
+	 * startlevel and/or nostart parameters to specified artifacts
+	 * 
+	 * @parameter
+	 */
+	private StartSpec[] startArtifacts;
 
-    /**
-     * Plexus container.
-     */
-    private PlexusContainer container;
+	/**
+	 * Plexus container.
+	 */
+	private PlexusContainer container;
 
-    /**
-     * Contextualize.
-     * 
-     * @param context
-     *            context
-     * @throws ContextException
-     *             ContextException
-     */
-    public final void contextualize(final Context context)
-	    throws ContextException {
-	container = (PlexusContainer) context.get(PlexusConstants.PLEXUS_KEY);
-    }
-
-    /**
-     * Execute.
-     * 
-     * @throws MojoExecutionException
-     *             MojoExecutionException
-     * @throws MojoFailureException
-     *             MojoFailureException
-     */
-    public final void execute() throws MojoExecutionException,
-	    MojoFailureException {
-	try {
-	    ExecutionListCreator execListCreator = new ExecutionListCreator(
-		    getLog(), artifactMetadataSource, artifactFactory,
-		    mavenProjectBuilder, localRepository, remoteRepositories,
-		    artifactResolver, throwExceptionOnConflictStr,
-		    startArtifacts);
-
-	    boolean defaultTransitive = true;
-	    if ("false".equals(transitive)) {
-		defaultTransitive = false;
-	    }
-	    List mvnUrls = execListCreator.createArtifactExecutionList(
-		    provision, defaultTransitive, false);
-
-	    Element[] mvnUrlElems = new Element[mvnUrls.size()];
-	    int i = 0;
-	    for (Object mvnUrlObj : mvnUrls) {
-		String mvnUrl = (String) mvnUrlObj;
-		mvnUrlElems[i++] = new Element(name("provision"), mvnUrl);
-	    }
-	    try {
-		executeMojo(plugin("org.ops4j", "maven-pax-plugin", "1.4"),
-			goal("run"), configuration(element(name("args"), args),
-				element(name("provision"), mvnUrlElems)),
-			new MyMojoExecutorV15.ExecutionEnvironmentM2(project,
-				session, pluginManager));
-	    } catch (Exception e) {
-		Object buildPluginManager = container
-			.lookup("org.apache.maven.plugin.BuildPluginManager");
-		if (e.getCause() instanceof UnsupportedOperationException) {
-		    executeMojo(plugin("org.ops4j", "maven-pax-plugin", "1.4"),
-			    goal("run"), configuration(element(name("args"),
-				    args), element(name("provision"),
-				    mvnUrlElems)),
-			    new MyMojoExecutorV15.ExecutionEnvironmentM3(
-				    project, session, buildPluginManager));
-		}
-	    }
-	} catch (Exception e) {
-	    getLog().error(e);
-	    throw new RuntimeException(e);
+	/**
+	 * Contextualize.
+	 * 
+	 * @param context
+	 *            context
+	 * @throws ContextException
+	 *             ContextException
+	 */
+	public final void contextualize(final Context context) throws ContextException {
+		container = (PlexusContainer) context.get(PlexusConstants.PLEXUS_KEY);
 	}
-    }
+
+	/**
+	 * Execute.
+	 * 
+	 * @throws MojoExecutionException
+	 *             MojoExecutionException
+	 * @throws MojoFailureException
+	 *             MojoFailureException
+	 */
+	public final void execute() throws MojoExecutionException, MojoFailureException {
+		try {
+			ExecutionListCreator execListCreator = new ExecutionListCreator(getLog(), artifactMetadataSource,
+					artifactFactory, mavenProjectBuilder, localRepository, remoteRepositories, artifactResolver,
+					throwExceptionOnConflictStr, startArtifacts);
+
+			boolean defaultTransitive = true;
+			if ("false".equals(transitive)) {
+				defaultTransitive = false;
+			}
+			List mvnUrls = execListCreator.createArtifactExecutionList(provision, defaultTransitive, false);
+
+			Element[] mvnUrlElems = new Element[mvnUrls.size()];
+			int i = 0;
+			for (Object mvnUrlObj : mvnUrls) {
+				String mvnUrl = (String) mvnUrlObj;
+				mvnUrlElems[i++] = new Element(name("provision"), mvnUrl);
+			}
+			try {
+				executeMojo(plugin("org.ops4j", "maven-pax-plugin", "1.4"), goal("run"),
+						configuration(element(name("args"), args), element(name("provision"), mvnUrlElems)),
+						new MyMojoExecutorV15.ExecutionEnvironmentM2(project, session, pluginManager));
+			} catch (Exception e) {
+				Object buildPluginManager = container.lookup("org.apache.maven.plugin.BuildPluginManager");
+				if (e.getCause() instanceof UnsupportedOperationException) {
+					executeMojo(plugin("org.ops4j", "maven-pax-plugin", "1.4"), goal("run"),
+							configuration(element(name("args"), args), element(name("provision"), mvnUrlElems)),
+							new MyMojoExecutorV15.ExecutionEnvironmentM3(project, session, buildPluginManager));
+				}
+			}
+		} catch (Exception e) {
+			getLog().error(e);
+			throw new RuntimeException(e);
+		}
+	}
 
 }

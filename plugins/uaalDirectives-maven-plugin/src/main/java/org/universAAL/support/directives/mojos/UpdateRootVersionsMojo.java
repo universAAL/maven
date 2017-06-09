@@ -39,19 +39,19 @@ import org.universAAL.support.directives.procedures.UpdateRootVersionsProcedure;
  */
 public class UpdateRootVersionsMojo extends AbstractProcedureMojo {
 
-    /**
-     * The new version to set all the version references.
-     * 
-     * @parameter expression="${newVersion}"
-     */
-    private String newVersion;
+	/**
+	 * The new version to set all the version references.
+	 * 
+	 * @parameter expression="${newVersion}"
+	 */
+	private String newVersion;
 
-    /** {@inheritDoc} */
-    @Override
-    public APIProcedure getProcedure() {
-	if (newVersion == null || newVersion.isEmpty()) {
-	    return new UpdateParentPomInteractiveProcedure();
+	/** {@inheritDoc} */
+	@Override
+	public APIProcedure getProcedure() {
+		if (newVersion == null || newVersion.isEmpty()) {
+			return new UpdateParentPomInteractiveProcedure();
+		}
+		return new UpdateRootVersionsProcedure(newVersion);
 	}
-	return new UpdateRootVersionsProcedure(newVersion);
-    }
 }

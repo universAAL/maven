@@ -27,20 +27,20 @@ import junit.framework.TestCase;
  * @author amedrano
  *
  */
-public class MainCheckTest extends TestCase{
+public class MainCheckTest extends TestCase {
 
-    public void testCommentedMain(){
-	MainMethodCheck mmc = new MainMethodCheck();
-	assertTrue(mmc.passesTest(new File("./src/test/resources/CommentedMain.java")));
-    }
-    
-    public void testMain(){
-	MainMethodCheck mmc = new MainMethodCheck();
-	assertFalse(mmc.passesTest(new File("./src/test/resources/WithMain.java")));
-    }
-    
-    public void testMain2(){
-	MainMethodCheck mmc = new MainMethodCheck();
-	assertFalse(mmc.passesTest(new File("./src/test/resources/GUIPacketSniffer.java")));
-    }
+	public void testCommentedMain() {
+		MainMethodCheck mmc = new MainMethodCheck();
+		assertTrue(mmc.passesTest(new File("./src/test/resources/CommentedMain.java")));
+	}
+
+	public void testMain() {
+		MainMethodCheck mmc = new MainMethodCheck();
+		assertFalse(mmc.passesTest(new File("./src/test/resources/WithMain.java")));
+	}
+
+	public void testMain2() {
+		MainMethodCheck mmc = new MainMethodCheck();
+		assertFalse(mmc.passesTest(new File("./src/test/resources/GUIPacketSniffer.java")));
+	}
 }

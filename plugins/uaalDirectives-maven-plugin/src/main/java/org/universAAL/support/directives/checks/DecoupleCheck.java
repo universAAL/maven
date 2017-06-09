@@ -36,52 +36,49 @@ import org.universAAL.support.directives.util.SourceFileReader;
  *
  */
 public class DecoupleCheck implements APICheck, SourceChecker {
-	
+
 	static private String OSGI_MATCH = ".*osgi.*";
 
-	/** {@inheritDoc}  */
-	public boolean check(MavenProject mavenProject, Log log) 
-			throws MojoFailureException, MojoExecutionException {
-			SourceExplorer se = new SourceExplorer(this);
-			ArrayList<File> conflicted = se.walk(mavenProject.getBasedir()
-					+ "/src/main/java/");
-			if (conflicted.size() > 0) {
-				String m = "The following Files are not Container Decoupled:\n";
-				for (java.util.Iterator<File> iterator = conflicted.iterator(); iterator
-						.hasNext();) {
-					m += "\t" + iterator.next().getAbsolutePath() + "\n";
-				}
-				m += "To solve this problem, make sure there are no OSGi imports in your classes,"
-						+ " unless the package that contains them has explicitly \"osgi\" in it's name.";
-				throw new MojoFailureException(m);
+	/** {@inheritDoc} */
+	public boolean check(MavenProject mavenProject, Log log) throws MojoFailureException, MojoExecutionException {
+		SourceExplorer se = new SourceExplorer(this);
+		ArrayList<File> conflicted = se.walk(mavenProject.getBasedir() + "/src/main/java/");
+		if (conflicted.size() > 0) {
+			String m = "The following Files are not Container Decoupled:\n";
+			for (java.util.Iterator<File> iterator = conflicted.iterator(); iterator.hasNext();) {
+				m += "\t" + iterator.next().getAbsolutePath() + "\n";
 			}
+			m += "To solve this problem, make sure there are no OSGi imports in your classes,"
+					+ " unless the package that contains them has explicitly \"osgi\" in it's name.";
+			throw new MojoFailureException(m);
+		}
+		return true;
+	}
+
+	public boolean passesTest(File f) {
+		String pack = SourceFileReader.readPackage(f);
+		if (!pack.matches(OSGI_MATCH)) {
+			/*
+			 * If package does not match OSGI_MATCH then check if any of the
+			 * imports matches OSGI_MATCH
+			 */
+			ArrayList<String> imports = SourceFileReader.readImports(f);
+			Iterator<String> I = imports.iterator();
+			if (I.hasNext()) {
+				String imp = I.next();
+				while (I.hasNext() && !imp.matches(OSGI_MATCH)) {
+					imp = I.next();
+				}
+				return !imp.matches(OSGI_MATCH);
+			} else {
+				// If file has no imports then it passes
+				return true;
+			}
+		} else {
+			// If the package name matches OSGI_MATCH then it passes
 			return true;
 		}
 
-		public boolean passesTest(File f) {
-			String pack = SourceFileReader.readPackage(f);
-			if (!pack.matches(OSGI_MATCH)) {
-				/*
-				 * If package does not match OSGI_MATCH then check if any of the
-				 * imports matches OSGI_MATCH
-				 */
-				ArrayList<String> imports = SourceFileReader.readImports(f);
-				Iterator<String> I = imports.iterator();
-				if (I.hasNext()) {
-					String imp = I.next();
-					while (I.hasNext() && !imp.matches(OSGI_MATCH)) {
-						imp = I.next();
-					}
-					return !imp.matches(OSGI_MATCH);
-				} else {
-					// If file has no imports then it passes
-					return true;
-				}
-			} else {
-				// If the package name matches OSGI_MATCH then it passes
-				return true;
-			}
-
-		}
+	}
 
 }

@@ -35,12 +35,11 @@ import org.universAAL.support.directives.util.PomWriter;
  *
  */
 public class ModulesCheckFix implements APIFixableCheck, PomFixer {
-	
+
 	/**
 	 * Message content when check fails
 	 */
-	private static final String MODULES_NOT_CONFIGURED_ROOT = 
-			"Modules List Directive Fail :\n"
+	private static final String MODULES_NOT_CONFIGURED_ROOT = "Modules List Directive Fail :\n"
 			+ "It seems the POM does not list all the modules it should. ";
 
 	private static final String SVN_FOLDER = ".svn";
@@ -49,11 +48,10 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 	 * List of Dependencies to be fixed
 	 */
 	private ArrayList<String> toBeFixed;
-	
+
 	/** {@inheritDoc} */
-	public boolean check(MavenProject mavenproject, Log log)
-			throws MojoExecutionException, MojoFailureException {
-		
+	public boolean check(MavenProject mavenproject, Log log) throws MojoExecutionException, MojoFailureException {
+
 		if (!passCheck(mavenproject, log)) {
 			String err = getErrorMessge(mavenproject);
 			throw new MojoFailureException(err);
@@ -65,15 +63,14 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 		if (mavenProject.getPackaging().equals("pom")) {
 			String err = MODULES_NOT_CONFIGURED_ROOT;
 			for (String mod : toBeFixed) {
-				err += "\n\t" + mod 
-						+ ", folder should be listed as a module?" ;
+				err += "\n\t" + mod + ", folder should be listed as a module?";
 			}
 			return err;
 		}
 		return "";
 	}
 
-	/** 
+	/**
 	 * {@inheritDoc}
 	 */
 	public void fix(MavenProject mavenProject2, Log log) throws MojoFailureException {
@@ -85,48 +82,51 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 	}
 
 	/**
-	 * check whether there are any versions defined or dependencyManagement points to correct versions
+	 * check whether there are any versions defined or dependencyManagement
+	 * points to correct versions
+	 * 
 	 * @param mavenProject2
-	 * @param log log element to output log.
+	 * @param log
+	 *            log element to output log.
 	 * @return
 	 */
 	private boolean passCheck(MavenProject mavenProject2, Log log) {
 		toBeFixed = new ArrayList<String>();
 		if (isAparentPOM(mavenProject2, log)) {
-		    if (isOfCommonType(mavenProject2, log)){
-			return passRootCheckCommonType(mavenProject2, log);
-		    }
-		    else {
-			return passRootCheckSiblingType(mavenProject2, log);
-		    }
-		}
-		else {
+			if (isOfCommonType(mavenProject2, log)) {
+				return passRootCheckCommonType(mavenProject2, log);
+			} else {
+				return passRootCheckSiblingType(mavenProject2, log);
+			}
+		} else {
 			return true;
 		}
 	}
-	
+
 	/**
 	 * Checks the project is a POM and a parent POM (ie it has no source).
+	 * 
 	 * @param mavenProject2
-	 * @param log log element to output log info.
+	 * @param log
+	 *            log element to output log info.
 	 * @return
 	 */
 	private boolean isAparentPOM(MavenProject mavenProject2, Log log) {
-	    boolean isAPOM = mavenProject2.getPackaging().equals("pom");
-	    boolean containsSRC = false;
-	    for (File f : mavenProject2.getBasedir().listFiles()) {
-		if (f.isDirectory()) {
-		    	containsSRC |= f.getName().contains("src");
-			log.debug(f.getName());
-			log.debug(Boolean.toString(containsSRC));
+		boolean isAPOM = mavenProject2.getPackaging().equals("pom");
+		boolean containsSRC = false;
+		for (File f : mavenProject2.getBasedir().listFiles()) {
+			if (f.isDirectory()) {
+				containsSRC |= f.getName().contains("src");
+				log.debug(f.getName());
+				log.debug(Boolean.toString(containsSRC));
+			}
 		}
-	}
-	    return isAPOM & !containsSRC;
+		return isAPOM & !containsSRC;
 	}
 
 	/**
-	 * Check whether the pom modules are in the following disposition:
-	 * <br>
+	 * Check whether the pom modules are in the following disposition: <br>
+	 * 
 	 * <pre>
 	 * 	parentFolder
 	 * 	L pom.xml
@@ -136,54 +136,56 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 	 * 	L ModuleN
 	 * 	  L pom.xml
 	 * </pre>
+	 * 
 	 * ie: all of the modules of the pom are children.
+	 * 
 	 * @param mavenProject2
 	 * @param log
 	 * @return
 	 */
 	private boolean isOfCommonType(MavenProject mp, Log log) {
-	    List<String> listed = (List<String>) mp.getModules();
-	    boolean common = true;
-	    for (String m : listed) {
-		File mDir = new File(mp.getBasedir(),m);
-		log.debug("checking \n -" + mp.getBasedir().getAbsolutePath() + "\n -"+ mDir.getAbsolutePath());
-		try {
-		    /*
-		     * for all of the modules:
-		     * 	the parent folder of the module is the same as the parent POMs folder
-		     */
-		    common &= mp.getBasedir().equals(mDir.getCanonicalFile().getParentFile());
-		} catch (IOException e) {
-		    log.error(e);
+		List<String> listed = (List<String>) mp.getModules();
+		boolean common = true;
+		for (String m : listed) {
+			File mDir = new File(mp.getBasedir(), m);
+			log.debug("checking \n -" + mp.getBasedir().getAbsolutePath() + "\n -" + mDir.getAbsolutePath());
+			try {
+				/*
+				 * for all of the modules: the parent folder of the module is
+				 * the same as the parent POMs folder
+				 */
+				common &= mp.getBasedir().equals(mDir.getCanonicalFile().getParentFile());
+			} catch (IOException e) {
+				log.error(e);
+			}
+			log.debug(Boolean.toString(common));
+
 		}
-		log.debug(Boolean.toString(common));
-
-	    }
-	    return listed.size() > 0 && common;
+		return listed.size() > 0 && common;
 	}
-	
-
 
 	private boolean passRootCheckCommonType(MavenProject mavenProject2, Log log) {
 		List<String> mods = (List<String>) mavenProject2.getModules();
 		List<File> listed = new ArrayList<File>();
 		for (String m : mods) {
-		    try {
-			listed.add(new File(mavenProject2.getBasedir(),m).getCanonicalFile());
-		    } catch (IOException e) {
-			log.error(e);
-		    }
+			try {
+				listed.add(new File(mavenProject2.getBasedir(), m).getCanonicalFile());
+			} catch (IOException e) {
+				log.error(e);
+			}
 		}
-		//gather the existent modules
+		// gather the existent modules
 		File dir = mavenProject2.getBasedir();
 		for (File f : dir.listFiles()) {
 			String rel = f.getName();
-			if (f.isDirectory()
-					&& directoryContains(f, "pom.xml")
-					&& !listed.contains(f)	// it is not already listed
+			if (f.isDirectory() && directoryContains(f, "pom.xml") && !listed.contains(f) // it
+																							// is
+																							// not
+																							// already
+																							// listed
 					&& !rel.contains(SVN_FOLDER)
-					// it is not the svn folder
-					) {
+			// it is not the svn folder
+			) {
 				toBeFixed.add(rel);
 				log.debug("Found not listed module : " + rel);
 			}
@@ -193,29 +195,31 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 
 	private boolean passRootCheckSiblingType(MavenProject mavenProject2, Log log) {
 		List<String> listed = (List<String>) mavenProject2.getModules();
-		
-		//gather the existent modules
+
+		// gather the existent modules
 		File dir = mavenProject2.getBasedir().getParentFile();
 		for (File f : dir.listFiles()) {
 			String rel = "../" + f.getName();
-			if (f.isDirectory()
-					&& directoryContains(f, "pom.xml")
-					&& !listed.contains(rel)	// it is not already listed
+			if (f.isDirectory() && directoryContains(f, "pom.xml") && !listed.contains(rel) // it
+																							// is
+																							// not
+																							// already
+																							// listed
 					&& !rel.endsWith(mavenProject2.getBasedir().getName())
 					// it is not the parent project
 					&& !rel.contains(SVN_FOLDER)
-					// it is not the svn folder
-					) {
+			// it is not the svn folder
+			) {
 				toBeFixed.add(rel);
 				log.debug("Found not listed module : " + rel);
 			}
 		}
 		return toBeFixed.isEmpty();
 	}
-	
+
 	private boolean directoryContains(File f, final String endsWith) {
 		return f.list(new FilenameFilter() {
-			
+
 			public boolean accept(File dir, String name) {
 				return name.endsWith(endsWith);
 			}
@@ -223,7 +227,7 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 	}
 
 	public void fix(Model model) {
-		for (String mod: toBeFixed) {
+		for (String mod : toBeFixed) {
 			model.addModule(mod);
 		}
 	}

@@ -46,21 +46,19 @@ import org.universAAL.support.directives.util.SourceExplorer;
  */
 public class CodificationCheck implements APICheck, SourceChecker {
 
-	CharsetEncoder UTF8Encoder =
-		      Charset.forName("UTF8").newEncoder()
-		      	.onMalformedInput(CodingErrorAction.REPORT)
-		      	.onUnmappableCharacter(CodingErrorAction.REPORT);
+	CharsetEncoder UTF8Encoder = Charset.forName("UTF8").newEncoder().onMalformedInput(CodingErrorAction.REPORT)
+			.onUnmappableCharacter(CodingErrorAction.REPORT);
 
-	Map<File, Integer>  lineMap = new HashMap<File, Integer>();
+	Map<File, Integer> lineMap = new HashMap<File, Integer>();
 
-	/** {@ inheritDoc}	 */
+	/** {@ inheritDoc} */
 	public boolean passesTest(File sourceFile) {
 		int lineNo = 1;
 		BufferedReader br;
 		try {
 			br = new BufferedReader(new FileReader(sourceFile));
 			String line = br.readLine();
-			while (line!= null){
+			while (line != null) {
 				UTF8Encoder.encode(CharBuffer.wrap(line));
 				line = br.readLine();
 				lineNo++;
@@ -78,12 +76,10 @@ public class CodificationCheck implements APICheck, SourceChecker {
 		return false;
 	}
 
-	/** {@ inheritDoc}	 */
-	public boolean check(MavenProject mavenProject, Log log)
-			throws MojoExecutionException, MojoFailureException {
+	/** {@ inheritDoc} */
+	public boolean check(MavenProject mavenProject, Log log) throws MojoExecutionException, MojoFailureException {
 		SourceExplorer se = new SourceExplorer(this);
-		ArrayList<File> conflicted = se.walk(mavenProject.getBasedir().getAbsolutePath()
-				+ "/src/main/java/");
+		ArrayList<File> conflicted = se.walk(mavenProject.getBasedir().getAbsolutePath() + "/src/main/java/");
 		if (conflicted.size() > 0) {
 			String m = "The following Files Contain a possibly charset coding error:\n";
 			for (File file : conflicted) {

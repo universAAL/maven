@@ -11,5 +11,5 @@ public class IncreaseTest extends TestCase {
 		assertEquals(IncreaseVersionProcedure.nextDevelopmentVersion("1.0.1-SNAPSHOT"), "1.0.2-SNAPSHOT");
 		assertEquals(IncreaseVersionProcedure.nextDevelopmentVersion("1.1.115-SNAPSHOT"), "1.1.116-SNAPSHOT");
 	}
-	
+
 }

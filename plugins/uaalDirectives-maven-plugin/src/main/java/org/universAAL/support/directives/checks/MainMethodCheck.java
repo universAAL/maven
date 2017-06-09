@@ -36,22 +36,18 @@ import org.universAAL.support.directives.util.SourceExplorer;
  *
  */
 public class MainMethodCheck implements SourceChecker, APICheck {
-	
+
 	public static String MAIN_REGEXP = "(public\\s+)?static\\s+(public\\s+)?void\\s+main\\s*\\(\\s*String(\\s*\\[\\])?\\s+\\w+(\\s*\\[\\])?\\s*\\)";
-	
+
 	private static Pattern MAIN_PATTERN = Pattern.compile(MAIN_REGEXP);
-	
-	
-	/** {@ inheritDoc}	 */
-	public boolean check(MavenProject mavenproject, Log log)
-			throws MojoExecutionException, MojoFailureException {
+
+	/** {@ inheritDoc} */
+	public boolean check(MavenProject mavenproject, Log log) throws MojoExecutionException, MojoFailureException {
 		SourceExplorer se = new SourceExplorer(this);
-		ArrayList<File> conflicted = se.walk(mavenproject.getBasedir()
-				+ "/src/main/java/");
+		ArrayList<File> conflicted = se.walk(mavenproject.getBasedir() + "/src/main/java/");
 		if (conflicted.size() > 0) {
 			String m = "The following Files contain a main method:\n";
-			for (java.util.Iterator<File> iterator = conflicted.iterator(); iterator
-					.hasNext();) {
+			for (java.util.Iterator<File> iterator = conflicted.iterator(); iterator.hasNext();) {
 				m += "\t" + iterator.next().getAbsolutePath() + "\n";
 			}
 			m += "There should not be any main method in a Library. Consider moving this code to a Junit Test.";
@@ -60,7 +56,7 @@ public class MainMethodCheck implements SourceChecker, APICheck {
 		return true;
 	}
 
-	/** {@ inheritDoc}	 */
+	/** {@ inheritDoc} */
 	public boolean passesTest(File sourceFile) {
 		try {
 			String code = FileUtils.readFileToString(sourceFile);
@@ -74,59 +70,59 @@ public class MainMethodCheck implements SourceChecker, APICheck {
 	}
 
 	public static class CommentRemoverStateMachine {
-	    
-	    int state = 0;
-	    
-	    int nextState(char c){
-		switch (state) {
-		case 0:
-		    if (c == '/')
-			return 1;
-		    else
+
+		int state = 0;
+
+		int nextState(char c) {
+			switch (state) {
+			case 0:
+				if (c == '/')
+					return 1;
+				else
+					return 0;
+			case 1:
+				if (c == '/')
+					return 2;
+				else if (c == '*')
+					return 3;
+				else
+					return 0;
+			case 2:
+				if (c == '\n')
+					return 0;
+				else
+					return 2;
+			case 3:
+				if (c == '*')
+					return 4;
+				else
+					return 3;
+			case 4:
+				if (c == '/')
+					return 5;
+				else if (c == '*')
+					return 4;
+				else
+					return 3;
+			case 5:
+				return 0;
+			default:
+				break;
+			}
 			return 0;
-		case 1:
-		    if (c=='/')
-			return 2;
-		    else if (c=='*')
-			return 3;
-		    else
-			return 0;
-		case 2:
-		    if (c =='\n')
-			return 0;
-		    else
-			return 2;
-		case 3:
-		    if (c == '*')
-			return 4;
-		    else 
-			return 3;
-		case 4:
-		    if (c=='/')
-			return 5;
-		    else if (c=='*')
-			return 4;
-		    else
-			return 3;
-		case 5:
-		    return 0;
-		default:
-		    break;
 		}
-		return 0;
-	    }
-	    
-	    String removeComments(String s){
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < s.length(); i++) {
-		    state = nextState(s.charAt(i));
-		    if (state == 0){
-			sb.append(s.charAt(i));
-		    }
+
+		String removeComments(String s) {
+			StringBuffer sb = new StringBuffer();
+			for (int i = 0; i < s.length(); i++) {
+				state = nextState(s.charAt(i));
+				if (state == 0) {
+					sb.append(s.charAt(i));
+				}
+			}
+			return sb.toString();
 		}
-		return sb.toString();
-	    }
-	    
+
 	}
-	
+
 }

@@ -22,8 +22,8 @@ import org.universAAL.support.directives.checks.DecoupleCheck;
 /**
  * This Mojo will test whether the uAAL projects are being properly decoupled
  * from OSGi. <BR>
- * For a project to be properly decoupled, any OSGi reference should be in a package
- * that explicitly contains "osgi" in its name.
+ * For a project to be properly decoupled, any OSGi reference should be in a
+ * package that explicitly contains "osgi" in its name.
  * 
  * @author amedrano
  * 

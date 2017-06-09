@@ -43,13 +43,12 @@ import org.universAAL.support.directives.util.SourceFileReader;
 public class ItestsCheckFix implements APIFixableCheck, SourceChecker, PomFixer {
 
 	static private String ITEST_MATCH = ".*org\\.universAAL\\.itests\\.IntegrationTest.*";
-	
-	//result of the check for implementations of IntegrationTests 
+
+	// result of the check for implementations of IntegrationTests
 	private boolean integrationTestsPresent = false;
 
 	/** {@inheritDoc} */
-	public boolean check(MavenProject mavenProject, Log log)
-			throws MojoFailureException, MojoExecutionException {
+	public boolean check(MavenProject mavenProject, Log log) throws MojoFailureException, MojoExecutionException {
 
 		/*
 		 * Check the Itest dependency
@@ -59,8 +58,7 @@ public class ItestsCheckFix implements APIFixableCheck, SourceChecker, PomFixer 
 		Iterator i = deps.iterator();
 		while (i.hasNext() && !containsItests) {
 			Dependency d = (Dependency) i.next();
-			containsItests |= d.getArtifactId().equals("itests")
-					&& d.getGroupId().equals("org.universAAL.support");
+			containsItests |= d.getArtifactId().equals("itests") && d.getGroupId().equals("org.universAAL.support");
 		}
 
 		// if there are no dependencies then return
@@ -72,7 +70,7 @@ public class ItestsCheckFix implements APIFixableCheck, SourceChecker, PomFixer 
 		if (itest.size() == 0) {
 			String m = "This project has a dependency to itests, but does not implement any IntegrationTest.\n"
 					+ "Remove the itests dependency from the POM.";
-			integrationTestsPresent  = false;
+			integrationTestsPresent = false;
 			throw new MojoFailureException(m);
 		}
 		integrationTestsPresent = true;
@@ -81,8 +79,8 @@ public class ItestsCheckFix implements APIFixableCheck, SourceChecker, PomFixer 
 
 	public boolean passesTest(File f) {
 		/*
-		 * Check if any of the imports matches ITEST_MATCH
-		 * file is added if return false.
+		 * Check if any of the imports matches ITEST_MATCH file is added if
+		 * return false.
 		 */
 		ArrayList<String> imports = SourceFileReader.readImports(f);
 		Iterator<String> I = imports.iterator();
@@ -104,8 +102,7 @@ public class ItestsCheckFix implements APIFixableCheck, SourceChecker, PomFixer 
 	}
 
 	/** {@inheritDoc} */
-	public void fix(MavenProject mavenProject, Log log)
-			throws MojoExecutionException, MojoFailureException {
+	public void fix(MavenProject mavenProject, Log log) throws MojoExecutionException, MojoFailureException {
 
 		try {
 			new PomWriter(this, mavenProject).fix();
@@ -125,9 +122,8 @@ public class ItestsCheckFix implements APIFixableCheck, SourceChecker, PomFixer 
 			Dependency itestDep = null;
 			Iterator i = deps.iterator();
 			while (i.hasNext() && itestDep == null) {
-				Dependency d = (Dependency)i.next();
-				if (d.getArtifactId().equals("itests")
-						&& d.getGroupId().equals("org.universAAL.support")) {
+				Dependency d = (Dependency) i.next();
+				if (d.getArtifactId().equals("itests") && d.getGroupId().equals("org.universAAL.support")) {
 					itestDep = d;
 				}
 			}

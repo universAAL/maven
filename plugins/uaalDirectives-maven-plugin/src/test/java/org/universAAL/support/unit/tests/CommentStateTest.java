@@ -27,159 +27,116 @@ import junit.framework.TestCase;
  */
 public class CommentStateTest extends TestCase {
 
-	private void feedString(LicenseHeaderCheckFix.CommentParserState cps, String s){
+	private void feedString(LicenseHeaderCheckFix.CommentParserState cps, String s) {
 		int i = 0;
-		while (i<s.length()
-				&& cps.next(s.charAt(i))) {	
+		while (i < s.length() && cps.next(s.charAt(i))) {
 			i++;
 		}
-		
+
 	}
-	
-	private void processComment(String s){
+
+	private void processComment(String s) {
 		String comment = Pattern.compile("(^//*|/$|\\n\\s*//|\\*)").matcher(s).replaceAll("");
-		comment = Pattern.compile("\\s\\s*").matcher(comment).replaceAll(" ")
-				.replace("\n", "");
-		//System.out.println("[" + comment + "]");
+		comment = Pattern.compile("\\s\\s*").matcher(comment).replaceAll(" ").replace("\n", "");
+		// System.out.println("[" + comment + "]");
 	}
-	
-	private static String STUFF = "\tpackage org.universAAL.support.unit.tests;\n\n"+
-			"import org.universAAL.support.directives.checks.LicenseHeaderCheckFix;\nn"+
-			"import junit.framework.TestCase;\t";
-	
-	public void test1(){
-		String s = 
-				"/**************************************\n"+
-			    " *          dsfdfsdfsd fsdf sfsd f     \n"+
-			    " *  asddasd dsakljierlplias zaluhg,mhzy\n"+
-			    " * ñâüöàèùìỳíéá lololololo             \n"+
-			    " */";
-		LicenseHeaderCheckFix.CommentParserState cps 
-		= new LicenseHeaderCheckFix.CommentParserState();
+
+	private static String STUFF = "\tpackage org.universAAL.support.unit.tests;\n\n"
+			+ "import org.universAAL.support.directives.checks.LicenseHeaderCheckFix;\nn"
+			+ "import junit.framework.TestCase;\t";
+
+	public void test1() {
+		String s = "/**************************************\n" + " *          dsfdfsdfsd fsdf sfsd f     \n"
+				+ " *  asddasd dsakljierlplias zaluhg,mhzy\n" + " * ñâüöàèùìỳíéá lololololo             \n"
+				+ " */";
+		LicenseHeaderCheckFix.CommentParserState cps = new LicenseHeaderCheckFix.CommentParserState();
 		feedString(cps, s);
 		assertEquals(s, cps.getString());
-		cps 
-		= new LicenseHeaderCheckFix.CommentParserState();
+		cps = new LicenseHeaderCheckFix.CommentParserState();
 		feedString(cps, s + STUFF);
 		assertEquals(s, cps.getString());
-		cps 
-		= new LicenseHeaderCheckFix.CommentParserState();
-		feedString(cps,STUFF + s );
+		cps = new LicenseHeaderCheckFix.CommentParserState();
+		feedString(cps, STUFF + s);
 		assertEquals(s, cps.getString());
-		cps 
-		= new LicenseHeaderCheckFix.CommentParserState();
-		feedString(cps,STUFF + s + STUFF);
+		cps = new LicenseHeaderCheckFix.CommentParserState();
+		feedString(cps, STUFF + s + STUFF);
 		assertEquals(s, cps.getString());
 		processComment(cps.getString());
 	}
-	
-	public void test2(){
-		String s = 
-				"/*                                     \n"+
-			    " *          dsfdfsdfsd fsdf sfsd f     \n"+
-			    " *  asddasd dsakljierlplias zaluhg,mhzy\n"+
-			    " * ñâüöàèùìỳíéá lololololo             \n"+
-			    " */";
-		LicenseHeaderCheckFix.CommentParserState cps 
-		= new LicenseHeaderCheckFix.CommentParserState();
+
+	public void test2() {
+		String s = "/*                                     \n" + " *          dsfdfsdfsd fsdf sfsd f     \n"
+				+ " *  asddasd dsakljierlplias zaluhg,mhzy\n" + " * ñâüöàèùìỳíéá lololololo             \n"
+				+ " */";
+		LicenseHeaderCheckFix.CommentParserState cps = new LicenseHeaderCheckFix.CommentParserState();
 		feedString(cps, s);
 		assertEquals(s, cps.getString());
-		cps 
-		= new LicenseHeaderCheckFix.CommentParserState();
+		cps = new LicenseHeaderCheckFix.CommentParserState();
 		feedString(cps, s + STUFF);
 		assertEquals(s, cps.getString());
-		cps 
-		= new LicenseHeaderCheckFix.CommentParserState();
-		feedString(cps,STUFF + s );
+		cps = new LicenseHeaderCheckFix.CommentParserState();
+		feedString(cps, STUFF + s);
 		assertEquals(s, cps.getString());
-		cps 
-		= new LicenseHeaderCheckFix.CommentParserState();
-		feedString(cps,STUFF + s + STUFF);
+		cps = new LicenseHeaderCheckFix.CommentParserState();
+		feedString(cps, STUFF + s + STUFF);
 		assertEquals(s, cps.getString());
 		processComment(cps.getString());
 	}
-	
-	public void test3(){
-		String s = 
-				"/*\n"+
-			    "           dsfdfsdfsd fsdf sfsd f     \n"+
-			    "   asddasd dsakljierlplias zaluhg,mhzy\n"+
-			    "  ñâüöàèùìỳíéá lololololo             \n"+
-			    " */";
-		LicenseHeaderCheckFix.CommentParserState cps 
-		= new LicenseHeaderCheckFix.CommentParserState();
+
+	public void test3() {
+		String s = "/*\n" + "           dsfdfsdfsd fsdf sfsd f     \n" + "   asddasd dsakljierlplias zaluhg,mhzy\n"
+				+ "  ñâüöàèùìỳíéá lololololo             \n" + " */";
+		LicenseHeaderCheckFix.CommentParserState cps = new LicenseHeaderCheckFix.CommentParserState();
 		feedString(cps, s);
 		assertEquals(s, cps.getString());
-		cps 
-		= new LicenseHeaderCheckFix.CommentParserState();
+		cps = new LicenseHeaderCheckFix.CommentParserState();
 		feedString(cps, s + STUFF);
 		assertEquals(s, cps.getString());
-		cps 
-		= new LicenseHeaderCheckFix.CommentParserState();
-		feedString(cps,STUFF + s );
+		cps = new LicenseHeaderCheckFix.CommentParserState();
+		feedString(cps, STUFF + s);
 		assertEquals(s, cps.getString());
-		cps 
-		= new LicenseHeaderCheckFix.CommentParserState();
-		feedString(cps,STUFF + s + STUFF);
+		cps = new LicenseHeaderCheckFix.CommentParserState();
+		feedString(cps, STUFF + s + STUFF);
 		assertEquals(s, cps.getString());
 		processComment(cps.getString());
 	}
-	
-	public void test4(){
-		String s = 
-			    "//          dsfdfsdfsd fsdf sfsd f     \n"+
-			    "\t//  asddasd dsakljierlplias zaluhg,mhzy\n"+
-			    " // ñâüöàèùìỳíéá lololololo             \n";
-		String s2 = 
-			    "//          dsfdfsdfsd fsdf sfsd f     \n"+
-			    "//  asddasd dsakljierlplias zaluhg,mhzy\n"+
-			    "// ñâüöàèùìỳíéá lololololo             \n";
-		LicenseHeaderCheckFix.CommentParserState cps 
-		= new LicenseHeaderCheckFix.CommentParserState();
+
+	public void test4() {
+		String s = "//          dsfdfsdfsd fsdf sfsd f     \n" + "\t//  asddasd dsakljierlplias zaluhg,mhzy\n"
+				+ " // ñâüöàèùìỳíéá lololololo             \n";
+		String s2 = "//          dsfdfsdfsd fsdf sfsd f     \n" + "//  asddasd dsakljierlplias zaluhg,mhzy\n"
+				+ "// ñâüöàèùìỳíéá lololololo             \n";
+		LicenseHeaderCheckFix.CommentParserState cps = new LicenseHeaderCheckFix.CommentParserState();
 		feedString(cps, s);
-		//assertEquals(s, cps.getString())
-		cps 
-		= new LicenseHeaderCheckFix.CommentParserState();
+		// assertEquals(s, cps.getString())
+		cps = new LicenseHeaderCheckFix.CommentParserState();
 		feedString(cps, s + STUFF);
 		assertEquals(s2, cps.getString());
-		cps 
-		= new LicenseHeaderCheckFix.CommentParserState();
-		feedString(cps,STUFF + s );
+		cps = new LicenseHeaderCheckFix.CommentParserState();
+		feedString(cps, STUFF + s);
 		assertEquals(s2, cps.getString());
-		cps 
-		= new LicenseHeaderCheckFix.CommentParserState();
-		feedString(cps,STUFF + s + STUFF);
+		cps = new LicenseHeaderCheckFix.CommentParserState();
+		feedString(cps, STUFF + s + STUFF);
 		assertEquals(s2, cps.getString());
 		processComment(cps.getString());
 	}
-	public void test5(){
-		String s = 
-			    "//          dsfdfsdfsd fsdf sfsd f     \n"+
-			    " //  asddasd dsakljierlplias zaluhg,mhzy\n"+
-			    "\n"+
-			    "\n"+
-			    " // ñâüöàèùìỳíéá lololololo             \n";
-		String s2 = 
-			    "//          dsfdfsdfsd fsdf sfsd f     \n"+
-			    "//  asddasd dsakljierlplias zaluhg,mhzy\n"+
-			    "\n"+
-			    "\n"+
-			    "// ñâüöàèùìỳíéá lololololo             \n";
-		LicenseHeaderCheckFix.CommentParserState cps 
-		= new LicenseHeaderCheckFix.CommentParserState();
+
+	public void test5() {
+		String s = "//          dsfdfsdfsd fsdf sfsd f     \n" + " //  asddasd dsakljierlplias zaluhg,mhzy\n" + "\n"
+				+ "\n" + " // ñâüöàèùìỳíéá lololololo             \n";
+		String s2 = "//          dsfdfsdfsd fsdf sfsd f     \n" + "//  asddasd dsakljierlplias zaluhg,mhzy\n" + "\n"
+				+ "\n" + "// ñâüöàèùìỳíéá lololololo             \n";
+		LicenseHeaderCheckFix.CommentParserState cps = new LicenseHeaderCheckFix.CommentParserState();
 		feedString(cps, s);
 		assertEquals(s2, cps.getString());
-		cps 
-		= new LicenseHeaderCheckFix.CommentParserState();
+		cps = new LicenseHeaderCheckFix.CommentParserState();
 		feedString(cps, s + STUFF);
 		assertEquals(s2, cps.getString());
-		cps 
-		= new LicenseHeaderCheckFix.CommentParserState();
-		feedString(cps,STUFF + s );
+		cps = new LicenseHeaderCheckFix.CommentParserState();
+		feedString(cps, STUFF + s);
 		assertEquals(s2, cps.getString());
-		cps 
-		= new LicenseHeaderCheckFix.CommentParserState();
-		feedString(cps,STUFF + s + STUFF);
+		cps = new LicenseHeaderCheckFix.CommentParserState();
+		feedString(cps, STUFF + s + STUFF);
 		assertEquals(s2, cps.getString());
 		processComment(cps.getString());
 	}

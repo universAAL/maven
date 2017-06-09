@@ -27,5 +27,5 @@ import org.apache.maven.project.MavenProject;
 public interface APICheck {
 
 	boolean check(MavenProject mavenproject, Log log) throws MojoExecutionException, MojoFailureException;
-	
+
 }

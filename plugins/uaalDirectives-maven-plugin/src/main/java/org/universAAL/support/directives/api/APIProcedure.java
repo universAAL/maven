@@ -27,5 +27,5 @@ import org.apache.maven.project.MavenProject;
 public interface APIProcedure {
 
 	void execute(MavenProject mavenProject, Log log) throws MojoExecutionException, MojoFailureException;
-	
+
 }

@@ -23,20 +23,19 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
 public abstract class AggregatedCheck implements APIFixableCheck {
-	
+
 	private List<APICheck> checks;
-	
-	public AggregatedCheck(){
+
+	public AggregatedCheck() {
 		checks = getCheckList();
 	}
-	
+
 	public abstract List<APICheck> getCheckList();
 
 	/** {@inheritDoc} */
-	public boolean check(MavenProject mavenproject, Log log)
-			throws MojoExecutionException, MojoFailureException {
+	public boolean check(MavenProject mavenproject, Log log) throws MojoExecutionException, MojoFailureException {
 		String fMessage = "";
-		String eMessage ="";
+		String eMessage = "";
 		for (APICheck c : checks) {
 			try {
 				c.check(mavenproject, log);
@@ -46,25 +45,24 @@ public abstract class AggregatedCheck implements APIFixableCheck {
 				eMessage += "\n" + ee.getMessage();
 			}
 		}
-		if (!eMessage.isEmpty()){
+		if (!eMessage.isEmpty()) {
 			throw new MojoExecutionException(eMessage);
 		}
-		if (!fMessage.isEmpty()){
+		if (!fMessage.isEmpty()) {
 			throw new MojoFailureException(fMessage);
 		}
 		return fMessage.isEmpty() && eMessage.isEmpty();
 	}
 
 	/** {@inheritDoc} */
-	public void fix(MavenProject mavenProject, Log log) 
-			throws MojoExecutionException, MojoFailureException {
+	public void fix(MavenProject mavenProject, Log log) throws MojoExecutionException, MojoFailureException {
 		String fMessage = "";
-		String eMessage ="";
+		String eMessage = "";
 		for (APICheck c : checks) {
 			if (c instanceof APIFixableCheck) {
 				try {
-					((APIFixableCheck)c).fix(mavenProject, log);
-				}  catch (MojoFailureException fe) {
+					((APIFixableCheck) c).fix(mavenProject, log);
+				} catch (MojoFailureException fe) {
 					fMessage += "\n" + fe.getMessage();
 				} catch (MojoExecutionException ee) {
 					eMessage += "\n" + ee.getMessage();
@@ -72,13 +70,13 @@ public abstract class AggregatedCheck implements APIFixableCheck {
 			}
 		}
 
-		if (!eMessage.isEmpty()){
+		if (!eMessage.isEmpty()) {
 			throw new MojoExecutionException(eMessage);
 		}
-		if (!fMessage.isEmpty()){
+		if (!fMessage.isEmpty()) {
 			throw new MojoFailureException(fMessage);
 		}
-		
+
 	}
-	
+
 }

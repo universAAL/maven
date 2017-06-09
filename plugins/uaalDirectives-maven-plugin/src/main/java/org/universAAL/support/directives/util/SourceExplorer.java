@@ -24,19 +24,17 @@ import org.apache.commons.io.DirectoryWalker;
 
 public class SourceExplorer extends DirectoryWalker {
 
-
 	private SourceChecker sc;
-	
+
 	public SourceExplorer(SourceChecker sourceTest) {
 		sc = sourceTest;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected boolean handleDirectory(File directory, int depth,
-			Collection results) throws IOException {
+	protected boolean handleDirectory(File directory, int depth, Collection results) throws IOException {
 		return !directory.getName().matches(".*\\.svn");
 	}
 
@@ -56,8 +54,7 @@ public class SourceExplorer extends DirectoryWalker {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	protected void handleFile(File file, int depth, Collection results)
-			throws IOException {
+	protected void handleFile(File file, int depth, Collection results) throws IOException {
 		// System.out.println("testing: " + file.getAbsolutePath());
 		if (file.getName().endsWith("java") && !sc.passesTest(file)) {
 			results.add(file);

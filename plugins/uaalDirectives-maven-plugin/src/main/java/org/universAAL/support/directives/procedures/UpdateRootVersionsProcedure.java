@@ -32,32 +32,33 @@ import org.universAAL.support.directives.util.PomFixer;
  * <li>the version of uaaldirectives-maven-plugin in reporting
  * </ol>
  * 
- * All versions are set to be the newVersion Parameter passed in the constructor.
+ * All versions are set to be the newVersion Parameter passed in the
+ * constructor.
  * 
  * @author amedrano
  * 
  */
-public class UpdateRootVersionsProcedure extends
-	UpdateParentPomInteractiveProcedure implements APIProcedure, PomFixer {
+public class UpdateRootVersionsProcedure extends UpdateParentPomInteractiveProcedure implements APIProcedure, PomFixer {
 
-    /**
-     * the version to change uAAL.pom and root imports to.
-     */
-    private String newVersion;
+	/**
+	 * the version to change uAAL.pom and root imports to.
+	 */
+	private String newVersion;
 
-    /**
-     * Constructor.
-     * @param newVersion the new Version to use for all artifacts affected.
-     */
-    public UpdateRootVersionsProcedure(String newVersion) {
-	super();
-	this.newVersion = newVersion;
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param newVersion
+	 *            the new Version to use for all artifacts affected.
+	 */
+	public UpdateRootVersionsProcedure(String newVersion) {
+		super();
+		this.newVersion = newVersion;
+	}
 
-    @Override
-    protected String ask4NewVersion(String groupID, String artifactID,
-	    String currentVersion) {
-	return newVersion;
-    }
+	@Override
+	protected String ask4NewVersion(String groupID, String artifactID, String currentVersion) {
+		return newVersion;
+	}
 
 }

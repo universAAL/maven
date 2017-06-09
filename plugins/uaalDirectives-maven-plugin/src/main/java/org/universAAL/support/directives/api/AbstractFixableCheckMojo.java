@@ -21,46 +21,46 @@ import org.apache.maven.plugin.MojoFailureException;
 
 /**
  * An abstract Mojo that executes checks and fixes ({@link APIFixableCheck}).
+ * 
  * @author amedrano
  *
  */
 public abstract class AbstractFixableCheckMojo extends AbstractCheckMojo {
 
 	/**
-	 * If set to true (adding the <code>-Ddirective.fix</code> 
-	 * option to maven run) then automatic fixes over the check will
-	 * be attempted.
+	 * If set to true (adding the <code>-Ddirective.fix</code> option to maven
+	 * run) then automatic fixes over the check will be attempted.
+	 * 
 	 * @parameter expression="${directive.fix}" default-value="false"
 	 */
 	private boolean fix;
 
-	
 	/** {@inheritDoc} */
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		AbstractMojoExecutionException failedE = null;
-		
+
 		try {
 			super.execute();
 		} catch (AbstractMojoExecutionException e) {
 			failedE = e;
 		}
-		
+
 		if (failed && fix) {
 			((APIFixableCheck) check).fix(getProject(), getLog());
 		}
 		if (failed && !fix) {
-				getLog().info("This plugin is able to automatically" +
-						" fix the problem. just add  \"-Ddirective.fix\" to your command.");
+			getLog().info("This plugin is able to automatically"
+					+ " fix the problem. just add  \"-Ddirective.fix\" to your command.");
 		}
-		
+
 		if (failedE instanceof MojoExecutionException) {
 			throw (MojoExecutionException) failedE;
 		} else if (failedE instanceof MojoFailureException) {
 			throw (MojoFailureException) failedE;
 		}
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public APICheck getCheck() {
@@ -68,6 +68,5 @@ public abstract class AbstractFixableCheckMojo extends AbstractCheckMojo {
 	}
 
 	public abstract APIFixableCheck getFix();
-	
-	
+
 }

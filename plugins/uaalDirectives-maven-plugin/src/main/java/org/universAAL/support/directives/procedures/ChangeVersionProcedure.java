@@ -26,11 +26,12 @@ import org.universAAL.support.directives.util.PomWriter;
 
 /**
  * Change the version of a POM file.
+ * 
  * @author amedrano
  *
  */
 public class ChangeVersionProcedure implements APIProcedure, PomFixer {
-	
+
 	private String newVersion;
 
 	/**
@@ -41,8 +42,7 @@ public class ChangeVersionProcedure implements APIProcedure, PomFixer {
 	}
 
 	/** {@inheritDoc} */
-	public void execute(MavenProject mavenProject, Log log)
-			throws MojoExecutionException, MojoFailureException {
+	public void execute(MavenProject mavenProject, Log log) throws MojoExecutionException, MojoFailureException {
 		try {
 			log.info("Changing version from: " + mavenProject.getVersion() + " to: " + newVersion);
 			new PomWriter(this, mavenProject).fix();
@@ -52,7 +52,7 @@ public class ChangeVersionProcedure implements APIProcedure, PomFixer {
 	}
 
 	public void fix(Model model) {
-		model.setVersion(newVersion);		
+		model.setVersion(newVersion);
 	}
 
 }

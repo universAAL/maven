@@ -21,8 +21,9 @@ import org.universAAL.support.directives.checks.MainMethodCheck;
 
 /**
  * This Mojo will test whether the uAAL projects have any main methods.<BR>
- * Libraries like universAAL should not have main methods, unless is absolutely necessary,
- * else these methods may confuse developers and provoke unexpected results.
+ * Libraries like universAAL should not have main methods, unless is absolutely
+ * necessary, else these methods may confuse developers and provoke unexpected
+ * results.
  * 
  * @author amedrano
  * 

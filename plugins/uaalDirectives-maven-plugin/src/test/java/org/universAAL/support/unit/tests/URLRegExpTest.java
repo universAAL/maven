@@ -25,26 +25,18 @@ import junit.framework.TestCase;
  *
  */
 public class URLRegExpTest extends TestCase {
-    /**
+	/**
 	 * 
 	 */
 	private static final String APACHE_URL = "http://www.apache.org/licenses/LICENSE-2.0";
-	Pattern urlPattern = 
-    		Pattern.compile("([A-Za-z]+):\\/\\/"
-    					  + "(\\w+(:\\w+)?@)?"
-    					  + "[\\w\\.]+"
-    					  + "(:\\d+)?"
-    					  + "("
-    					  + "\\/"
-//    					  + "(\\w*\\/)*"
-    					  + "([^\\s]+)?"
-    					  + "(\\?[\\w=&.]*)?"
-    					  + "(#\\w+)?"
-    					  + ")?");
-	
+	Pattern urlPattern = Pattern
+			.compile("([A-Za-z]+):\\/\\/" + "(\\w+(:\\w+)?@)?" + "[\\w\\.]+" + "(:\\d+)?" + "(" + "\\/"
+	// + "(\\w*\\/)*"
+					+ "([^\\s]+)?" + "(\\?[\\w=&.]*)?" + "(#\\w+)?" + ")?");
+
 	public void test1() {
 		String validURL = APACHE_URL;
-		assertTrue(urlPattern.matcher(validURL).find());		
+		assertTrue(urlPattern.matcher(validURL).find());
 	}
 
 	public void test2() {
@@ -53,7 +45,7 @@ public class URLRegExpTest extends TestCase {
 		Matcher m = urlPattern.matcher(validURL);
 		assertTrue(m.find());
 		assertEquals(APACHE_URL, m.group());
-		assertEquals(' ', validURL.charAt(m.start()-1));
+		assertEquals(' ', validURL.charAt(m.start() - 1));
 		assertEquals(' ', validURL.charAt(m.end()));
 		assertEquals(END, validURL.subSequence(m.end(), validURL.length()));
 	}

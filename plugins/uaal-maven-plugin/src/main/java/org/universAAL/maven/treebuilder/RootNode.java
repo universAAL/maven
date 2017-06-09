@@ -35,11 +35,11 @@ import org.apache.maven.shared.dependency.tree.DependencyNode;
  * 
  */
 public class RootNode {
-    public RootNode(final DependencyNode rootNode) {
-	this.rootNode = rootNode;
-    }
+	public RootNode(final DependencyNode rootNode) {
+		this.rootNode = rootNode;
+	}
 
-    public DependencyNode rootNode;
-    public List remoteRepositories;
-    public List<ResolutionNode> excludedCoreArtifacts = new ArrayList<ResolutionNode>();
+	public DependencyNode rootNode;
+	public List remoteRepositories;
+	public List<ResolutionNode> excludedCoreArtifacts = new ArrayList<ResolutionNode>();
 }

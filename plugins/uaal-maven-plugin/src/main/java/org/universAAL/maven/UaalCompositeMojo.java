@@ -52,261 +52,241 @@ import org.universAAL.maven.treebuilder.ExecutionListCreator;
  */
 public class UaalCompositeMojo extends AbstractMojo {
 
-    /**
-     * @component
-     * @required
-     * @readonly
-     */
-    private ArtifactFactory artifactFactory;
+	/**
+	 * @component
+	 * @required
+	 * @readonly
+	 */
+	private ArtifactFactory artifactFactory;
 
-    /**
-     * @component
-     * @required
-     * @readonly
-     */
-    private ArtifactResolver artifactResolver;
+	/**
+	 * @component
+	 * @required
+	 * @readonly
+	 */
+	private ArtifactResolver artifactResolver;
 
-    /**
-     * @component
-     * @required
-     * @readonly
-     */
-    private ArtifactMetadataSource artifactMetadataSource;
+	/**
+	 * @component
+	 * @required
+	 * @readonly
+	 */
+	private ArtifactMetadataSource artifactMetadataSource;
 
-    /**
-     * @parameter default-value="${project}"
-     * @required
-     * @readonly
-     */
-    private MavenProject project;
+	/**
+	 * @parameter default-value="${project}"
+	 * @required
+	 * @readonly
+	 */
+	private MavenProject project;
 
-    /**
-     * @parameter default-value="${ignore.dep.conflict}"
-     * @readonly
-     */
-    private String throwExceptionOnConflictStr;
+	/**
+	 * @parameter default-value="${ignore.dep.conflict}"
+	 * @readonly
+	 */
+	private String throwExceptionOnConflictStr;
 
-    /**
-     * @component
-     * @required
-     * @readonly
-     */
-    private MavenProjectBuilder mavenProjectBuilder;
+	/**
+	 * @component
+	 * @required
+	 * @readonly
+	 */
+	private MavenProjectBuilder mavenProjectBuilder;
 
-    /**
-     * List of Remote Repositories used by the resolver.
-     * 
-     * @parameter expression="${project.remoteArtifactRepositories}"
-     * @readonly
-     * @required
-     */
-    private List remoteRepositories;
+	/**
+	 * List of Remote Repositories used by the resolver.
+	 * 
+	 * @parameter expression="${project.remoteArtifactRepositories}"
+	 * @readonly
+	 * @required
+	 */
+	private List remoteRepositories;
 
-    /**
-     * Location of the local repository.
-     * 
-     * @parameter expression="${localRepository}"
-     * @readonly
-     * @required
-     */
-    private ArtifactRepository localRepository;
+	/**
+	 * Location of the local repository.
+	 * 
+	 * @parameter expression="${localRepository}"
+	 * @readonly
+	 * @required
+	 */
+	private ArtifactRepository localRepository;
 
-    /**
-     * @parameter default-value="${basedir}"
-     * @readonly
-     * @required
-     */
-    private File baseDirectory;
+	/**
+	 * @parameter default-value="${basedir}"
+	 * @readonly
+	 * @required
+	 */
+	private File baseDirectory;
 
-    /**
-     * Set this to "true" to use mw composite for the composite of all bundles
-     * above the mw. If this parameter is false, then all bundles are resolved.
-     * 
-     * @since 3.5.0
-     * @parameter expression="${useMwComposite}" default-value="true"
-     */    
-    private boolean useMwComposite;
+	/**
+	 * Set this to "true" to use mw composite for the composite of all bundles
+	 * above the mw. If this parameter is false, then all bundles are resolved.
+	 * 
+	 * @since 3.5.0
+	 * @parameter expression="${useMwComposite}" default-value="true"
+	 */
+	private boolean useMwComposite;
 
-    /**
-     * Directives configured via <configuration> in pom file, setting the
-     * startlevel and/or nostart parameters to specified artifacts
-     * 
-     * @parameter
-     */
-    private StartSpec[] startArtifacts;
+	/**
+	 * Directives configured via <configuration> in pom file, setting the
+	 * startlevel and/or nostart parameters to specified artifacts
+	 * 
+	 * @parameter
+	 */
+	private StartSpec[] startArtifacts;
 
-    /**
-     * Default path to main composite.
-     */
-    private static final String MAIN_COMPOSITE = "target/artifact.composite";
+	/**
+	 * Default path to main composite.
+	 */
+	private static final String MAIN_COMPOSITE = "target/artifact.composite";
 
-    /**
-     * Default path to deps composite.
-     */
-    private static final String MAIN_DEPS = "target/artifact.deps";
+	/**
+	 * Default path to deps composite.
+	 */
+	private static final String MAIN_DEPS = "target/artifact.deps";
 
-    /**
-     * Default path to the properties file to which the mapping between artifact
-     * id and artifact version will be written.
-     */
-    private static final String MAIN_VERSION = "target/artifacts.versions";
-    
-    public static final String MW_GROUP_ID = "org.universAAL.middleware";
-    
-    /**
-     * Creates output writer for given file name.
-     * 
-     * @param fileName
-     *            for which writer will be created
-     * @return output writer.
-     * @throws FileNotFoundException
-     *             when file does not exist
-     */
-    private BufferedWriter createOutputWriter(final String fileName)
-	    throws FileNotFoundException {
-	File targetDir = new File(baseDirectory, "target");
-	targetDir.mkdirs();
-	File generatedCompositeFile = new File(baseDirectory, fileName);
-	return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-		generatedCompositeFile, false)));
-    }
+	/**
+	 * Default path to the properties file to which the mapping between artifact
+	 * id and artifact version will be written.
+	 */
+	private static final String MAIN_VERSION = "target/artifacts.versions";
 
-    /**
-     * Writes given list of mvn urls to given file.
-     * 
-     * @param mvnUrls
-     *            mvn urls
-     * @param fileName
-     *            file name
-     * @throws IOException
-     *             IOException
-     */
-    private void writeListToFile(final List mvnUrls, final String fileName)
-	    throws IOException {
-	BufferedWriter compositeWriter = createOutputWriter(fileName);
-	boolean hasWrittenSth = false;
-	for (Object mvnUrl : mvnUrls) {
-	    hasWrittenSth = true;
-	    String mvnUrlStr = (String) mvnUrl;
-	    if (mvnUrlStr.endsWith("/composite")) {
-		compositeWriter.write("scan-composite:" + mvnUrlStr + System.getProperty("line.separator"));
-	    } else {
-		compositeWriter.write("scan-bundle:" + mvnUrlStr + System.getProperty("line.separator"));
-	    }
+	public static final String MW_GROUP_ID = "org.universAAL.middleware";
+
+	/**
+	 * Creates output writer for given file name.
+	 * 
+	 * @param fileName
+	 *            for which writer will be created
+	 * @return output writer.
+	 * @throws FileNotFoundException
+	 *             when file does not exist
+	 */
+	private BufferedWriter createOutputWriter(final String fileName) throws FileNotFoundException {
+		File targetDir = new File(baseDirectory, "target");
+		targetDir.mkdirs();
+		File generatedCompositeFile = new File(baseDirectory, fileName);
+		return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(generatedCompositeFile, false)));
 	}
-	if (!hasWrittenSth) {
-	    compositeWriter
-		    .write("This is an empty dummy line in order to make"
-			    + "this file possible to deploy."
-			    + "Don't use this file at any time.");
-	}
-	compositeWriter.close();
-    }
 
-    private void writeArtifactsVersions(final List mvnUrls,
-	    final String fileName) throws IOException {
-	BufferedWriter compositeWriter = createOutputWriter(fileName);
-	for (Object mvnUrl : mvnUrls) {
-	    String mvnUrlStr = (String) mvnUrl;
-	    String [] mvnUrlElems = mvnUrlStr.split("/");
-	    if (mvnUrlElems.length < 3) {
-		throw new RuntimeException("Bad mvnUrl: " + mvnUrlStr);
-	    }
-	    compositeWriter.write(mvnUrlElems[1]);
-	    compositeWriter.write(".version");
-	    compositeWriter.write("=");
-	    compositeWriter.write(mvnUrlElems[2]);
-	    compositeWriter.write(System.getProperty("line.separator"));
-	}
-	compositeWriter.close();
-    }
-
-    /**
-     * Execute.
-     * 
-     * @throws MojoExecutionException
-     *             MojoExecutionException
-     * @throws MojoFailureException
-     *             MojoFailureException
-     */
-    public final void execute() throws MojoExecutionException,
-	    MojoFailureException {
-	try {
-	    File manualArtifactComposite = new File(baseDirectory,
-		    "artifact.composite");
-	    String msg = System.getProperty("line.separator")
-		    + System.getProperty("line.separator")
-		    + "Since artifact.composite exists in"
-		    + "the base directory composite generation is abandoned."
-		    + System.getProperty("line.separator")
-		    + "Instead artifact.composite from basedir"
-		    + " is simply copied to " + MAIN_COMPOSITE
-		    + System.getProperty("line.separator")
-		    + System.getProperty("line.separator");
-	    if (manualArtifactComposite.exists()) {
-		getLog().info(msg);
-		BufferedReader compositeReader = new BufferedReader(
-			new InputStreamReader(new FileInputStream(
-				manualArtifactComposite)));
-		BufferedWriter compositeWriter = createOutputWriter(MAIN_COMPOSITE);
-		String line = null;
-		while ((line = compositeReader.readLine()) != null) {
-		    compositeWriter.write(line
-			    + System.getProperty("line.separator"));
+	/**
+	 * Writes given list of mvn urls to given file.
+	 * 
+	 * @param mvnUrls
+	 *            mvn urls
+	 * @param fileName
+	 *            file name
+	 * @throws IOException
+	 *             IOException
+	 */
+	private void writeListToFile(final List mvnUrls, final String fileName) throws IOException {
+		BufferedWriter compositeWriter = createOutputWriter(fileName);
+		boolean hasWrittenSth = false;
+		for (Object mvnUrl : mvnUrls) {
+			hasWrittenSth = true;
+			String mvnUrlStr = (String) mvnUrl;
+			if (mvnUrlStr.endsWith("/composite")) {
+				compositeWriter.write("scan-composite:" + mvnUrlStr + System.getProperty("line.separator"));
+			} else {
+				compositeWriter.write("scan-bundle:" + mvnUrlStr + System.getProperty("line.separator"));
+			}
+		}
+		if (!hasWrittenSth) {
+			compositeWriter.write("This is an empty dummy line in order to make" + "this file possible to deploy."
+					+ "Don't use this file at any time.");
 		}
 		compositeWriter.close();
-		compositeReader.close();
-	    } else {
-		String msg2 = System.getProperty("line.separator")
-			+ System.getProperty("line.separator")
-			+ "Creating MAIN composite file - output generated in "
-			+ MAIN_COMPOSITE + " and " + MAIN_DEPS
-			+ System.getProperty("line.separator")
-			+ System.getProperty("line.separator");
-		getLog().info(msg2);
-		ExecutionListCreator execListCreator = new ExecutionListCreator(
-			getLog(), artifactMetadataSource, artifactFactory,
-			mavenProjectBuilder, localRepository,
-			remoteRepositories, artifactResolver,
-			throwExceptionOnConflictStr, startArtifacts);
-		boolean mwcomp = useMwComposite;
-		//System.out.println(" --  useMwComposite: " + mwcomp);
-		if (MW_GROUP_ID.equals(project.getGroupId()))
-		    mwcomp = false;
-		//System.out.println(" --  useMwComposite: " + mwcomp);
-		List<String> mvnUrls = execListCreator
-			.createArtifactExecutionList(project,
-				new HashSet<String>(), false, mwcomp);
-		writeListToFile(mvnUrls, MAIN_COMPOSITE);
-		writeArtifactsVersions(mvnUrls, MAIN_VERSION);
-		
-		List<String> mvnUrlsOnlyDeps = new ArrayList<String>(mvnUrls);
-		if (!mvnUrlsOnlyDeps.isEmpty()) {
-		    mvnUrlsOnlyDeps.remove(mvnUrlsOnlyDeps.size() - 1);
-		}
-		writeListToFile(mvnUrlsOnlyDeps, MAIN_DEPS);
-
-		getLog().debug("");
-		getLog().debug(MAIN_COMPOSITE + ":");
-		getLog().debug("");
-		int x = 1;
-		for (String mvnUrl : mvnUrls) {
-		    getLog().debug(String.format("%2d. %s", x++, mvnUrl));
-		}
-
-		getLog().debug("");
-		getLog().debug("");
-		getLog().debug(MAIN_DEPS + ":");
-		getLog().debug("");
-		x = 1;
-		for (String mvnUrl : mvnUrlsOnlyDeps) {
-		    getLog().debug(String.format("%2d. %s", x++, mvnUrl));
-		}
-
-	    }
-	} catch (Exception e) {
-	    getLog().error(e);
-	    throw new RuntimeException(e);
 	}
-    }
+
+	private void writeArtifactsVersions(final List mvnUrls, final String fileName) throws IOException {
+		BufferedWriter compositeWriter = createOutputWriter(fileName);
+		for (Object mvnUrl : mvnUrls) {
+			String mvnUrlStr = (String) mvnUrl;
+			String[] mvnUrlElems = mvnUrlStr.split("/");
+			if (mvnUrlElems.length < 3) {
+				throw new RuntimeException("Bad mvnUrl: " + mvnUrlStr);
+			}
+			compositeWriter.write(mvnUrlElems[1]);
+			compositeWriter.write(".version");
+			compositeWriter.write("=");
+			compositeWriter.write(mvnUrlElems[2]);
+			compositeWriter.write(System.getProperty("line.separator"));
+		}
+		compositeWriter.close();
+	}
+
+	/**
+	 * Execute.
+	 * 
+	 * @throws MojoExecutionException
+	 *             MojoExecutionException
+	 * @throws MojoFailureException
+	 *             MojoFailureException
+	 */
+	public final void execute() throws MojoExecutionException, MojoFailureException {
+		try {
+			File manualArtifactComposite = new File(baseDirectory, "artifact.composite");
+			String msg = System.getProperty("line.separator") + System.getProperty("line.separator")
+					+ "Since artifact.composite exists in" + "the base directory composite generation is abandoned."
+					+ System.getProperty("line.separator") + "Instead artifact.composite from basedir"
+					+ " is simply copied to " + MAIN_COMPOSITE + System.getProperty("line.separator")
+					+ System.getProperty("line.separator");
+			if (manualArtifactComposite.exists()) {
+				getLog().info(msg);
+				BufferedReader compositeReader = new BufferedReader(
+						new InputStreamReader(new FileInputStream(manualArtifactComposite)));
+				BufferedWriter compositeWriter = createOutputWriter(MAIN_COMPOSITE);
+				String line = null;
+				while ((line = compositeReader.readLine()) != null) {
+					compositeWriter.write(line + System.getProperty("line.separator"));
+				}
+				compositeWriter.close();
+				compositeReader.close();
+			} else {
+				String msg2 = System.getProperty("line.separator") + System.getProperty("line.separator")
+						+ "Creating MAIN composite file - output generated in " + MAIN_COMPOSITE + " and " + MAIN_DEPS
+						+ System.getProperty("line.separator") + System.getProperty("line.separator");
+				getLog().info(msg2);
+				ExecutionListCreator execListCreator = new ExecutionListCreator(getLog(), artifactMetadataSource,
+						artifactFactory, mavenProjectBuilder, localRepository, remoteRepositories, artifactResolver,
+						throwExceptionOnConflictStr, startArtifacts);
+				boolean mwcomp = useMwComposite;
+				// System.out.println(" -- useMwComposite: " + mwcomp);
+				if (MW_GROUP_ID.equals(project.getGroupId()))
+					mwcomp = false;
+				// System.out.println(" -- useMwComposite: " + mwcomp);
+				List<String> mvnUrls = execListCreator.createArtifactExecutionList(project, new HashSet<String>(),
+						false, mwcomp);
+				writeListToFile(mvnUrls, MAIN_COMPOSITE);
+				writeArtifactsVersions(mvnUrls, MAIN_VERSION);
+
+				List<String> mvnUrlsOnlyDeps = new ArrayList<String>(mvnUrls);
+				if (!mvnUrlsOnlyDeps.isEmpty()) {
+					mvnUrlsOnlyDeps.remove(mvnUrlsOnlyDeps.size() - 1);
+				}
+				writeListToFile(mvnUrlsOnlyDeps, MAIN_DEPS);
+
+				getLog().debug("");
+				getLog().debug(MAIN_COMPOSITE + ":");
+				getLog().debug("");
+				int x = 1;
+				for (String mvnUrl : mvnUrls) {
+					getLog().debug(String.format("%2d. %s", x++, mvnUrl));
+				}
+
+				getLog().debug("");
+				getLog().debug("");
+				getLog().debug(MAIN_DEPS + ":");
+				getLog().debug("");
+				x = 1;
+				for (String mvnUrl : mvnUrlsOnlyDeps) {
+					getLog().debug(String.format("%2d. %s", x++, mvnUrl));
+				}
+
+			}
+		} catch (Exception e) {
+			getLog().error(e);
+			throw new RuntimeException(e);
+		}
+	}
 }

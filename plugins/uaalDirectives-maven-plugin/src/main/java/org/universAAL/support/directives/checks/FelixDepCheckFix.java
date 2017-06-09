@@ -34,49 +34,45 @@ import org.universAAL.support.directives.util.PomWriter;
  * @author amedrano
  *
  */
-public class FelixDepCheckFix implements APIFixableCheck,PomFixer{
+public class FelixDepCheckFix implements APIFixableCheck, PomFixer {
 
-    /** {@ inheritDoc}	 */
-    public boolean check(MavenProject mavenproject, Log log)
-	    throws MojoExecutionException, MojoFailureException {
-	
-	List<Dependency> deps = mavenproject.getDependencies();
-	for (Dependency d : deps) {
-	    if (d.getGroupId().contains("felix")){
-		log.info("felix dependency found");
-		return false;
-	    }
+	/** {@ inheritDoc} */
+	public boolean check(MavenProject mavenproject, Log log) throws MojoExecutionException, MojoFailureException {
+
+		List<Dependency> deps = mavenproject.getDependencies();
+		for (Dependency d : deps) {
+			if (d.getGroupId().contains("felix")) {
+				log.info("felix dependency found");
+				return false;
+			}
+		}
+		return true;
 	}
-	return true;
-    }
 
-    /** {@ inheritDoc}	 */
-    public void fix(MavenProject mavenProject, Log log)
-	    throws MojoExecutionException, MojoFailureException {
+	/** {@ inheritDoc} */
+	public void fix(MavenProject mavenProject, Log log) throws MojoExecutionException, MojoFailureException {
 
-	try {
-		new PomWriter(this, mavenProject).fix();
-	} catch (Exception e) {
-		log.error("unable to Write POM.");
-		log.error(e);
+		try {
+			new PomWriter(this, mavenProject).fix();
+		} catch (Exception e) {
+			log.error("unable to Write POM.");
+			log.error(e);
+		}
+
 	}
-	
-	
-    }
 
-    /** {@ inheritDoc}	 */
-    public void fix(Model model) {
-	List<Dependency> deps = model.getDependencies();
-	List<Dependency> newDeps = new ArrayList<Dependency>();
-	for (Dependency d : deps) {
-	    if (d.getGroupId().equals("org.apache.felix")
-		    && (d.getArtifactId().equals("org.osgi.core") 
-			    || d.getArtifactId().equals("org.osgi.compendium"))){
-		d.setGroupId("org.osgi");
-	    }
-	    newDeps.add(d);
+	/** {@ inheritDoc} */
+	public void fix(Model model) {
+		List<Dependency> deps = model.getDependencies();
+		List<Dependency> newDeps = new ArrayList<Dependency>();
+		for (Dependency d : deps) {
+			if (d.getGroupId().equals("org.apache.felix")
+					&& (d.getArtifactId().equals("org.osgi.core") || d.getArtifactId().equals("org.osgi.compendium"))) {
+				d.setGroupId("org.osgi");
+			}
+			newDeps.add(d);
+		}
+		model.setDependencies(newDeps);
 	}
-	model.setDependencies(newDeps);
-    }
 
 }
