@@ -1,7 +1,7 @@
 /*
 Copyright 2011-2014 AGH-UST, http://www.agh.edu.pl
 Faculty of Computer Science, Electronics and Telecommunications
-Department of Computer Science 
+Department of Computer Science
 
 See the NOTICE file distributed with this work for additional
 information regarding copyright ownership
@@ -42,12 +42,12 @@ import org.codehaus.plexus.util.xml.Xpp3DomUtils;
 /**
  * This class was extracted from mojo-executor-1.5 artifact and adopoted in
  * uaal-maven-plugin for purpose of simultaneouse compliance with maven 2 and 3.
- * 
+ *
  * Executes an arbitrary mojo using a fluent interface. This is meant to be
  * executed within the context of a Maven 2 mojo.
  * <p/>
  * Here is an execution that invokes the dependency plugin:
- * 
+ *
  * <pre>
  * executeMojo(plugin(groupId(&quot;org.apache.maven.plugins&quot;), artifactId(&quot;maven-dependency-plugin&quot;), version(&quot;2.0&quot;)),
  * 		goal(&quot;copy-dependencies&quot;), configuration(element(name(&quot;outputDirectory&quot;), &quot;${project.build.directory}/foo&quot;)),
@@ -69,7 +69,7 @@ public final class MyMojoExecutorV15 {
 
 	/**
 	 * Entry point for executing a mojo.
-	 * 
+	 *
 	 * @param plugin
 	 *            The plugin to execute
 	 * @param goal
@@ -88,7 +88,7 @@ public final class MyMojoExecutorV15 {
 
 	/**
 	 * Entry point for executing a mojo
-	 * 
+	 *
 	 * @param plugin
 	 *            The plugin to execute
 	 * @param goal
@@ -156,7 +156,7 @@ public final class MyMojoExecutorV15 {
 
 	/**
 	 * Entry point for executing a mojo
-	 * 
+	 *
 	 * @param plugin
 	 *            The plugin to execute
 	 * @param goal
@@ -238,7 +238,7 @@ public final class MyMojoExecutorV15 {
 
 	/**
 	 * Gets executions as map.
-	 * 
+	 *
 	 * @param pomPlugin
 	 *            pom plugin
 	 * @return the map of executions
@@ -251,7 +251,7 @@ public final class MyMojoExecutorV15 {
 
 	/**
 	 * Executes mojo in maven 2.
-	 * 
+	 *
 	 * @param mojoDescriptor
 	 *            descriptor of mojo
 	 * @param executionId
@@ -271,7 +271,7 @@ public final class MyMojoExecutorV15 {
 
 	/**
 	 * Executes mojo in maven 3.
-	 * 
+	 *
 	 * @param mojoDescriptor
 	 *            descriptor of mojo
 	 * @param executionId
@@ -293,7 +293,7 @@ public final class MyMojoExecutorV15 {
 
 	/**
 	 * Constructs the {@link ExecutionEnvironment} instance fluently.
-	 * 
+	 *
 	 * @param mavenProject
 	 *            The current Maven project
 	 * @param mavenSession
@@ -309,7 +309,7 @@ public final class MyMojoExecutorV15 {
 
 	/**
 	 * Constructs the {@link ExecutionEnvironment} instance fluently.
-	 * 
+	 *
 	 * @param mavenProject
 	 *            The current Maven project
 	 * @param mavenSession
@@ -325,7 +325,7 @@ public final class MyMojoExecutorV15 {
 
 	/**
 	 * Builds the configuration for the goal using Elements.
-	 * 
+	 *
 	 * @param elements
 	 *            A list of elements for the configuration section
 	 * @return The elements transformed into the Maven-native XML format
@@ -340,7 +340,7 @@ public final class MyMojoExecutorV15 {
 
 	/**
 	 * Defines the plugin without its version.
-	 * 
+	 *
 	 * @param groupId
 	 *            The group id
 	 * @param artifactId
@@ -353,7 +353,7 @@ public final class MyMojoExecutorV15 {
 
 	/**
 	 * Defines a plugin.
-	 * 
+	 *
 	 * @param groupId
 	 *            The group id
 	 * @param artifactId
@@ -372,7 +372,7 @@ public final class MyMojoExecutorV15 {
 
 	/**
 	 * Wraps the group id string in a more readable format.
-	 * 
+	 *
 	 * @param groupId
 	 *            The value
 	 * @return The value
@@ -383,7 +383,7 @@ public final class MyMojoExecutorV15 {
 
 	/**
 	 * Wraps the artifact id string in a more readable format.
-	 * 
+	 *
 	 * @param artifactId
 	 *            The value
 	 * @return The value
@@ -394,7 +394,7 @@ public final class MyMojoExecutorV15 {
 
 	/**
 	 * Wraps the version string in a more readable format.
-	 * 
+	 *
 	 * @param version
 	 *            The value
 	 * @return The value
@@ -405,7 +405,7 @@ public final class MyMojoExecutorV15 {
 
 	/**
 	 * Wraps the goal string in a more readable format.
-	 * 
+	 *
 	 * @param goal
 	 *            The value
 	 * @return The value
@@ -416,7 +416,7 @@ public final class MyMojoExecutorV15 {
 
 	/**
 	 * Wraps the element name string in a more readable format.
-	 * 
+	 *
 	 * @param name
 	 *            The value
 	 * @return The value
@@ -427,7 +427,7 @@ public final class MyMojoExecutorV15 {
 
 	/**
 	 * Constructs the element with a textual body.
-	 * 
+	 *
 	 * @param name
 	 *            The element name
 	 * @param value
@@ -440,7 +440,7 @@ public final class MyMojoExecutorV15 {
 
 	/**
 	 * Constructs the element containing child elements.
-	 * 
+	 *
 	 * @param name
 	 *            The element name
 	 * @param elements
@@ -470,7 +470,7 @@ public final class MyMojoExecutorV15 {
 
 		/**
 		 * Constructor.
-		 * 
+		 *
 		 * @param name
 		 *            name
 		 * @param children
@@ -482,7 +482,7 @@ public final class MyMojoExecutorV15 {
 
 		/**
 		 * Constructor
-		 * 
+		 *
 		 * @param name
 		 *            name
 		 * @param text
@@ -498,7 +498,7 @@ public final class MyMojoExecutorV15 {
 
 		/**
 		 * Transform to DOM format.
-		 * 
+		 *
 		 * @return transformed to DOM
 		 */
 		public final Xpp3Dom toDom() {
@@ -528,7 +528,7 @@ public final class MyMojoExecutorV15 {
 
 		/**
 		 * Constructor.
-		 * 
+		 *
 		 * @param mavenProject
 		 *            mavenProject
 		 * @param mavenSession
@@ -541,7 +541,7 @@ public final class MyMojoExecutorV15 {
 
 		/**
 		 * Gets maven project.
-		 * 
+		 *
 		 * @return maven project
 		 */
 		public final MavenProject getMavenProject() {
@@ -550,7 +550,7 @@ public final class MyMojoExecutorV15 {
 
 		/**
 		 * Gets maven project.
-		 * 
+		 *
 		 * @return maven project
 		 */
 		public final MavenSession getMavenSession() {
@@ -559,7 +559,7 @@ public final class MyMojoExecutorV15 {
 
 		/**
 		 * Executes mojo.
-		 * 
+		 *
 		 * @param plugin
 		 *            The plugin to execute
 		 * @param goal
@@ -584,7 +584,7 @@ public final class MyMojoExecutorV15 {
 
 		/**
 		 * Constructor.
-		 * 
+		 *
 		 * @param mavenProject
 		 *            mavenProject
 		 * @param mavenSession
@@ -600,7 +600,7 @@ public final class MyMojoExecutorV15 {
 
 		/**
 		 * Gets plugin manager.
-		 * 
+		 *
 		 * @return plugin manager.
 		 */
 		public final PluginManager getPluginManager() {
@@ -625,7 +625,7 @@ public final class MyMojoExecutorV15 {
 
 		/**
 		 * Constructor
-		 * 
+		 *
 		 * @param mavenProject
 		 *            mavenProject
 		 * @param mavenSession
@@ -641,7 +641,7 @@ public final class MyMojoExecutorV15 {
 
 		/**
 		 * Gets build plugin manager.
-		 * 
+		 *
 		 * @return build plugin manager.
 		 */
 		public final Object getBuildPluginManager() {

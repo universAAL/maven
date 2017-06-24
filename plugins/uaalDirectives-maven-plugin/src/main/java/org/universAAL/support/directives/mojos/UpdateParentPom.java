@@ -34,7 +34,7 @@ import org.universAAL.support.directives.checks.ModulesCheckFix;
 /**
  * Executes modules-check, and dependencyManagement-check (in that order).
  * Specially useful to check, and fix, paren POM files.
- * 
+ *
  * @author amedrano
  * @goal update-root-children
  */

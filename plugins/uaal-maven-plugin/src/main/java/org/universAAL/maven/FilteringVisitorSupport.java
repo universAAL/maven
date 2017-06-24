@@ -1,7 +1,7 @@
 /*
 Copyright 2011-2014 AGH-UST, http://www.agh.edu.pl
 Faculty of Computer Science, Electronics and Telecommunications
-Department of Computer Science 
+Department of Computer Science
 
 See the NOTICE file distributed with this work for additional
 information regarding copyright ownership
@@ -31,9 +31,9 @@ import org.apache.maven.shared.dependency.tree.DependencyNode;
  * This abstract class is a support for implementations of DependencyNodeVisitor
  * which provides methods for: filtering, stringifying, remembering visited
  * nodes. Class should be extended by implementation of DependencyNodeVisitor.
- * 
+ *
  * @author rotgier
- * 
+ *
  */
 public abstract class FilteringVisitorSupport {
 
@@ -44,7 +44,7 @@ public abstract class FilteringVisitorSupport {
 
 	/**
 	 * Constructor of FilteringVisitorSupport.
-	 * 
+	 *
 	 * @param log
 	 *            object used for logging.
 	 */
@@ -60,7 +60,7 @@ public abstract class FilteringVisitorSupport {
 	/**
 	 * Stringify Artifact to string a in a following way:
 	 * groupId:artifactId:version.
-	 * 
+	 *
 	 * @param artifact
 	 *            which should be stringified
 	 * @return stringified artifact representation
@@ -76,7 +76,7 @@ public abstract class FilteringVisitorSupport {
 	/**
 	 * Stringify DependencyNode to a string in a following way:
 	 * groupId:artifactId:version.
-	 * 
+	 *
 	 * @param node
 	 *            which should be stringified
 	 * @return stringified node representation
@@ -87,7 +87,7 @@ public abstract class FilteringVisitorSupport {
 
 	/**
 	 * Stringify Artifact to a string in a following way: groupId:artifactId.
-	 * 
+	 *
 	 * @param artifact
 	 *            which should be stringified
 	 * @return stringified artifact representation
@@ -103,7 +103,7 @@ public abstract class FilteringVisitorSupport {
 	/**
 	 * Stringify DependencyNode to a string in a following way:
 	 * groupId:artifactId.
-	 * 
+	 *
 	 * @param node
 	 *            which should be stringified
 	 * @return stringified node representation
@@ -114,7 +114,7 @@ public abstract class FilteringVisitorSupport {
 
 	/**
 	 * Check if node was visited.
-	 * 
+	 *
 	 * @param node
 	 *            which should be checked for being visited
 	 * @return true is node was visited
@@ -126,7 +126,7 @@ public abstract class FilteringVisitorSupport {
 	/**
 	 * Check if DepdencyNode is in the scope. Currently COMPILE and RUNTIME
 	 * scope are taken into account.
-	 * 
+	 *
 	 * @param node
 	 *            which should be checked for being in scope
 	 * @return true if node is in scope
@@ -149,7 +149,7 @@ public abstract class FilteringVisitorSupport {
 
 	/**
 	 * Gets the log object.
-	 * 
+	 *
 	 * @return the log object.
 	 */
 	protected final Log getLog() {
@@ -158,7 +158,7 @@ public abstract class FilteringVisitorSupport {
 
 	/**
 	 * Gets set of visited nodes. Each node is in stringified representation.
-	 * 
+	 *
 	 * @return set of visited nodess
 	 */
 	protected final Set<String> getVisited() {

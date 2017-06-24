@@ -32,7 +32,7 @@ import org.universAAL.support.directives.util.SourceExplorer;
 
 /**
  * Check all the code has a valid ASL header.
- * 
+ *
  * @author amedrano
  *
  */

@@ -73,17 +73,17 @@ import org.universAAL.maven.UaalCompositeMojo;
  * <li/>maven dependencies from "uAAL-Runtime" profile: compile, runtime and
  * provided
  * </ul>
- * 
+ *
  * Class code was based on the implementation of class
  * org.apache.maven.shared.dependency.tree.DefaultDependencyTreeBuilder present
  * in maven-dependency-tree-1.1.jar and the implementation of class
  * org.apache.maven.artifact.resolver.DefaultArtifactCollector present in
  * maven-artifact-2.2.1.jar. Both classes are licensed under Apache License,
  * Version 2.0.
- * 
+ *
  * @author rotgier
- * 
- * 
+ *
+ *
  */
 public class DependencyTreeBuilder {
 
@@ -116,7 +116,7 @@ public class DependencyTreeBuilder {
 
 	/**
 	 * Creates instance of DependencyTreeBuilder with needed parameters.
-	 * 
+	 *
 	 * @param artifactFactory
 	 *            ArtifactFactory object provided by maven.
 	 * @param mavenProjectBuilder
@@ -139,7 +139,7 @@ public class DependencyTreeBuilder {
 	/**
 	 * FireEvent methods are used for sending events related resolution process
 	 * to the listeners passed as arguments.
-	 * 
+	 *
 	 * @param event
 	 *            Integer value of the event.
 	 * @param listener
@@ -155,7 +155,7 @@ public class DependencyTreeBuilder {
 	/**
 	 * FireEvent methods are used for sending events related resolution process
 	 * to the listeners passed as arguments.
-	 * 
+	 *
 	 * @param event
 	 *            Integer value of the event.
 	 * @param listener
@@ -174,7 +174,7 @@ public class DependencyTreeBuilder {
 	/**
 	 * FireEvent methods are used for sending events related resolution process
 	 * to the listeners passed as arguments.
-	 * 
+	 *
 	 * @param event
 	 *            Integer value of the event.
 	 * @param listener
@@ -250,7 +250,7 @@ public class DependencyTreeBuilder {
 	 * artifacts (farthest - lower in the subtree, nearest - higher in the
 	 * subtree) is needed. And if so, updates the scope of nearest artifact to
 	 * the scope of farthest artifact.
-	 * 
+	 *
 	 * @param farthest
 	 *            artifact lower in the subtree (or the one occuring as second
 	 *            if both artifacts are on the same level of the subtree)
@@ -306,7 +306,7 @@ public class DependencyTreeBuilder {
 	/**
 	 * Updates node's scope and version according to the dependency management
 	 * information.
-	 * 
+	 *
 	 * @param node
 	 *            Node which scope will be updated.
 	 * @param managedVersions
@@ -339,7 +339,7 @@ public class DependencyTreeBuilder {
 	/**
 	 * Helper method for extracting parent of passed node with a use of
 	 * reflection.
-	 * 
+	 *
 	 * @param node
 	 *            Node from which parent is to be extracted.
 	 * @return Returns extracted parent.
@@ -357,7 +357,7 @@ public class DependencyTreeBuilder {
 	/**
 	 * Helper method which prints (to string) all parents of given node in a
 	 * form of tree.
-	 * 
+	 *
 	 * @param node
 	 *            which parents are printed
 	 * @return string containing printed tree of parents
@@ -393,7 +393,7 @@ public class DependencyTreeBuilder {
 	 * ArtifactMetadataSource and taking into account ManagedVersionMap. Output
 	 * is passed to listeners, passed as argument, which are notified about all
 	 * events related to dependencies detected in the tree.
-	 * 
+	 *
 	 * @param parentNode
 	 *            Parent node
 	 * @param child
@@ -568,7 +568,7 @@ public class DependencyTreeBuilder {
 
 	/**
 	 * Helper method for changing artifactId suffix from .core to .osgi.
-	 * 
+	 *
 	 * @param artifactId
 	 *            ArtifactId which suffix is to be changed.
 	 * @return Returns artifactId with changed suffix.
@@ -589,7 +589,7 @@ public class DependencyTreeBuilder {
 	 * <li>if the previous does not apply then the suffix of child's artifactId
 	 * is changed from ".core" to ".osgi.
 	 * </ul>
-	 * 
+	 *
 	 * @param parentNode
 	 *            Parent node.
 	 * @param childNode
@@ -616,7 +616,7 @@ public class DependencyTreeBuilder {
 							 * because cyclic dependency will be created and
 							 * TreeBuilder will miss the actual dependencies of
 							 * the .core artifact.
-							 * 
+							 *
 							 * However the version check is performed.
 							 */
 							if (child.getVersion() != null) {
@@ -657,7 +657,7 @@ public class DependencyTreeBuilder {
 	 * Output is passed to listeners, passed as argument, which are notified
 	 * about all dependencies detected in the tree. Resolving of each child node
 	 * is delegated to resolveChildNode method.
-	 * 
+	 *
 	 * @param originatingArtifact
 	 *            Rootnode of recursed subtree.
 	 * @param node
@@ -685,7 +685,7 @@ public class DependencyTreeBuilder {
 	 * @param transitive
 	 *            If this parameter is false than the children of current node
 	 *            are not resolved.
-	 * 
+	 *
 	 * @throws CyclicDependencyException
 	 *             Exception thrown when cyclic dependency detected.
 	 * @throws ArtifactResolutionException
@@ -968,12 +968,12 @@ public class DependencyTreeBuilder {
 	/**
 	 * Get the map of managed versions, removing the originating artifact if it
 	 * is also in managed versions
-	 * 
+	 *
 	 * @param originatingArtifact
 	 *            artifact we are processing
 	 * @param managedVersions
 	 *            original managed versions
-	 * 
+	 *
 	 * @return Returns the map of managed versions.
 	 */
 	private ManagedVersionMap getManagedVersionsMap(final Artifact originatingArtifact, final Map managedVersions) {
@@ -1010,7 +1010,7 @@ public class DependencyTreeBuilder {
 	 * Calculates a stringified representation - a key of given dependency. The
 	 * algorithm present in org.apache.maven.artifact.resolver.ResolutionNode
 	 * class (maven-artifact-2.2.1.jar) is used.
-	 * 
+	 *
 	 * @param dep
 	 *            dependency which key is calculated
 	 * @return stringified representation of dependency in a form:
@@ -1056,10 +1056,10 @@ public class DependencyTreeBuilder {
 	 * strong assumption that a separated artifact has always its "osgi" and
 	 * "core" parts in the same version!!!!
 	 * </ul>
-	 * 
+	 *
 	 * When tree is built, all dependencies referring to the "core" artifact are
 	 * changed into dependencies referring to the "osgi" artifact.
-	 * 
+	 *
 	 * @param project
 	 *            Maven project from which separatedGroupIds will be extracted.
 	 * @return List of separatedGroupIds.
@@ -1080,7 +1080,7 @@ public class DependencyTreeBuilder {
 
 	/**
 	 * Extracts separatedGroupIds.
-	 * 
+	 *
 	 * @param artifact
 	 *            Artifact from which separatedGroupIds should be extracted.
 	 * @param remoteRepositories
@@ -1102,7 +1102,7 @@ public class DependencyTreeBuilder {
 
 	/**
 	 * Gets list of DependencyNode
-	 * 
+	 *
 	 * @param deps
 	 *            List of raw maven Dependencies extracted from the pom file.
 	 * @param runtimeDeps
@@ -1153,8 +1153,8 @@ public class DependencyTreeBuilder {
 	 * maven project which subtree is resolved. Thanks to that there is no need
 	 * to provide versions for runtime artifacts if they are managed in parent
 	 * poms.
-	 * 
-	 * 
+	 *
+	 *
 	 * @param nodeArtifact
 	 * @param managedVersions
 	 * @return
@@ -1198,7 +1198,7 @@ public class DependencyTreeBuilder {
 	 * which is lower in the tree and keeping artifact which is higher in the
 	 * tree. If artifacts are on the same level then the one occuring first in
 	 * the tree is kept.
-	 * 
+	 *
 	 * @param repository
 	 *            Maven repository.
 	 * @param factory
@@ -1335,7 +1335,7 @@ public class DependencyTreeBuilder {
 
 	/**
 	 * Getter method to separatedArtifactDepsOfRoot.
-	 * 
+	 *
 	 * @return Returns list of separatedArtifactDepsOfRoot.
 	 */
 	public List<ResolutionNode> getSeparatedArtifactDepsOfRoot() {

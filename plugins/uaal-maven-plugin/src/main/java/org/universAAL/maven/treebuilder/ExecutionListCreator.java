@@ -1,7 +1,7 @@
 /*
 Copyright 2011-2014 AGH-UST, http://www.agh.edu.pl
 Faculty of Computer Science, Electronics and Telecommunications
-Department of Computer Science 
+Department of Computer Science
 
 See the NOTICE file distributed with this work for additional
 information regarding copyright ownership
@@ -50,14 +50,14 @@ import org.universAAL.maven.StartSpec;
  * class resolves all their dependencies and prepares execution list of bundles
  * (in a proper order) which have to be launched to have these maven artifacts
  * working.
- * 
+ *
  * It aggregates DependencyTreeBuilder and on top of it adds functionality of
  * flattening dependency tree into an artifact list sorted in the execution
  * order. All artifacts of execution list are resolved and downloaded to the
  * local maven repository.
- * 
+ *
  * @author rotgier
- * 
+ *
  */
 public class ExecutionListCreator {
 
@@ -104,7 +104,7 @@ public class ExecutionListCreator {
 	 * Method verifies if passed list of repositories contains paxrunner and
 	 * ops4j-releases repositories. If not, a new list containing passed
 	 * repositories plus paxrunner and ops4j-releases is created and returned.
-	 * 
+	 *
 	 * @param remoteRepositories
 	 * @return
 	 */
@@ -142,7 +142,7 @@ public class ExecutionListCreator {
 	 * provision strings and parses them into representation acceptable by
 	 * DependencyTreeBuilder. DependencyTreeBuilder is invoked and its output is
 	 * returned.
-	 * 
+	 *
 	 * @return a dependency tree as a list of rootnodes (instances of RootNode
 	 *         class) which contain their own subtrees.
 	 */
@@ -193,7 +193,7 @@ public class ExecutionListCreator {
 	 * childs of given artifact, the artifact is added to the execution list.
 	 * Thanks to that it is ensured that before bundle will be started, all
 	 * dependency bundles will be started earlier.
-	 * 
+	 *
 	 * @param rootNodes
 	 *            a dependency tree as a list of rootnodes (instances of
 	 *            RootNode class) which contain their own subtrees and lists of
@@ -235,7 +235,7 @@ public class ExecutionListCreator {
 	/**
 	 * Parses mvn url which has to be in the following format:
 	 * mvn:/groupId/artifactId/version.
-	 * 
+	 *
 	 * @param mvnurl
 	 * @return returns maven artifact which corresponds to the provided mvnurl.
 	 */
@@ -258,7 +258,7 @@ public class ExecutionListCreator {
 	/**
 	 * Parses mvn url which has to be in the following format:
 	 * mvn:/groupId/artifactId/version/type.
-	 * 
+	 *
 	 * @param mvnurl
 	 * @return returns maven artifact which corresponds to the provided mvnurl.
 	 */
@@ -285,7 +285,7 @@ public class ExecutionListCreator {
 
 	/**
 	 * Creates execution list for given MavenProject.
-	 * 
+	 *
 	 * @param mavenProject
 	 * @return
 	 * @throws MojoExecutionException
@@ -331,7 +331,7 @@ public class ExecutionListCreator {
 	/**
 	 * Creates execution list on basis of provisions list and parameter
 	 * specifying default transitiveness.
-	 * 
+	 *
 	 * @param provisions
 	 *            list of provision strings. Each provision string has to have
 	 *            the following format:

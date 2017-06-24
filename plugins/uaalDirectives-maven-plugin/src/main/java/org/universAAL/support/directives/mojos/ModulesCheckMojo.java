@@ -23,13 +23,13 @@ import org.universAAL.support.directives.checks.ModulesCheckFix;
  * Check (and fixes, if configured to do so) that all sibling folders are listed
  * as modules in the modules section. <BR>
  * Only for parent POM projects.
- * 
+ *
  * @author amedrano
- * 
+ *
  * @aggregator
- * 
+ *
  * @goal modules-check
- * 
+ *
  * @phase process-sources
  */
 public class ModulesCheckMojo extends AbstractFixableCheckMojo {

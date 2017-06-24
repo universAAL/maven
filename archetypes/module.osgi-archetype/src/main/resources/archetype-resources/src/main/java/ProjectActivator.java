@@ -9,15 +9,15 @@ import org.universAAL.middleware.container.utils.LogUtils;
 public class ProjectActivator implements BundleActivator {
 
 	static ModuleContext context;
-	
-	public void start(BundleContext arg0) throws Exception {	
+
+	public void start(BundleContext arg0) throws Exception {
 		context = uAALBundleContainer.THE_CONTAINER
-                .registerModule(new Object[] {arg0});	
+                .registerModule(new Object[] {arg0});
 		LogUtils.logDebug(context, getClass(), "start", "Starting.");
 		/*
 		 * uAAL stuff
 		 */
-		
+
 		LogUtils.logDebug(context, getClass(), "start", "Started.");
 	}
 
@@ -27,7 +27,7 @@ public class ProjectActivator implements BundleActivator {
 		/*
 		 * close uAAL stuff
 		 */
-		
+
 		LogUtils.logDebug(context, getClass(), "stop", "Stopped.");
 
 	}

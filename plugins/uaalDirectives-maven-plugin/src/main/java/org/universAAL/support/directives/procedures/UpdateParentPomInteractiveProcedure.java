@@ -44,11 +44,11 @@ import org.universAAL.support.directives.util.PomWriter;
  * dependencyManagement
  * <li>the version of uaaldirectives-maven-plugin in reporting
  * </ol>
- * 
+ *
  * The versions are interactively resolved.
- * 
+ *
  * @author amedrano
- * 
+ *
  */
 public class UpdateParentPomInteractiveProcedure implements APIProcedure, PomFixer {
 
@@ -146,7 +146,7 @@ public class UpdateParentPomInteractiveProcedure implements APIProcedure, PomFix
 
 	/**
 	 * Ask the user for the new version for the given artifact.
-	 * 
+	 *
 	 * @param groupID
 	 * @param artifactID
 	 * @param currentVersion

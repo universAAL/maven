@@ -24,11 +24,11 @@ import org.universAAL.support.directives.checks.FelixDepCheckFix;
 /**
  * This Mojo checks (and fixes, if configured to do so) explicit Dependencies to
  * Felix.
- * 
+ *
  * @author amedrano
- * 
+ *
  * @goal felix-check
- * 
+ *
  * @phase process-sources
  */
 public class FelixDependencyCheckFixMojo extends AbstractFixableCheckMojo {

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Universidad Politécnica de Madrid
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,7 @@ import org.apache.maven.plugin.MojoFailureException;
 
 /**
  * An abstract Mojo that executes checks and fixes ({@link APIFixableCheck}).
- * 
+ *
  * @author amedrano
  *
  */
@@ -30,7 +30,7 @@ public abstract class AbstractFixableCheckMojo extends AbstractCheckMojo {
 	/**
 	 * If set to true (adding the <code>-Ddirective.fix</code> option to maven
 	 * run) then automatic fixes over the check will be attempted.
-	 * 
+	 *
 	 * @parameter expression="${directive.fix}" default-value="false"
 	 */
 	private boolean fix;

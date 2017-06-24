@@ -143,24 +143,24 @@ public class NcssReportMojo
 	private String relativeOutput;
 
 	private String relativeXmlOutput;
-    
+
     /**
      * @see org.apache.maven.reporting.MavenReport#executeReport(java.util.Locale)
      */
     public void executeReport( Locale locale )
         throws MavenReportException
     {
-    	relativeOutput = 
-    			PathTool.getRelativeFilePath(project.getBasedir().getAbsolutePath(), 
+    	relativeOutput =
+    			PathTool.getRelativeFilePath(project.getBasedir().getAbsolutePath(),
     					outputDirectory.getAbsolutePath());
-    	
+
     	getLog().debug("relativeOutput: " + relativeOutput);
-    	relativeXmlOutput = 
-    			PathTool.getRelativeFilePath(project.getBasedir().getAbsolutePath(), 
+    	relativeXmlOutput =
+    			PathTool.getRelativeFilePath(project.getBasedir().getAbsolutePath(),
     					xmlOutputDirectory.getAbsolutePath());
     	getLog().debug("relativeXmlOutput: " + relativeXmlOutput);
-    	
-    	if (project.getPackaging().equalsIgnoreCase("pom")) 
+
+    	if (project.getPackaging().equalsIgnoreCase("pom"))
     	{
     		// it is an aggregated proyect
 			LinkedList forLater = new LinkedList();
@@ -180,8 +180,8 @@ public class NcssReportMojo
 				ProjectReporter pr = (ProjectReporter) i.next();
 				pr.generateAggregateReport(locale);
 			}
-		} 
-    	else 
+		}
+    	else
     	{
     		// it is a single project
     		ProjectReporter pr = new ProjectReporter(project);
@@ -194,13 +194,13 @@ public class NcssReportMojo
 //			}
     	}
     }
-    
+
     // helper to retrieve the right bundle
     private static ResourceBundle getBundle( Locale locale )
     {
         return ResourceBundle.getBundle( "javancss-report", locale, NcssReportMojo.class.getClassLoader() );
     }
-    
+
     /**
      * @see org.apache.maven.reporting.MavenReport#getName(java.util.Locale)
      */
@@ -248,19 +248,19 @@ public class NcssReportMojo
     {
         return OUTPUT_NAME;
     }
-    
+
     private class ProjectReporter {
-    	
+
 
     private MavenProject project;
-    
+
     private File sourceDirectory;
-   
+
     ProjectReporter(MavenProject mp){
     	project = mp;
     	sourceDirectory = new File (project.getBuild().getSourceDirectory());
     }
-    
+
 
 	private void generateAggregateReport( Locale locale )
         throws MavenReportException
@@ -317,7 +317,7 @@ public class NcssReportMojo
     private void generateJavaNcssXml( Locale locale )
         throws MavenReportException
     {
-    	
+
     	if (javaNcssXMLisUpToDate()){
     	/*
     	 * Check if the report already exists and if so check if it need to be generated again
@@ -331,7 +331,7 @@ public class NcssReportMojo
     	{
     		outpuFile.getParentFile().mkdirs();
     	}
-    	
+
         if ( getLog().isDebugEnabled() )
         {
             getLog().debug( "Calling NCSSExecuter with src    : " + sourceDirectory );
@@ -359,12 +359,12 @@ public class NcssReportMojo
             throw new MavenReportException( "Can't process temp ncss xml file." );
         }
     }
-    
+
     private boolean javaNcssXMLisUpToDate() {
     	File xmlFile = new File(buildOutputFileName());
     	if (xmlFile.exists()){
     		File sourceLast = lastFileModified(sourceDirectory);
-    		if (sourceLast == null) 
+    		if (sourceLast == null)
     		return (sourceLast != null)
     				&& (xmlFile.lastModified() > sourceLast.lastModified());
     	}
@@ -494,7 +494,7 @@ public class NcssReportMojo
     {
         return getXmlOutputDirectory() + File.separator + tempFileName;
     }
-    
+
    /**
     * Gets the source files encoding.
     *
@@ -516,7 +516,7 @@ public class NcssReportMojo
    {
 	   return project.getBasedir().getAbsolutePath() + File.separator + relativeXmlOutput;
    }
-   
+
     // blatantly copied from maven pmd plugin
     protected String constructXRefLocation()
     {
@@ -559,12 +559,12 @@ public class NcssReportMojo
         return location;
     }
     }
-    
+
     public static File lastFileModified(File dir) {
     	File[] files = dir.listFiles();
     	long lastMod = Long.MIN_VALUE;
     	File choise = null;
-    	for (int i = 0; i < files.length; i++) 
+    	for (int i = 0; i < files.length; i++)
     	{
     		File file = files[i];
     		if (file.isDirectory()){

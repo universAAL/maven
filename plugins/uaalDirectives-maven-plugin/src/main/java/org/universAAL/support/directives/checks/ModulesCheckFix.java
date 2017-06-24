@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Universidad Politécnica de Madrid
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -84,7 +84,7 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 	/**
 	 * check whether there are any versions defined or dependencyManagement
 	 * points to correct versions
-	 * 
+	 *
 	 * @param mavenProject2
 	 * @param log
 	 *            log element to output log.
@@ -105,7 +105,7 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 
 	/**
 	 * Checks the project is a POM and a parent POM (ie it has no source).
-	 * 
+	 *
 	 * @param mavenProject2
 	 * @param log
 	 *            log element to output log info.
@@ -126,7 +126,7 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 
 	/**
 	 * Check whether the pom modules are in the following disposition: <br>
-	 * 
+	 *
 	 * <pre>
 	 * 	parentFolder
 	 * 	L pom.xml
@@ -136,9 +136,9 @@ public class ModulesCheckFix implements APIFixableCheck, PomFixer {
 	 * 	L ModuleN
 	 * 	  L pom.xml
 	 * </pre>
-	 * 
+	 *
 	 * ie: all of the modules of the pom are children.
-	 * 
+	 *
 	 * @param mavenProject2
 	 * @param log
 	 * @return

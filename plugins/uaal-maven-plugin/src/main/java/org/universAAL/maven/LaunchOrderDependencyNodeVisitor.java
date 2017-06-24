@@ -1,7 +1,7 @@
 /*
 Copyright 2011-2014 AGH-UST, http://www.agh.edu.pl
 Faculty of Computer Science, Electronics and Telecommunications
-Department of Computer Science 
+Department of Computer Science
 
 See the NOTICE file distributed with this work for additional
 information regarding copyright ownership
@@ -51,14 +51,14 @@ import org.universAAL.maven.treebuilder.MyDependencyNode;
  * conflict then an exception with meaningful message is thrown, unless the
  * visitor is instructed to not throw exception by passing
  * throwExceptionOnConflict parameter to the constructor.
- * 
+ *
  * After ending a visit to node which was not ommitted the node's artifact is
  * converted to mvn url and aded to mvnUrls list. If the artifact is not a
  * bundle then mvn url is preceded with "wrap:" protocol. After visit is ended
  * all mvnUrls in required launch order are contained in mvnUrl list.
- * 
+ *
  * @author rotgier
- * 
+ *
  */
 public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport implements DependencyNodeVisitor {
 
@@ -121,7 +121,7 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport im
 
 	/**
 	 * Constructor of LaunchOrderDependencyNodeVisitor.
-	 * 
+	 *
 	 * @param log
 	 *            object for logging
 	 * @param nodesByArtifactId
@@ -162,7 +162,7 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport im
 	/**
 	 * If throwExceptionOnConflict is true, this method throws exception about
 	 * conflict between omitted and kept node.
-	 * 
+	 *
 	 * @param omittedNode
 	 *            omitted node
 	 * @param keptNode
@@ -188,7 +188,7 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport im
 	/**
 	 * Helper method which prints (to string) all parents of given node in a
 	 * form of tree.
-	 * 
+	 *
 	 * @param node
 	 *            which parents are printed
 	 * @return string containing printed tree of parents
@@ -220,7 +220,7 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport im
 
 	/**
 	 * Adds node to the execution list.
-	 * 
+	 *
 	 * @param node
 	 *            which should be added.
 	 */
@@ -299,12 +299,12 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport im
 	 * visited. True is returned only if node is in scope and if it was not
 	 * ommited. It is ensured that node with given groupId, artifactId and
 	 * version is visited only once.
-	 * 
+	 *
 	 * When visiting node omitted because of conflict, exception is thrown if
 	 * throwExceptionOnConflict property is true. In case
 	 * throwExceptionOnConflict is false, the conflict is resolved as suggested
 	 * by the tree and kept artifact is finally added to mvnUrls list.
-	 * 
+	 *
 	 * @param node
 	 *            which should be checked for need of visiting
 	 * @return true if node needs visiting, false otherwise
@@ -330,7 +330,7 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport im
 					 * mw.data.representation in versions 0.3.1, 0.3.2,
 					 * 1.0.0(resolved version) can impose that 0.3.1 is
 					 * conflicted with 0.3.2
-					 * 
+					 *
 					 * This can happen in both CONFLICT and DUPLICATE state. So
 					 * to overcome this the versionsByArtifactId mapping is
 					 * used.
@@ -361,10 +361,10 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport im
 	 * If this method returns true then it means that the next sibling should be
 	 * visited. Because all nodes should be visited this methods always returns
 	 * true.
-	 * 
+	 *
 	 * If node wasn't visited, it is in the scope, and was not omitted then it
 	 * is added to mvnUrls list.
-	 * 
+	 *
 	 * @param node
 	 *            which visiting should be finished
 	 * @return this method always returns true
@@ -390,7 +390,7 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport im
 
 	/**
 	 * Gets execution list containing mvn urls.
-	 * 
+	 *
 	 * @return execution list.
 	 */
 	public final List getMvnUrls() {
@@ -400,7 +400,7 @@ public class LaunchOrderDependencyNodeVisitor extends FilteringVisitorSupport im
 	/**
 	 * Sets core uAAL artifacts which should be excluded from created execution
 	 * list.
-	 * 
+	 *
 	 * @param excludedCoreArtifacts
 	 *            list of artifacts to be excluded.
 	 */

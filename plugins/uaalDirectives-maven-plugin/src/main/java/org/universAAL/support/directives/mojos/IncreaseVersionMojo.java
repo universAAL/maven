@@ -32,13 +32,13 @@ import org.universAAL.support.directives.procedures.IncreaseVersionProcedure;
  * <a href="http://mojo.codehaus.org/versions-maven-plugin/">Versions Maven
  * Plugin</a> (Specially usefull is the versions:update-child-modules, which
  * updates the parent's version of all modules)
- * 
+ *
  * @author amedrano
- * 
+ *
  * @goal increase-version
- * 
+ *
  * @requiresDirectInvocation
- * 
+ *
  * @see ChangeVersionMojo
  */
 public class IncreaseVersionMojo extends AbstractProcedureMojo {

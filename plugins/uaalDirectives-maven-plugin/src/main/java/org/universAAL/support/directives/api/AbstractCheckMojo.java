@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Universidad Politécnica de Madrid
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,14 +23,14 @@ import org.apache.maven.project.MavenProject;
 
 /**
  * Abstract Mojo that performs a {@link APICheck}.
- * 
+ *
  * @author amedrano
  *
  */
 public abstract class AbstractCheckMojo extends AbstractMojo {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final String CHECK_FAILED = "Check Failed.";
 
@@ -39,14 +39,14 @@ public abstract class AbstractCheckMojo extends AbstractMojo {
 	 * the execution will fail, instead of just stating a warning. <BR>
 	 * It is useful to run maven with the <code>-fn</code> option over a project
 	 * aggregation, this way all non-compliant modules are listed.
-	 * 
+	 *
 	 * @parameter expression="${failOnMissMatch}" default-value="false"
 	 */
 	private boolean failOnMissMatch;
 
 	/**
 	 * The maven project.
-	 * 
+	 *
 	 * @parameter default-value="${project}"
 	 * @required
 	 * @readonly
@@ -98,7 +98,7 @@ public abstract class AbstractCheckMojo extends AbstractMojo {
 
 	/**
 	 * Check whether the project is at snapshot version
-	 * 
+	 *
 	 * @param mp
 	 *            The {@link MavenProject} descriptor
 	 * @return True if the version contains SNAPSHOT

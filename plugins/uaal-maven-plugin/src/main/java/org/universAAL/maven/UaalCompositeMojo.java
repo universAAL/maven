@@ -1,7 +1,7 @@
 /*
 Copyright 2011-2014 AGH-UST, http://www.agh.edu.pl
 Faculty of Computer Science, Electronics and Telecommunications
-Department of Computer Science 
+Department of Computer Science
 
 See the NOTICE file distributed with this work for additional
 information regarding copyright ownership
@@ -47,7 +47,7 @@ import org.universAAL.maven.treebuilder.ExecutionListCreator;
 /**
  * This mojo creates composite file (artifact.composite) for project in which it
  * is executed.
- * 
+ *
  * @goal composite
  */
 public class UaalCompositeMojo extends AbstractMojo {
@@ -95,7 +95,7 @@ public class UaalCompositeMojo extends AbstractMojo {
 
 	/**
 	 * List of Remote Repositories used by the resolver.
-	 * 
+	 *
 	 * @parameter expression="${project.remoteArtifactRepositories}"
 	 * @readonly
 	 * @required
@@ -104,7 +104,7 @@ public class UaalCompositeMojo extends AbstractMojo {
 
 	/**
 	 * Location of the local repository.
-	 * 
+	 *
 	 * @parameter expression="${localRepository}"
 	 * @readonly
 	 * @required
@@ -121,7 +121,7 @@ public class UaalCompositeMojo extends AbstractMojo {
 	/**
 	 * Set this to "true" to use mw composite for the composite of all bundles
 	 * above the mw. If this parameter is false, then all bundles are resolved.
-	 * 
+	 *
 	 * @since 3.5.0
 	 * @parameter expression="${useMwComposite}" default-value="true"
 	 */
@@ -130,7 +130,7 @@ public class UaalCompositeMojo extends AbstractMojo {
 	/**
 	 * Directives configured via <configuration> in pom file, setting the
 	 * startlevel and/or nostart parameters to specified artifacts
-	 * 
+	 *
 	 * @parameter
 	 */
 	private StartSpec[] startArtifacts;
@@ -155,7 +155,7 @@ public class UaalCompositeMojo extends AbstractMojo {
 
 	/**
 	 * Creates output writer for given file name.
-	 * 
+	 *
 	 * @param fileName
 	 *            for which writer will be created
 	 * @return output writer.
@@ -171,7 +171,7 @@ public class UaalCompositeMojo extends AbstractMojo {
 
 	/**
 	 * Writes given list of mvn urls to given file.
-	 * 
+	 *
 	 * @param mvnUrls
 	 *            mvn urls
 	 * @param fileName
@@ -217,7 +217,7 @@ public class UaalCompositeMojo extends AbstractMojo {
 
 	/**
 	 * Execute.
-	 * 
+	 *
 	 * @throws MojoExecutionException
 	 *             MojoExecutionException
 	 * @throws MojoFailureException

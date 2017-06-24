@@ -39,12 +39,12 @@ import org.apache.maven.shared.dependency.tree.traversal.CollectingDependencyNod
 /**
  * An artifact resolution listener that constructs a dependency tree. The tree
  * is constructed on basis of events related to resolution process.
- * 
+ *
  * Class code was based on implementation of class
  * org.apache.maven.shared.dependency.tree.DependencyTreeResolutionListener
  * present in maven-dependency-tree-1.1.jar which is licensed under Apache
  * License, Version 2.0.
- * 
+ *
  * @author rotgier
  * @author Edwin Punzalan
  * @author <a href="mailto:markhobson@gmail.com">Mark Hobson</a>
@@ -93,7 +93,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
 	/**
 	 * Creates a new dependency tree resolution listener that writes to the
 	 * specified log.
-	 * 
+	 *
 	 * @param artifactFilter
 	 *            Object for filtering artifacts.
 	 */
@@ -408,7 +408,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
 
 	/**
 	 * Gets a list of all dependency nodes in the computed dependency tree.
-	 * 
+	 *
 	 * @return a list of dependency nodes
 	 * @deprecated As of 1.1, use a {@link CollectingDependencyNodeVisitor} on
 	 *             the root dependency node
@@ -420,7 +420,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
 
 	/**
 	 * Gets the root dependency node of the computed dependency tree.
-	 * 
+	 *
 	 * @return the root node
 	 */
 	public List<RootNode> getRootNodes() {
@@ -432,7 +432,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
 	/**
 	 * Writes the specified message to the log at debug level with indentation
 	 * for the current node's depth.
-	 * 
+	 *
 	 * @param message
 	 *            the message to write to the log
 	 */
@@ -451,7 +451,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
 	/**
 	 * Creates a new dependency node for the specified artifact and appends it
 	 * to the current parent dependency node.
-	 * 
+	 *
 	 * @param resolutionNode
 	 *            the attached artifact for the new dependency node
 	 * @return the new dependency node
@@ -473,7 +473,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
 	 * Creates a new dependency node for the specified artifact, appends it to
 	 * the current parent dependency node and puts it into the dependency node
 	 * cache.
-	 * 
+	 *
 	 * @param resolutionNode
 	 *            the attached artifact for the new dependency node
 	 * @return the new dependency node
@@ -502,7 +502,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
 	/**
 	 * Gets the dependency node for the specified artifact from the dependency
 	 * node cache.
-	 * 
+	 *
 	 * @param artifact
 	 *            the artifact to find the dependency node for
 	 * @return the dependency node, or <code>null</code> if the specified
@@ -515,7 +515,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
 	/**
 	 * Removes the dependency node for the specified artifact from the
 	 * dependency node cache.
-	 * 
+	 *
 	 * @param artifact
 	 *            the artifact to remove the dependency node for
 	 */
@@ -531,7 +531,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
 	/**
 	 * Gets whether the all the ancestors of the dependency node currently being
 	 * processed by this listener have an included state.
-	 * 
+	 *
 	 * @return <code>true</code> if all the ancestors of the current dependency
 	 *         node have a state of <code>INCLUDED</code>
 	 */
@@ -552,7 +552,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
 	/**
 	 * Updates the specified node with any dependency management information
 	 * cached in prior <code>manageArtifact</code> calls.
-	 * 
+	 *
 	 * @param node
 	 *            the node to update
 	 */
@@ -577,7 +577,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
 
 	/**
 	 * Getter to nodesByArtifact.
-	 * 
+	 *
 	 * @return Returns nodesByArtifact.
 	 */
 	public Map getNodesByArtifact() {
@@ -586,7 +586,7 @@ public class DependencyTreeResolutionListener implements ResolutionListenerForDe
 
 	/**
 	 * Adds node to excluded core artifacts.
-	 * 
+	 *
 	 * @param node
 	 *            Node which is add to excluded core artifacts.
 	 */

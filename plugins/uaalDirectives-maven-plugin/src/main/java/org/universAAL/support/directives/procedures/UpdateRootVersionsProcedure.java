@@ -31,12 +31,12 @@ import org.universAAL.support.directives.util.PomFixer;
  * dependencyManagement
  * <li>the version of uaaldirectives-maven-plugin in reporting
  * </ol>
- * 
+ *
  * All versions are set to be the newVersion Parameter passed in the
  * constructor.
- * 
+ *
  * @author amedrano
- * 
+ *
  */
 public class UpdateRootVersionsProcedure extends UpdateParentPomInteractiveProcedure implements APIProcedure, PomFixer {
 
@@ -47,7 +47,7 @@ public class UpdateRootVersionsProcedure extends UpdateParentPomInteractiveProce
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param newVersion
 	 *            the new Version to use for all artifacts affected.
 	 */

@@ -1,12 +1,12 @@
 /*
 		Copyright 2011-2014 AGH-UST, http://www.agh.edu.pl
 		Faculty of Computer Science, Electronics and Telecommunications
-		Department of Computer Science 
+		Department of Computer Science
 
         Copyright 2007-2014 CNR-ISTI, http://isti.cnr.it
         Institute of Information Science and Technologies
         of the Italian National Research Council
-        
+
         See the NOTICE file distributed with this work for additional
         information regarding copyright ownership
 
@@ -51,7 +51,7 @@ import org.universAAL.maven.treebuilder.ExecutionListCreator;
  * This mojo creates composite file (artifact-test.composite) for project in
  * which it is executed. Additionally it resolves artifact specified in
  * IntegrationTest.RUN_DIR_MVN_URL which is needed by integration tests.
- * 
+ *
  * @goal test
  * @author <a href="mailto:stefano.lenzi@isti.cnr.it">Stefano Lenzi</a>
  * @author <a href="marek.psiuk@agh.edu.pl">Marek Psiuk</a>
@@ -102,7 +102,7 @@ public class UaalTestMojo extends AbstractMojo {
 
 	/**
 	 * List of Remote Repositories used by the resolver.
-	 * 
+	 *
 	 * @parameter expression="${project.remoteArtifactRepositories}"
 	 * @readonly
 	 * @required
@@ -111,7 +111,7 @@ public class UaalTestMojo extends AbstractMojo {
 
 	/**
 	 * Location of the local repository.
-	 * 
+	 *
 	 * @parameter expression="${localRepository}"
 	 * @readonly
 	 * @required
@@ -128,7 +128,7 @@ public class UaalTestMojo extends AbstractMojo {
 	/**
 	 * Set this to "true" to bypass unit tests entirely. You can also the
 	 * skipTests parameter instead.
-	 * 
+	 *
 	 * @since 1.3.2
 	 * @parameter expression="${maven.test.skip}" defaultValue="false"
 	 */
@@ -137,7 +137,7 @@ public class UaalTestMojo extends AbstractMojo {
 	/**
 	 * Set this to "true" to bypass unit tests entirely. You can also the
 	 * skipTests parameter instead.
-	 * 
+	 *
 	 * @since 1.3.2
 	 * @parameter expression="${skipTests}" defaultValue="false"
 	 */
@@ -146,14 +146,14 @@ public class UaalTestMojo extends AbstractMojo {
 	/**
 	 * Directives configured via <configuration> in pom file, setting the
 	 * startlevel and/or nostart parameters to specified artifacts
-	 * 
+	 *
 	 * @parameter
 	 */
 	private StartSpec[] startArtifacts;
 
 	/**
 	 * Execute.
-	 * 
+	 *
 	 * @throws MojoExecutionException
 	 *             MojoExecutionException
 	 * @throws MojoFailureException
@@ -231,7 +231,7 @@ public class UaalTestMojo extends AbstractMojo {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return true if either test has to be skipped
 	 */
 	private boolean skipTests() {

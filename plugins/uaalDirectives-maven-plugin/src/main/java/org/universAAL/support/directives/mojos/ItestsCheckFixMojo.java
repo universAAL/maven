@@ -24,11 +24,11 @@ import org.universAAL.support.directives.checks.ItestsCheckFix;
 /**
  * This Mojo checks (and fixes, if configured to do so) Dependencies for Itests
  * when there are no IntegrationTest implementations.
- * 
+ *
  * @author amedrano
- * 
+ *
  * @goal itest-check
- * 
+ *
  * @phase process-sources
  */
 public class ItestsCheckFixMojo extends AbstractFixableCheckMojo {

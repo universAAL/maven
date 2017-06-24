@@ -1,7 +1,7 @@
 /*
 Copyright 2011-2014 AGH-UST, http://www.agh.edu.pl
 Faculty of Computer Science, Electronics and Telecommunications
-Department of Computer Science 
+Department of Computer Science
 
 See the NOTICE file distributed with this work for additional
 information regarding copyright ownership
@@ -26,7 +26,7 @@ import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 /**
  * Filter to only retain objects in the following scopes: COMPILE, RUNTIME,
  * PROVIDED.
- * 
+ *
  */
 public class ScopeArtifactFilter implements ArtifactFilter {
 	public boolean include(final Artifact artifact) {

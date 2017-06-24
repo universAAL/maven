@@ -1,7 +1,7 @@
 /*
 Copyright 2011-2014 AGH-UST, http://www.agh.edu.pl
 Faculty of Computer Science, Electronics and Telecommunications
-Department of Computer Science 
+Department of Computer Science
 
 See the NOTICE file distributed with this work for additional
 information regarding copyright ownership
@@ -51,14 +51,14 @@ import org.universAAL.maven.treebuilder.ExecutionListCreator;
 /**
  * This mojo creates composite file (artifact.composite) for project in which it
  * is executed.
- * 
+ *
  * @goal run
  */
 public class UaalRunnerMojo extends AbstractMojo implements Contextualizable {
 
 	/**
 	 * The Maven Project Object.
-	 * 
+	 *
 	 * @parameter expression="${project}"
 	 * @required
 	 * @readonly
@@ -67,7 +67,7 @@ public class UaalRunnerMojo extends AbstractMojo implements Contextualizable {
 
 	/**
 	 * The Maven Session Object.
-	 * 
+	 *
 	 * @parameter expression="${session}"
 	 * @required
 	 * @readonly
@@ -76,7 +76,7 @@ public class UaalRunnerMojo extends AbstractMojo implements Contextualizable {
 
 	/**
 	 * The Maven PluginManager Object.
-	 * 
+	 *
 	 * @component
 	 * @optional
 	 */
@@ -84,7 +84,7 @@ public class UaalRunnerMojo extends AbstractMojo implements Contextualizable {
 
 	/**
 	 * Artifact factory.
-	 * 
+	 *
 	 * @component
 	 * @required
 	 * @readonly
@@ -93,7 +93,7 @@ public class UaalRunnerMojo extends AbstractMojo implements Contextualizable {
 
 	/**
 	 * Artifact resolver.
-	 * 
+	 *
 	 * @component
 	 * @required
 	 * @readonly
@@ -122,7 +122,7 @@ public class UaalRunnerMojo extends AbstractMojo implements Contextualizable {
 
 	/**
 	 * List of Remote Repositories used by the resolver.
-	 * 
+	 *
 	 * @parameter expression="${project.remoteArtifactRepositories}"
 	 * @readonly
 	 * @required
@@ -131,7 +131,7 @@ public class UaalRunnerMojo extends AbstractMojo implements Contextualizable {
 
 	/**
 	 * Location of the local repository.
-	 * 
+	 *
 	 * @parameter expression="${localRepository}"
 	 * @readonly
 	 * @required
@@ -162,7 +162,7 @@ public class UaalRunnerMojo extends AbstractMojo implements Contextualizable {
 	/**
 	 * Directives configured via <configuration> in pom file, setting the
 	 * startlevel and/or nostart parameters to specified artifacts
-	 * 
+	 *
 	 * @parameter
 	 */
 	private StartSpec[] startArtifacts;
@@ -174,7 +174,7 @@ public class UaalRunnerMojo extends AbstractMojo implements Contextualizable {
 
 	/**
 	 * Contextualize.
-	 * 
+	 *
 	 * @param context
 	 *            context
 	 * @throws ContextException
@@ -186,7 +186,7 @@ public class UaalRunnerMojo extends AbstractMojo implements Contextualizable {
 
 	/**
 	 * Execute.
-	 * 
+	 *
 	 * @throws MojoExecutionException
 	 *             MojoExecutionException
 	 * @throws MojoFailureException

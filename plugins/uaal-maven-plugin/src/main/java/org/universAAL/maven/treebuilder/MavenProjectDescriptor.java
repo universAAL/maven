@@ -1,7 +1,7 @@
 /*
 Copyright 2011-2014 AGH-UST, http://www.agh.edu.pl
 Faculty of Computer Science, Electronics and Telecommunications
-Department of Computer Science 
+Department of Computer Science
 
 See the NOTICE file distributed with this work for additional
 information regarding copyright ownership
@@ -28,9 +28,9 @@ import org.apache.maven.project.MavenProject;
  * Descriptor of maven project related to the dependency resolving process. It
  * aggregates maven project, list of remote repositories used for resolving and
  * indication if dependencies should be resolved transitively or not.
- * 
+ *
  * @author rotgier
- * 
+ *
  */
 public class MavenProjectDescriptor {
 

@@ -1,7 +1,7 @@
 /*
 Copyright 2011-2014 AGH-UST, http://www.agh.edu.pl
 Faculty of Computer Science, Electronics and Telecommunications
-Department of Computer Science 
+Department of Computer Science
 
 See the NOTICE file distributed with this work for additional
 information regarding copyright ownership
@@ -30,9 +30,9 @@ import org.apache.maven.shared.dependency.tree.DependencyNode;
  * Helper class for passing arguments and return values to/from methods. It
  * aggregates a rootnode of resolved dependency tree and list of remote
  * repositories used during the resolve proces.
- * 
+ *
  * @author rotgier
- * 
+ *
  */
 public class RootNode {
 	public RootNode(final DependencyNode rootNode) {
