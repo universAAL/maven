@@ -6,6 +6,7 @@
     <groupId>org.universAAL</groupId>
     <artifactId>uAAL.pom</artifactId>
     <version>3.4.2-SNAPSHOT</version>
+	<relativePath>../../../uAAL.pom/</relativePath>
   </parent>
   <groupId>org.universAAL.support</groupId>
   <artifactId>maven.pom</artifactId>
