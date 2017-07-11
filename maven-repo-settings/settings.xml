@@ -2,15 +2,6 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
 	http://maven.apache.org/xsd/settings-1.0.0.xsd">
 
-	<!-- mirrors>
-		<mirror>
-			<id>artifactory</id>
-			<mirrorOf>*</mirrorOf>
-			<url>file:///D:/Saied/.m2/repository</url>
-			<name>Artifactory</name>
-		</mirror>
-	</mirrors -->
-
 	<profiles>
 		<profile>
 			<activation>
@@ -49,11 +40,29 @@
 			</repositories>
 		</profile>
 	</profiles>
+	
+	<!-- for Maven mirror repositories configuration see
+		 https://maven.apache.org/guides/mini/guide-mirror-settings.html -->
+	<!-- alternative uAAL mirrors -->
+	<!-- mirrors>
+			<mirror>
+			<id>uAAL-release-mirror1</id>
+			<url>http://nexus.lst.tfo.upm.es/content/groups/public/</url>
+			<mirrorOf>uaal,uaal-thirdparty</mirrorOf>
+		</mirror>
+		<mirror>
+			<id>uAAL-snapshot-mirror1</id>
+			<url>http://nexus.lst.tfo.upm.es/content/groups/public/</url>
+			<mirrorOf>uaal-snapshots,uaal-thirdparty-snapshots</mirrorOf>
+		</mirror>
+	</mirrors -->
 
+	<!-- for Maven HTTP proxy configuration see
+		  https://maven.apache.org/guides/mini/guide-proxies.html -->
 	<!-- proxies>
 		<proxy>
 			<id>myproxy</id>
-			<active>false</active>
+			<active>true</active>
 			<protocol>http</protocol>
 			<host>ip address</host>
 			<port>port number</port>
