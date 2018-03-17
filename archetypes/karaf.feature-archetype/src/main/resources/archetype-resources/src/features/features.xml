@@ -5,8 +5,7 @@
 <features name="universAAL-Feature" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
 
 	<!-- Import Mw and Ontologies Feature Repositories -->
-	<repository>mvn:org.universAAL.middleware/mw.karaf.feature/${mw.karaf.feature.version}/xml/features</repository>
-	<repository>mvn:org.universAAL.ontology/ont.karaf.feature/${ont.karaf.feature.version}/xml/features</repository>
+	<repository>mvn:org.universAAL/uAAL.karaf.feature/${uAAL.karaf.feature.version}/xml/features</repository>
 
 	<!-- sample feature -->
 <!--

@@ -20,12 +20,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.universAAL.middleware</groupId>
-			<artifactId>mw.karaf.feature</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.universAAL.ontology</groupId>
-			<artifactId>ont.karaf.feature</artifactId>
+			<groupId>org.universAAL</groupId>
+			<artifactId>uAAL.karaf.feature</artifactId>
 		</dependency>
 	</dependencies>
 
