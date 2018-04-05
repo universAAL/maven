@@ -1,18 +1,18 @@
 <map id="G" name="G">
-<area shape="rect" id="c914" href="./AbstractCheckMojo.html" title="org.universAAL.support.directives.api.AbstractCheckMojo" alt="" coords="540,17,676,42"/>
-<area shape="rect" id="node1" href="./AbstractCheckMojo.html" title="&lt;TABLE&gt;" alt="" coords="529,5,687,53"/>
-<area shape="rect" id="c915" href="./AbstractFixableCheckMojo.html" title="org.universAAL.support.directives.api.AbstractFixableCheckMojo" alt="" coords="519,113,697,138"/>
-<area shape="rect" id="node2" href="./AbstractFixableCheckMojo.html" title="&lt;TABLE&gt;" alt="" coords="509,101,707,149"/>
-<area shape="rect" id="c930" href="../mojos/ItestsCheckFixMojo.html" title="org.universAAL.support.directives.mojos.ItestsCheckFixMojo" alt="" coords="15,209,153,234"/>
+<area shape="rect" id="node1_0" href="./AbstractCheckMojo.html" title="org.universAAL.support.directives.api.AbstractCheckMojo" alt="" coords="541,16,677,43"/>
+<area shape="rect" id="node1" href="./AbstractCheckMojo.html" title="&lt;TABLE&gt;" alt="" coords="531,5,688,53"/>
+<area shape="rect" id="node2_1" href="./AbstractFixableCheckMojo.html" title="org.universAAL.support.directives.api.AbstractFixableCheckMojo" alt="" coords="521,112,698,139"/>
+<area shape="rect" id="node2" href="./AbstractFixableCheckMojo.html" title="&lt;TABLE&gt;" alt="" coords="510,101,709,149"/>
+<area shape="rect" id="node3_2" href="../mojos/ItestsCheckFixMojo.html" title="org.universAAL.support.directives.mojos.ItestsCheckFixMojo" alt="" coords="15,208,153,235"/>
 <area shape="rect" id="node3" href="../mojos/ItestsCheckFixMojo.html" title="&lt;TABLE&gt;" alt="" coords="5,197,163,245"/>
-<area shape="rect" id="c931" href="../mojos/FelixDependencyCheckFixMojo.html" title="org.universAAL.support.directives.mojos.FelixDependencyCheckFixMojo" alt="" coords="197,209,403,234"/>
-<area shape="rect" id="node4" href="../mojos/FelixDependencyCheckFixMojo.html" title="&lt;TABLE&gt;" alt="" coords="187,197,413,245"/>
-<area shape="rect" id="c932" href="../mojos/DirectiveCheckMojo.html" title="org.universAAL.support.directives.mojos.DirectiveCheckMojo" alt="" coords="448,209,587,234"/>
-<area shape="rect" id="node5" href="../mojos/DirectiveCheckMojo.html" title="&lt;TABLE&gt;" alt="" coords="437,197,597,245"/>
-<area shape="rect" id="c933" href="../mojos/ModulesCheckMojo.html" title="org.universAAL.support.directives.mojos.ModulesCheckMojo" alt="" coords="632,209,768,234"/>
-<area shape="rect" id="node6" href="../mojos/ModulesCheckMojo.html" title="&lt;TABLE&gt;" alt="" coords="621,197,779,245"/>
-<area shape="rect" id="c939" href="../mojos/DependencyManagementCheckMojo.html" title="org.universAAL.support.directives.mojos.DependencyManagementCheckMojo" alt="" coords="813,209,1048,234"/>
-<area shape="rect" id="node7" href="../mojos/DependencyManagementCheckMojo.html" title="&lt;TABLE&gt;" alt="" coords="803,197,1059,245"/>
-<area shape="rect" id="c941" href="../mojos/LicenseMojo.html" title="org.universAAL.support.directives.mojos.LicenseMojo" alt="" coords="1093,209,1187,234"/>
-<area shape="rect" id="node8" href="../mojos/LicenseMojo.html" title="&lt;TABLE&gt;" alt="" coords="1083,197,1197,245"/>
+<area shape="rect" id="node4_3" href="../mojos/FelixDependencyCheckFixMojo.html" title="org.universAAL.support.directives.mojos.FelixDependencyCheckFixMojo" alt="" coords="199,208,404,235"/>
+<area shape="rect" id="node4" href="../mojos/FelixDependencyCheckFixMojo.html" title="&lt;TABLE&gt;" alt="" coords="188,197,415,245"/>
+<area shape="rect" id="node5_4" href="../mojos/DirectiveCheckMojo.html" title="org.universAAL.support.directives.mojos.DirectiveCheckMojo" alt="" coords="449,208,588,235"/>
+<area shape="rect" id="node5" href="../mojos/DirectiveCheckMojo.html" title="&lt;TABLE&gt;" alt="" coords="439,197,599,245"/>
+<area shape="rect" id="node6_5" href="../mojos/ModulesCheckMojo.html" title="org.universAAL.support.directives.mojos.ModulesCheckMojo" alt="" coords="633,208,769,235"/>
+<area shape="rect" id="node6" href="../mojos/ModulesCheckMojo.html" title="&lt;TABLE&gt;" alt="" coords="623,197,780,245"/>
+<area shape="rect" id="node7_6" href="../mojos/DependencyManagementCheckMojo.html" title="org.universAAL.support.directives.mojos.DependencyManagementCheckMojo" alt="" coords="815,208,1049,235"/>
+<area shape="rect" id="node7" href="../mojos/DependencyManagementCheckMojo.html" title="&lt;TABLE&gt;" alt="" coords="804,197,1060,245"/>
+<area shape="rect" id="node8_7" href="../mojos/LicenseMojo.html" title="org.universAAL.support.directives.mojos.LicenseMojo" alt="" coords="1095,208,1188,235"/>
+<area shape="rect" id="node8" href="../mojos/LicenseMojo.html" title="&lt;TABLE&gt;" alt="" coords="1084,197,1199,245"/>
 </map>
