@@ -9,67 +9,67 @@ digraph G {
 	node [fontname="Helvetica",fontsize=10,shape=plaintext];
 	nodesep=0.25;
 	ranksep=0.5;
-	// org.universAAL.support.directives.api.AbstractCheckMojo
-	c914 [label=<<table title="org.universAAL.support.directives.api.AbstractCheckMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./AbstractCheckMojo.html">
-		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"><font face="Helvetica-Oblique"> AbstractCheckMojo </font></td></tr>
-		</table></td></tr>
-		</table>>, URL="./AbstractCheckMojo.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
-	// org.universAAL.support.directives.api.AbstractFixableCheckMojo
-	c915 [label=<<table title="org.universAAL.support.directives.api.AbstractFixableCheckMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./AbstractFixableCheckMojo.html">
-		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"><font face="Helvetica-Oblique"> AbstractFixableCheckMojo </font></td></tr>
-		</table></td></tr>
-		</table>>, URL="./AbstractFixableCheckMojo.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
-	// org.universAAL.support.directives.mojos.ItestsCheckFixMojo
-	c930 [label=<<table title="org.universAAL.support.directives.mojos.ItestsCheckFixMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../mojos/ItestsCheckFixMojo.html">
-		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> ItestsCheckFixMojo </td></tr>
-		</table></td></tr>
-		</table>>, URL="../mojos/ItestsCheckFixMojo.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
-	// org.universAAL.support.directives.mojos.FelixDependencyCheckFixMojo
-	c931 [label=<<table title="org.universAAL.support.directives.mojos.FelixDependencyCheckFixMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../mojos/FelixDependencyCheckFixMojo.html">
-		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> FelixDependencyCheckFixMojo </td></tr>
-		</table></td></tr>
-		</table>>, URL="../mojos/FelixDependencyCheckFixMojo.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// org.universAAL.support.directives.mojos.DirectiveCheckMojo
-	c932 [label=<<table title="org.universAAL.support.directives.mojos.DirectiveCheckMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../mojos/DirectiveCheckMojo.html">
+	c922 [label=<<table title="org.universAAL.support.directives.mojos.DirectiveCheckMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../mojos/DirectiveCheckMojo.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> DirectiveCheckMojo </td></tr>
 		</table></td></tr>
 		</table>>, URL="../mojos/DirectiveCheckMojo.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+	// org.universAAL.support.directives.mojos.LicenseMojo
+	c924 [label=<<table title="org.universAAL.support.directives.mojos.LicenseMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../mojos/LicenseMojo.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"> LicenseMojo </td></tr>
+		</table></td></tr>
+		</table>>, URL="../mojos/LicenseMojo.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+	// org.universAAL.support.directives.mojos.FelixDependencyCheckFixMojo
+	c925 [label=<<table title="org.universAAL.support.directives.mojos.FelixDependencyCheckFixMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../mojos/FelixDependencyCheckFixMojo.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"> FelixDependencyCheckFixMojo </td></tr>
+		</table></td></tr>
+		</table>>, URL="../mojos/FelixDependencyCheckFixMojo.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// org.universAAL.support.directives.mojos.ModulesCheckMojo
 	c933 [label=<<table title="org.universAAL.support.directives.mojos.ModulesCheckMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../mojos/ModulesCheckMojo.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> ModulesCheckMojo </td></tr>
 		</table></td></tr>
 		</table>>, URL="../mojos/ModulesCheckMojo.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+	// org.universAAL.support.directives.mojos.ItestsCheckFixMojo
+	c934 [label=<<table title="org.universAAL.support.directives.mojos.ItestsCheckFixMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../mojos/ItestsCheckFixMojo.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"> ItestsCheckFixMojo </td></tr>
+		</table></td></tr>
+		</table>>, URL="../mojos/ItestsCheckFixMojo.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// org.universAAL.support.directives.mojos.DependencyManagementCheckMojo
-	c939 [label=<<table title="org.universAAL.support.directives.mojos.DependencyManagementCheckMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../mojos/DependencyManagementCheckMojo.html">
+	c935 [label=<<table title="org.universAAL.support.directives.mojos.DependencyManagementCheckMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../mojos/DependencyManagementCheckMojo.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> DependencyManagementCheckMojo </td></tr>
 		</table></td></tr>
 		</table>>, URL="../mojos/DependencyManagementCheckMojo.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
-	// org.universAAL.support.directives.mojos.LicenseMojo
-	c941 [label=<<table title="org.universAAL.support.directives.mojos.LicenseMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../mojos/LicenseMojo.html">
+	// org.universAAL.support.directives.api.AbstractFixableCheckMojo
+	c937 [label=<<table title="org.universAAL.support.directives.api.AbstractFixableCheckMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./AbstractFixableCheckMojo.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> LicenseMojo </td></tr>
+<tr><td align="center" balign="center"><font face="Helvetica-Oblique"> AbstractFixableCheckMojo </font></td></tr>
 		</table></td></tr>
-		</table>>, URL="../mojos/LicenseMojo.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
-	//org.universAAL.support.directives.api.AbstractFixableCheckMojo extends org.universAAL.support.directives.api.AbstractCheckMojo
-	c914:p -> c915:p [dir=back,arrowtail=empty];
-	//org.universAAL.support.directives.mojos.ItestsCheckFixMojo extends org.universAAL.support.directives.api.AbstractFixableCheckMojo
-	c915:p -> c930:p [dir=back,arrowtail=empty];
-	//org.universAAL.support.directives.mojos.FelixDependencyCheckFixMojo extends org.universAAL.support.directives.api.AbstractFixableCheckMojo
-	c915:p -> c931:p [dir=back,arrowtail=empty];
+		</table>>, URL="./AbstractFixableCheckMojo.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+	// org.universAAL.support.directives.api.AbstractCheckMojo
+	c941 [label=<<table title="org.universAAL.support.directives.api.AbstractCheckMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./AbstractCheckMojo.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"><font face="Helvetica-Oblique"> AbstractCheckMojo </font></td></tr>
+		</table></td></tr>
+		</table>>, URL="./AbstractCheckMojo.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	//org.universAAL.support.directives.mojos.DirectiveCheckMojo extends org.universAAL.support.directives.api.AbstractFixableCheckMojo
-	c915:p -> c932:p [dir=back,arrowtail=empty];
-	//org.universAAL.support.directives.mojos.ModulesCheckMojo extends org.universAAL.support.directives.api.AbstractFixableCheckMojo
-	c915:p -> c933:p [dir=back,arrowtail=empty];
-	//org.universAAL.support.directives.mojos.DependencyManagementCheckMojo extends org.universAAL.support.directives.api.AbstractFixableCheckMojo
-	c915:p -> c939:p [dir=back,arrowtail=empty];
+	c937:p -> c922:p [dir=back,arrowtail=empty];
 	//org.universAAL.support.directives.mojos.LicenseMojo extends org.universAAL.support.directives.api.AbstractFixableCheckMojo
-	c915:p -> c941:p [dir=back,arrowtail=empty];
+	c937:p -> c924:p [dir=back,arrowtail=empty];
+	//org.universAAL.support.directives.mojos.FelixDependencyCheckFixMojo extends org.universAAL.support.directives.api.AbstractFixableCheckMojo
+	c937:p -> c925:p [dir=back,arrowtail=empty];
+	//org.universAAL.support.directives.mojos.ModulesCheckMojo extends org.universAAL.support.directives.api.AbstractFixableCheckMojo
+	c937:p -> c933:p [dir=back,arrowtail=empty];
+	//org.universAAL.support.directives.mojos.ItestsCheckFixMojo extends org.universAAL.support.directives.api.AbstractFixableCheckMojo
+	c937:p -> c934:p [dir=back,arrowtail=empty];
+	//org.universAAL.support.directives.mojos.DependencyManagementCheckMojo extends org.universAAL.support.directives.api.AbstractFixableCheckMojo
+	c937:p -> c935:p [dir=back,arrowtail=empty];
+	//org.universAAL.support.directives.api.AbstractFixableCheckMojo extends org.universAAL.support.directives.api.AbstractCheckMojo
+	c941:p -> c937:p [dir=back,arrowtail=empty];
 }
 

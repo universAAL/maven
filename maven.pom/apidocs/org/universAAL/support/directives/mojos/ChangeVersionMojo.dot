@@ -9,19 +9,19 @@ digraph G {
 	node [fontname="Helvetica",fontsize=10,shape=plaintext];
 	nodesep=0.25;
 	ranksep=0.5;
-	// org.universAAL.support.directives.api.AbstractProcedureMojo
-	c1118 [label=<<table title="org.universAAL.support.directives.api.AbstractProcedureMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../api/AbstractProcedureMojo.html">
-		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"><font face="Helvetica-Oblique"> AbstractProcedureMojo </font></td></tr>
-		</table></td></tr>
-		</table>>, URL="../api/AbstractProcedureMojo.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// org.universAAL.support.directives.mojos.ChangeVersionMojo
-	c1148 [label=<<table title="org.universAAL.support.directives.mojos.ChangeVersionMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./ChangeVersionMojo.html">
+	c1131 [label=<<table title="org.universAAL.support.directives.mojos.ChangeVersionMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./ChangeVersionMojo.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> ChangeVersionMojo </td></tr>
 		</table></td></tr>
 		</table>>, URL="./ChangeVersionMojo.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+	// org.universAAL.support.directives.api.AbstractProcedureMojo
+	c1150 [label=<<table title="org.universAAL.support.directives.api.AbstractProcedureMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../api/AbstractProcedureMojo.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"><font face="Helvetica-Oblique"> AbstractProcedureMojo </font></td></tr>
+		</table></td></tr>
+		</table>>, URL="../api/AbstractProcedureMojo.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	//org.universAAL.support.directives.mojos.ChangeVersionMojo extends org.universAAL.support.directives.api.AbstractProcedureMojo
-	c1118:p -> c1148:p [dir=back,arrowtail=empty];
+	c1150:p -> c1131:p [dir=back,arrowtail=empty];
 }
 

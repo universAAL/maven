@@ -9,12 +9,18 @@ digraph G {
 	node [fontname="Helvetica",fontsize=10,shape=plaintext];
 	nodesep=0.25;
 	ranksep=0.5;
-	// org.universAAL.support.directives.api.AbstractProcedureMojo
-	c979 [label=<<table title="org.universAAL.support.directives.api.AbstractProcedureMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./AbstractProcedureMojo.html">
+	// org.universAAL.support.directives.mojos.IncreaseVersionMojo
+	c990 [label=<<table title="org.universAAL.support.directives.mojos.IncreaseVersionMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../mojos/IncreaseVersionMojo.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"><font face="Helvetica-Oblique"> AbstractProcedureMojo </font></td></tr>
+<tr><td align="center" balign="center"> IncreaseVersionMojo </td></tr>
 		</table></td></tr>
-		</table>>, URL="./AbstractProcedureMojo.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+		</table>>, URL="../mojos/IncreaseVersionMojo.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+	// org.universAAL.support.directives.mojos.ChangeVersionMojo
+	c992 [label=<<table title="org.universAAL.support.directives.mojos.ChangeVersionMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../mojos/ChangeVersionMojo.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"> ChangeVersionMojo </td></tr>
+		</table></td></tr>
+		</table>>, URL="../mojos/ChangeVersionMojo.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// org.universAAL.support.directives.mojos.UpdateRootVersionsMojo
 	c997 [label=<<table title="org.universAAL.support.directives.mojos.UpdateRootVersionsMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../mojos/UpdateRootVersionsMojo.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
@@ -22,33 +28,27 @@ digraph G {
 		</table></td></tr>
 		</table>>, URL="../mojos/UpdateRootVersionsMojo.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// org.universAAL.support.directives.mojos.UpdateParentPom
-	c1005 [label=<<table title="org.universAAL.support.directives.mojos.UpdateParentPom" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../mojos/UpdateParentPom.html">
+	c1000 [label=<<table title="org.universAAL.support.directives.mojos.UpdateParentPom" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../mojos/UpdateParentPom.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> UpdateParentPom </td></tr>
 		</table></td></tr>
 		</table>>, URL="../mojos/UpdateParentPom.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
-	// org.universAAL.support.directives.mojos.IncreaseVersionMojo
-	c1007 [label=<<table title="org.universAAL.support.directives.mojos.IncreaseVersionMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../mojos/IncreaseVersionMojo.html">
+	// org.universAAL.support.directives.api.AbstractProcedureMojo
+	c1011 [label=<<table title="org.universAAL.support.directives.api.AbstractProcedureMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./AbstractProcedureMojo.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> IncreaseVersionMojo </td></tr>
+<tr><td align="center" balign="center"><font face="Helvetica-Oblique"> AbstractProcedureMojo </font></td></tr>
 		</table></td></tr>
-		</table>>, URL="../mojos/IncreaseVersionMojo.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
-	// org.universAAL.support.directives.mojos.ChangeVersionMojo
-	c1009 [label=<<table title="org.universAAL.support.directives.mojos.ChangeVersionMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../mojos/ChangeVersionMojo.html">
-		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> ChangeVersionMojo </td></tr>
-		</table></td></tr>
-		</table>>, URL="../mojos/ChangeVersionMojo.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
-	//org.universAAL.support.directives.api.AbstractProcedureMojo extends org.apache.maven.plugin.AbstractMojo
-	c1047:p -> c979:p [dir=back,arrowtail=empty];
-	//org.universAAL.support.directives.mojos.UpdateRootVersionsMojo extends org.universAAL.support.directives.api.AbstractProcedureMojo
-	c979:p -> c997:p [dir=back,arrowtail=empty];
-	//org.universAAL.support.directives.mojos.UpdateParentPom extends org.universAAL.support.directives.api.AbstractProcedureMojo
-	c979:p -> c1005:p [dir=back,arrowtail=empty];
+		</table>>, URL="./AbstractProcedureMojo.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	//org.universAAL.support.directives.mojos.IncreaseVersionMojo extends org.universAAL.support.directives.api.AbstractProcedureMojo
-	c979:p -> c1007:p [dir=back,arrowtail=empty];
+	c1011:p -> c990:p [dir=back,arrowtail=empty];
 	//org.universAAL.support.directives.mojos.ChangeVersionMojo extends org.universAAL.support.directives.api.AbstractProcedureMojo
-	c979:p -> c1009:p [dir=back,arrowtail=empty];
+	c1011:p -> c992:p [dir=back,arrowtail=empty];
+	//org.universAAL.support.directives.mojos.UpdateRootVersionsMojo extends org.universAAL.support.directives.api.AbstractProcedureMojo
+	c1011:p -> c997:p [dir=back,arrowtail=empty];
+	//org.universAAL.support.directives.mojos.UpdateParentPom extends org.universAAL.support.directives.api.AbstractProcedureMojo
+	c1011:p -> c1000:p [dir=back,arrowtail=empty];
+	//org.universAAL.support.directives.api.AbstractProcedureMojo extends org.apache.maven.plugin.AbstractMojo
+	c1047:p -> c1011:p [dir=back,arrowtail=empty];
 	// org.apache.maven.plugin.AbstractMojo
 	c1047 [label=<<table title="org.apache.maven.plugin.AbstractMojo" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/org/apache/maven/plugin/AbstractMojo.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">

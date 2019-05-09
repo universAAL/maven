@@ -9,22 +9,22 @@ digraph G {
 	node [fontname="Helvetica",fontsize=10,shape=plaintext];
 	nodesep=0.25;
 	ranksep=0.5;
-	// org.universAAL.maven.IndexingDependencyNodeVisitor
-	c2413 [label=<<table title="org.universAAL.maven.IndexingDependencyNodeVisitor" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./IndexingDependencyNodeVisitor.html">
-		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> IndexingDependencyNodeVisitor </td></tr>
-		</table></td></tr>
-		</table>>, URL="./IndexingDependencyNodeVisitor.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// org.universAAL.maven.FilteringVisitorSupport
-	c2424 [label=<<table title="org.universAAL.maven.FilteringVisitorSupport" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./FilteringVisitorSupport.html">
+	c2428 [label=<<table title="org.universAAL.maven.FilteringVisitorSupport" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./FilteringVisitorSupport.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"><font face="Helvetica-Oblique"> FilteringVisitorSupport </font></td></tr>
 		</table></td></tr>
 		</table>>, URL="./FilteringVisitorSupport.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+	// org.universAAL.maven.IndexingDependencyNodeVisitor
+	c2429 [label=<<table title="org.universAAL.maven.IndexingDependencyNodeVisitor" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./IndexingDependencyNodeVisitor.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"> IndexingDependencyNodeVisitor </td></tr>
+		</table></td></tr>
+		</table>>, URL="./IndexingDependencyNodeVisitor.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	//org.universAAL.maven.IndexingDependencyNodeVisitor extends org.universAAL.maven.FilteringVisitorSupport
-	c2424:p -> c2413:p [dir=back,arrowtail=empty];
+	c2428:p -> c2429:p [dir=back,arrowtail=empty];
 	//org.universAAL.maven.IndexingDependencyNodeVisitor implements org.apache.maven.shared.dependency.tree.traversal.DependencyNodeVisitor
-	c2432:p -> c2413:p [dir=back,arrowtail=empty,style=dashed];
+	c2432:p -> c2429:p [dir=back,arrowtail=empty,style=dashed];
 	// org.apache.maven.shared.dependency.tree.traversal.DependencyNodeVisitor
 	c2432 [label=<<table title="org.apache.maven.shared.dependency.tree.traversal.DependencyNodeVisitor" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/org/apache/maven/shared/dependency/tree/traversal/DependencyNodeVisitor.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">

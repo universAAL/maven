@@ -1,8 +1,8 @@
 <map id="G" name="G">
-<area shape="rect" id="node1_0" href="./IndexingDependencyNodeVisitor.html" title="org.universAAL.maven.IndexingDependencyNodeVisitor" alt="" coords="16,112,227,139"/>
-<area shape="rect" id="node1" href="./IndexingDependencyNodeVisitor.html" title="&lt;TABLE&gt;" alt="" coords="5,101,237,149"/>
-<area shape="rect" id="node2_1" href="./LaunchOrderDependencyNodeVisitor.html" title="org.universAAL.maven.LaunchOrderDependencyNodeVisitor" alt="" coords="273,112,509,139"/>
-<area shape="rect" id="node2" href="./LaunchOrderDependencyNodeVisitor.html" title="&lt;TABLE&gt;" alt="" coords="262,101,519,149"/>
-<area shape="rect" id="node3_2" href="./FilteringVisitorSupport.html" title="org.universAAL.maven.FilteringVisitorSupport" alt="" coords="181,16,331,43"/>
-<area shape="rect" id="node3" href="./FilteringVisitorSupport.html" title="&lt;TABLE&gt;" alt="" coords="171,5,341,53"/>
+<area shape="rect" id="node1_0" href="./FilteringVisitorSupport.html" title="org.universAAL.maven.FilteringVisitorSupport" alt="" coords="181,16,331,43"/>
+<area shape="rect" id="node1" href="./FilteringVisitorSupport.html" title="&lt;TABLE&gt;" alt="" coords="171,5,341,53"/>
+<area shape="rect" id="node2_1" href="./IndexingDependencyNodeVisitor.html" title="org.universAAL.maven.IndexingDependencyNodeVisitor" alt="" coords="16,112,227,139"/>
+<area shape="rect" id="node2" href="./IndexingDependencyNodeVisitor.html" title="&lt;TABLE&gt;" alt="" coords="5,101,237,149"/>
+<area shape="rect" id="node3_2" href="./LaunchOrderDependencyNodeVisitor.html" title="org.universAAL.maven.LaunchOrderDependencyNodeVisitor" alt="" coords="273,112,509,139"/>
+<area shape="rect" id="node3" href="./LaunchOrderDependencyNodeVisitor.html" title="&lt;TABLE&gt;" alt="" coords="262,101,519,149"/>
 </map>

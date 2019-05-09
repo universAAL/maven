@@ -9,77 +9,77 @@ digraph G {
 	node [fontname="Helvetica",fontsize=10,shape=plaintext];
 	nodesep=0.25;
 	ranksep=0.5;
-	// org.universAAL.support.directives.api.AggregatedCheck
-	c699 [label=<<table title="org.universAAL.support.directives.api.AggregatedCheck" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./AggregatedCheck.html">
+	// org.universAAL.support.directives.checks.LicenseHeaderCheckFix
+	c699 [label=<<table title="org.universAAL.support.directives.checks.LicenseHeaderCheckFix" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../checks/LicenseHeaderCheckFix.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"><font face="Helvetica-Oblique"> AggregatedCheck </font></td></tr>
+<tr><td align="center" balign="center"> LicenseHeaderCheckFix </td></tr>
 		</table></td></tr>
-		</table>>, URL="./AggregatedCheck.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+		</table>>, URL="../checks/LicenseHeaderCheckFix.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+	// org.universAAL.support.directives.checks.ModulesCheckFix
+	c701 [label=<<table title="org.universAAL.support.directives.checks.ModulesCheckFix" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../checks/ModulesCheckFix.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"> ModulesCheckFix </td></tr>
+		</table></td></tr>
+		</table>>, URL="../checks/ModulesCheckFix.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+	// org.universAAL.support.directives.checks.FelixDepCheckFix
+	c703 [label=<<table title="org.universAAL.support.directives.checks.FelixDepCheckFix" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../checks/FelixDepCheckFix.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"> FelixDepCheckFix </td></tr>
+		</table></td></tr>
+		</table>>, URL="../checks/FelixDepCheckFix.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+	// org.universAAL.support.directives.checks.LicenseFileCheckFix
+	c707 [label=<<table title="org.universAAL.support.directives.checks.LicenseFileCheckFix" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../checks/LicenseFileCheckFix.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"> LicenseFileCheckFix </td></tr>
+		</table></td></tr>
+		</table>>, URL="../checks/LicenseFileCheckFix.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+	// org.universAAL.support.directives.checks.ItestsCheckFix
+	c709 [label=<<table title="org.universAAL.support.directives.checks.ItestsCheckFix" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../checks/ItestsCheckFix.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"> ItestsCheckFix </td></tr>
+		</table></td></tr>
+		</table>>, URL="../checks/ItestsCheckFix.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+	// org.universAAL.support.directives.checks.DependencyManagementCheckFix
+	c710 [label=<<table title="org.universAAL.support.directives.checks.DependencyManagementCheckFix" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../checks/DependencyManagementCheckFix.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"> DependencyManagementCheckFix </td></tr>
+		</table></td></tr>
+		</table>>, URL="../checks/DependencyManagementCheckFix.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// org.universAAL.support.directives.api.APIFixableCheck
-	c702 [label=<<table title="org.universAAL.support.directives.api.APIFixableCheck" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./APIFixableCheck.html">
+	c726 [label=<<table title="org.universAAL.support.directives.api.APIFixableCheck" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./APIFixableCheck.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> &#171;interface&#187; </td></tr>
 <tr><td align="center" balign="center"> APIFixableCheck </td></tr>
 		</table></td></tr>
 		</table>>, URL="./APIFixableCheck.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// org.universAAL.support.directives.api.APICheck
-	c703 [label=<<table title="org.universAAL.support.directives.api.APICheck" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./APICheck.html">
+	c728 [label=<<table title="org.universAAL.support.directives.api.APICheck" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./APICheck.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> &#171;interface&#187; </td></tr>
 <tr><td align="center" balign="center"> APICheck </td></tr>
 		</table></td></tr>
 		</table>>, URL="./APICheck.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
-	// org.universAAL.support.directives.checks.ItestsCheckFix
-	c706 [label=<<table title="org.universAAL.support.directives.checks.ItestsCheckFix" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../checks/ItestsCheckFix.html">
+	// org.universAAL.support.directives.api.AggregatedCheck
+	c729 [label=<<table title="org.universAAL.support.directives.api.AggregatedCheck" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./AggregatedCheck.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> ItestsCheckFix </td></tr>
+<tr><td align="center" balign="center"><font face="Helvetica-Oblique"> AggregatedCheck </font></td></tr>
 		</table></td></tr>
-		</table>>, URL="../checks/ItestsCheckFix.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
-	// org.universAAL.support.directives.checks.LicenseHeaderCheckFix
-	c707 [label=<<table title="org.universAAL.support.directives.checks.LicenseHeaderCheckFix" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../checks/LicenseHeaderCheckFix.html">
-		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> LicenseHeaderCheckFix </td></tr>
-		</table></td></tr>
-		</table>>, URL="../checks/LicenseHeaderCheckFix.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
-	// org.universAAL.support.directives.checks.LicenseFileCheckFix
-	c709 [label=<<table title="org.universAAL.support.directives.checks.LicenseFileCheckFix" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../checks/LicenseFileCheckFix.html">
-		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> LicenseFileCheckFix </td></tr>
-		</table></td></tr>
-		</table>>, URL="../checks/LicenseFileCheckFix.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
-	// org.universAAL.support.directives.checks.ModulesCheckFix
-	c714 [label=<<table title="org.universAAL.support.directives.checks.ModulesCheckFix" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../checks/ModulesCheckFix.html">
-		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> ModulesCheckFix </td></tr>
-		</table></td></tr>
-		</table>>, URL="../checks/ModulesCheckFix.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
-	// org.universAAL.support.directives.checks.DependencyManagementCheckFix
-	c716 [label=<<table title="org.universAAL.support.directives.checks.DependencyManagementCheckFix" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../checks/DependencyManagementCheckFix.html">
-		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> DependencyManagementCheckFix </td></tr>
-		</table></td></tr>
-		</table>>, URL="../checks/DependencyManagementCheckFix.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
-	// org.universAAL.support.directives.checks.FelixDepCheckFix
-	c717 [label=<<table title="org.universAAL.support.directives.checks.FelixDepCheckFix" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../checks/FelixDepCheckFix.html">
-		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> FelixDepCheckFix </td></tr>
-		</table></td></tr>
-		</table>>, URL="../checks/FelixDepCheckFix.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
-	//org.universAAL.support.directives.api.AggregatedCheck implements org.universAAL.support.directives.api.APIFixableCheck
-	c702:p -> c699:p [dir=back,arrowtail=empty,style=dashed];
-	//org.universAAL.support.directives.api.APIFixableCheck implements org.universAAL.support.directives.api.APICheck
-	c703:p -> c702:p [dir=back,arrowtail=empty,style=dashed];
-	//org.universAAL.support.directives.checks.ItestsCheckFix implements org.universAAL.support.directives.api.APIFixableCheck
-	c702:p -> c706:p [dir=back,arrowtail=empty,style=dashed];
+		</table>>, URL="./AggregatedCheck.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	//org.universAAL.support.directives.checks.LicenseHeaderCheckFix implements org.universAAL.support.directives.api.APIFixableCheck
-	c702:p -> c707:p [dir=back,arrowtail=empty,style=dashed];
-	//org.universAAL.support.directives.checks.LicenseFileCheckFix implements org.universAAL.support.directives.api.APIFixableCheck
-	c702:p -> c709:p [dir=back,arrowtail=empty,style=dashed];
+	c726:p -> c699:p [dir=back,arrowtail=empty,style=dashed];
 	//org.universAAL.support.directives.checks.ModulesCheckFix implements org.universAAL.support.directives.api.APIFixableCheck
-	c702:p -> c714:p [dir=back,arrowtail=empty,style=dashed];
-	//org.universAAL.support.directives.checks.DependencyManagementCheckFix implements org.universAAL.support.directives.api.APIFixableCheck
-	c702:p -> c716:p [dir=back,arrowtail=empty,style=dashed];
+	c726:p -> c701:p [dir=back,arrowtail=empty,style=dashed];
 	//org.universAAL.support.directives.checks.FelixDepCheckFix implements org.universAAL.support.directives.api.APIFixableCheck
-	c702:p -> c717:p [dir=back,arrowtail=empty,style=dashed];
+	c726:p -> c703:p [dir=back,arrowtail=empty,style=dashed];
+	//org.universAAL.support.directives.checks.LicenseFileCheckFix implements org.universAAL.support.directives.api.APIFixableCheck
+	c726:p -> c707:p [dir=back,arrowtail=empty,style=dashed];
+	//org.universAAL.support.directives.checks.ItestsCheckFix implements org.universAAL.support.directives.api.APIFixableCheck
+	c726:p -> c709:p [dir=back,arrowtail=empty,style=dashed];
+	//org.universAAL.support.directives.checks.DependencyManagementCheckFix implements org.universAAL.support.directives.api.APIFixableCheck
+	c726:p -> c710:p [dir=back,arrowtail=empty,style=dashed];
+	//org.universAAL.support.directives.api.APIFixableCheck implements org.universAAL.support.directives.api.APICheck
+	c728:p -> c726:p [dir=back,arrowtail=empty,style=dashed];
+	//org.universAAL.support.directives.api.AggregatedCheck implements org.universAAL.support.directives.api.APIFixableCheck
+	c726:p -> c729:p [dir=back,arrowtail=empty,style=dashed];
 }
 

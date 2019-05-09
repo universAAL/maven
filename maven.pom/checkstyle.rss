@@ -23,7 +23,7 @@ under the License.
     <link>http://xtras/maven/maven.pom/</link>
     <description>universAAL Maven Suite - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2018 universAAL Consortium</copyright>
+    <copyright>&#169;2019 universAAL Consortium</copyright>
     <item>
       <title>File: 85,
              Errors: 466,
@@ -80,7 +80,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
                 <td>
                   11
@@ -122,24 +122,10 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
-                </td>
-                <td>
-                  10
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://xtras/maven/maven.pom//checkstyle.html#org.universAAL.support.directives.checks.DecoupleCheck.java">org/universAAL/support/directives/checks/DecoupleCheck.java</a>
-                </td>
-                <td>
                   1
                 </td>
                 <td>
-                  2
-                </td>
-                <td>
-                  4
+                  10
                 </td>
               </tr>
                           <tr>
@@ -154,6 +140,20 @@ under the License.
                 </td>
                 <td>
                   35
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://xtras/maven/maven.pom//checkstyle.html#org.universAAL.support.directives.checks.DecoupleCheck.java">org/universAAL/support/directives/checks/DecoupleCheck.java</a>
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  4
                 </td>
               </tr>
                           <tr>
@@ -178,7 +178,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  1
                 </td>
                 <td>
                   2
@@ -206,7 +206,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  1
                 </td>
                 <td>
                   1
@@ -220,7 +220,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
                 <td>
                   2
@@ -276,7 +276,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
                 <td>
                   2
@@ -318,7 +318,7 @@ under the License.
                   1
                 </td>
                 <td>
-                  2
+                  3
                 </td>
                 <td>
                   21
@@ -332,7 +332,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
                 <td>
                   5
@@ -374,7 +374,7 @@ under the License.
                   3
                 </td>
                 <td>
-                  2
+                  1
                 </td>
                 <td>
                   15
@@ -402,7 +402,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
                 <td>
                   1
@@ -430,7 +430,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
                 <td>
                   0
@@ -570,7 +570,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  1
                 </td>
                 <td>
                   6
@@ -662,20 +662,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://xtras/maven/maven.pom//checkstyle.html#org.universAAL.support.directives.api.APIFixableCheck.java">org/universAAL/support/directives/api/APIFixableCheck.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://xtras/maven/maven.pom//checkstyle.html#org.universAAL.support.directives.checks.ModulesCheckFix.java">org/universAAL/support/directives/checks/ModulesCheckFix.java</a>
                 </td>
                 <td>
@@ -686,6 +672,20 @@ under the License.
                 </td>
                 <td>
                   19
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://xtras/maven/maven.pom//checkstyle.html#org.universAAL.support.directives.api.APIFixableCheck.java">org/universAAL/support/directives/api/APIFixableCheck.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
               </tr>
                           <tr>
@@ -808,7 +808,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  1
                 </td>
                 <td>
                   2
@@ -998,20 +998,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://xtras/maven/maven.pom//checkstyle.html#org.universAAL.maven.LaunchOrderDependencyNodeVisitor.java">org/universAAL/maven/LaunchOrderDependencyNodeVisitor.java</a>
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://xtras/maven/maven.pom//checkstyle.html#org.universAAL.maven.treebuilder.DependencyTreeResolutionListener.java">org/universAAL/maven/treebuilder/DependencyTreeResolutionListener.java</a>
                 </td>
                 <td>
@@ -1022,6 +1008,20 @@ under the License.
                 </td>
                 <td>
                   35
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://xtras/maven/maven.pom//checkstyle.html#org.universAAL.maven.LaunchOrderDependencyNodeVisitor.java">org/universAAL/maven/LaunchOrderDependencyNodeVisitor.java</a>
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
                 </td>
               </tr>
                           <tr>
@@ -1200,7 +1200,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  1
                 </td>
                 <td>
                   0

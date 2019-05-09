@@ -1,14 +1,14 @@
 <map id="G" name="G">
-<area shape="rect" id="node1_0" href="./AbstractProcedureMojo.html" title="org.universAAL.support.directives.api.AbstractProcedureMojo" alt="" coords="307,112,464,139"/>
-<area shape="rect" id="node1" href="./AbstractProcedureMojo.html" title="&lt;TABLE&gt;" alt="" coords="296,101,475,149"/>
-<area shape="rect" id="node2_1" href="../mojos/UpdateRootVersionsMojo.html" title="org.universAAL.support.directives.mojos.UpdateRootVersionsMojo" alt="" coords="15,208,185,235"/>
-<area shape="rect" id="node2" href="../mojos/UpdateRootVersionsMojo.html" title="&lt;TABLE&gt;" alt="" coords="5,197,195,245"/>
-<area shape="rect" id="node3_2" href="../mojos/UpdateParentPom.html" title="org.universAAL.support.directives.mojos.UpdateParentPom" alt="" coords="231,208,359,235"/>
-<area shape="rect" id="node3" href="../mojos/UpdateParentPom.html" title="&lt;TABLE&gt;" alt="" coords="220,197,369,245"/>
-<area shape="rect" id="node4_3" href="../mojos/IncreaseVersionMojo.html" title="org.universAAL.support.directives.mojos.IncreaseVersionMojo" alt="" coords="405,208,547,235"/>
-<area shape="rect" id="node4" href="../mojos/IncreaseVersionMojo.html" title="&lt;TABLE&gt;" alt="" coords="394,197,558,245"/>
-<area shape="rect" id="node5_4" href="../mojos/ChangeVersionMojo.html" title="org.universAAL.support.directives.mojos.ChangeVersionMojo" alt="" coords="593,208,730,235"/>
-<area shape="rect" id="node5" href="../mojos/ChangeVersionMojo.html" title="&lt;TABLE&gt;" alt="" coords="582,197,741,245"/>
-<area shape="rect" id="node6_5" href="http://java.sun.com/j2se/1.4.2/docs/api/org/apache/maven/plugin/AbstractMojo.html" title="org.apache.maven.plugin.AbstractMojo" alt="" coords="337,16,434,43"/>
-<area shape="rect" id="node6" href="http://java.sun.com/j2se/1.4.2/docs/api/org/apache/maven/plugin/AbstractMojo.html" title="&lt;TABLE&gt;" alt="" coords="326,5,445,53"/>
+<area shape="rect" id="node1_0" href="../mojos/IncreaseVersionMojo.html" title="org.universAAL.support.directives.mojos.IncreaseVersionMojo" alt="" coords="15,208,158,235"/>
+<area shape="rect" id="node1" href="../mojos/IncreaseVersionMojo.html" title="&lt;TABLE&gt;" alt="" coords="5,197,169,245"/>
+<area shape="rect" id="node2_1" href="../mojos/ChangeVersionMojo.html" title="org.universAAL.support.directives.mojos.ChangeVersionMojo" alt="" coords="203,208,341,235"/>
+<area shape="rect" id="node2" href="../mojos/ChangeVersionMojo.html" title="&lt;TABLE&gt;" alt="" coords="193,197,351,245"/>
+<area shape="rect" id="node3_2" href="../mojos/UpdateRootVersionsMojo.html" title="org.universAAL.support.directives.mojos.UpdateRootVersionsMojo" alt="" coords="386,208,555,235"/>
+<area shape="rect" id="node3" href="../mojos/UpdateRootVersionsMojo.html" title="&lt;TABLE&gt;" alt="" coords="375,197,566,245"/>
+<area shape="rect" id="node4_3" href="../mojos/UpdateParentPom.html" title="org.universAAL.support.directives.mojos.UpdateParentPom" alt="" coords="601,208,729,235"/>
+<area shape="rect" id="node4" href="../mojos/UpdateParentPom.html" title="&lt;TABLE&gt;" alt="" coords="591,197,740,245"/>
+<area shape="rect" id="node5_4" href="./AbstractProcedureMojo.html" title="org.universAAL.support.directives.api.AbstractProcedureMojo" alt="" coords="292,112,449,139"/>
+<area shape="rect" id="node5" href="./AbstractProcedureMojo.html" title="&lt;TABLE&gt;" alt="" coords="281,101,460,149"/>
+<area shape="rect" id="node6_5" href="http://java.sun.com/j2se/1.4.2/docs/api/org/apache/maven/plugin/AbstractMojo.html" title="org.apache.maven.plugin.AbstractMojo" alt="" coords="322,16,419,43"/>
+<area shape="rect" id="node6" href="http://java.sun.com/j2se/1.4.2/docs/api/org/apache/maven/plugin/AbstractMojo.html" title="&lt;TABLE&gt;" alt="" coords="311,5,430,53"/>
 </map>

@@ -9,70 +9,70 @@ digraph G {
 	node [fontname="Helvetica",fontsize=10,shape=plaintext];
 	nodesep=0.25;
 	ranksep=0.5;
-	// org.universAAL.support.directives.checks.ItestsCheckFix
-	c4311 [label=<<table title="org.universAAL.support.directives.checks.ItestsCheckFix" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../checks/ItestsCheckFix.html">
-		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> ItestsCheckFix </td></tr>
-		</table></td></tr>
-		</table>>, URL="../checks/ItestsCheckFix.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// org.universAAL.support.directives.checks.ModulesCheckFix
-	c4319 [label=<<table title="org.universAAL.support.directives.checks.ModulesCheckFix" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../checks/ModulesCheckFix.html">
+	c4306 [label=<<table title="org.universAAL.support.directives.checks.ModulesCheckFix" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../checks/ModulesCheckFix.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> ModulesCheckFix </td></tr>
 		</table></td></tr>
 		</table>>, URL="../checks/ModulesCheckFix.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
-	// org.universAAL.support.directives.checks.DependencyManagementCheckFix
-	c4321 [label=<<table title="org.universAAL.support.directives.checks.DependencyManagementCheckFix" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../checks/DependencyManagementCheckFix.html">
-		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> DependencyManagementCheckFix </td></tr>
-		</table></td></tr>
-		</table>>, URL="../checks/DependencyManagementCheckFix.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// org.universAAL.support.directives.checks.FelixDepCheckFix
-	c4322 [label=<<table title="org.universAAL.support.directives.checks.FelixDepCheckFix" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../checks/FelixDepCheckFix.html">
+	c4308 [label=<<table title="org.universAAL.support.directives.checks.FelixDepCheckFix" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../checks/FelixDepCheckFix.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> FelixDepCheckFix </td></tr>
 		</table></td></tr>
 		</table>>, URL="../checks/FelixDepCheckFix.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
-	// org.universAAL.support.directives.procedures.UpdateRootVersionsProcedure
-	c4338 [label=<<table title="org.universAAL.support.directives.procedures.UpdateRootVersionsProcedure" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../procedures/UpdateRootVersionsProcedure.html">
+	// org.universAAL.support.directives.checks.ItestsCheckFix
+	c4314 [label=<<table title="org.universAAL.support.directives.checks.ItestsCheckFix" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../checks/ItestsCheckFix.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> UpdateRootVersionsProcedure </td></tr>
+<tr><td align="center" balign="center"> ItestsCheckFix </td></tr>
 		</table></td></tr>
-		</table>>, URL="../procedures/UpdateRootVersionsProcedure.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
-	// org.universAAL.support.directives.procedures.ChangeVersionProcedure
-	c4339 [label=<<table title="org.universAAL.support.directives.procedures.ChangeVersionProcedure" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../procedures/ChangeVersionProcedure.html">
+		</table>>, URL="../checks/ItestsCheckFix.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+	// org.universAAL.support.directives.checks.DependencyManagementCheckFix
+	c4315 [label=<<table title="org.universAAL.support.directives.checks.DependencyManagementCheckFix" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../checks/DependencyManagementCheckFix.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> ChangeVersionProcedure </td></tr>
+<tr><td align="center" balign="center"> DependencyManagementCheckFix </td></tr>
 		</table></td></tr>
-		</table>>, URL="../procedures/ChangeVersionProcedure.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
-	// org.universAAL.support.directives.procedures.UpdateParentPomInteractiveProcedure
-	c4340 [label=<<table title="org.universAAL.support.directives.procedures.UpdateParentPomInteractiveProcedure" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../procedures/UpdateParentPomInteractiveProcedure.html">
-		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-<tr><td align="center" balign="center"> UpdateParentPomInteractiveProcedure </td></tr>
-		</table></td></tr>
-		</table>>, URL="../procedures/UpdateParentPomInteractiveProcedure.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+		</table>>, URL="../checks/DependencyManagementCheckFix.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	// org.universAAL.support.directives.util.PomFixer
-	c4346 [label=<<table title="org.universAAL.support.directives.util.PomFixer" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./PomFixer.html">
+	c4341 [label=<<table title="org.universAAL.support.directives.util.PomFixer" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./PomFixer.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 <tr><td align="center" balign="center"> &#171;interface&#187; </td></tr>
 <tr><td align="center" balign="center"> PomFixer </td></tr>
 		</table></td></tr>
 		</table>>, URL="./PomFixer.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
-	//org.universAAL.support.directives.checks.ItestsCheckFix implements org.universAAL.support.directives.util.PomFixer
-	c4346:p -> c4311:p [dir=back,arrowtail=empty,style=dashed];
+	// org.universAAL.support.directives.procedures.UpdateParentPomInteractiveProcedure
+	c4343 [label=<<table title="org.universAAL.support.directives.procedures.UpdateParentPomInteractiveProcedure" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../procedures/UpdateParentPomInteractiveProcedure.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"> UpdateParentPomInteractiveProcedure </td></tr>
+		</table></td></tr>
+		</table>>, URL="../procedures/UpdateParentPomInteractiveProcedure.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+	// org.universAAL.support.directives.procedures.ChangeVersionProcedure
+	c4344 [label=<<table title="org.universAAL.support.directives.procedures.ChangeVersionProcedure" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../procedures/ChangeVersionProcedure.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"> ChangeVersionProcedure </td></tr>
+		</table></td></tr>
+		</table>>, URL="../procedures/ChangeVersionProcedure.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
+	// org.universAAL.support.directives.procedures.UpdateRootVersionsProcedure
+	c4346 [label=<<table title="org.universAAL.support.directives.procedures.UpdateRootVersionsProcedure" border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="../procedures/UpdateRootVersionsProcedure.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+<tr><td align="center" balign="center"> UpdateRootVersionsProcedure </td></tr>
+		</table></td></tr>
+		</table>>, URL="../procedures/UpdateRootVersionsProcedure.html", fontname="Helvetica", fontcolor="black", fontsize=10.0];
 	//org.universAAL.support.directives.checks.ModulesCheckFix implements org.universAAL.support.directives.util.PomFixer
-	c4346:p -> c4319:p [dir=back,arrowtail=empty,style=dashed];
-	//org.universAAL.support.directives.checks.DependencyManagementCheckFix implements org.universAAL.support.directives.util.PomFixer
-	c4346:p -> c4321:p [dir=back,arrowtail=empty,style=dashed];
+	c4341:p -> c4306:p [dir=back,arrowtail=empty,style=dashed];
 	//org.universAAL.support.directives.checks.FelixDepCheckFix implements org.universAAL.support.directives.util.PomFixer
-	c4346:p -> c4322:p [dir=back,arrowtail=empty,style=dashed];
-	//org.universAAL.support.directives.procedures.UpdateRootVersionsProcedure extends org.universAAL.support.directives.procedures.UpdateParentPomInteractiveProcedure
-	c4340:p -> c4338:p [dir=back,arrowtail=empty];
-	//org.universAAL.support.directives.procedures.UpdateRootVersionsProcedure implements org.universAAL.support.directives.util.PomFixer
-	c4346:p -> c4338:p [dir=back,arrowtail=empty,style=dashed];
-	//org.universAAL.support.directives.procedures.ChangeVersionProcedure implements org.universAAL.support.directives.util.PomFixer
-	c4346:p -> c4339:p [dir=back,arrowtail=empty,style=dashed];
+	c4341:p -> c4308:p [dir=back,arrowtail=empty,style=dashed];
+	//org.universAAL.support.directives.checks.ItestsCheckFix implements org.universAAL.support.directives.util.PomFixer
+	c4341:p -> c4314:p [dir=back,arrowtail=empty,style=dashed];
+	//org.universAAL.support.directives.checks.DependencyManagementCheckFix implements org.universAAL.support.directives.util.PomFixer
+	c4341:p -> c4315:p [dir=back,arrowtail=empty,style=dashed];
 	//org.universAAL.support.directives.procedures.UpdateParentPomInteractiveProcedure implements org.universAAL.support.directives.util.PomFixer
-	c4346:p -> c4340:p [dir=back,arrowtail=empty,style=dashed];
+	c4341:p -> c4343:p [dir=back,arrowtail=empty,style=dashed];
+	//org.universAAL.support.directives.procedures.ChangeVersionProcedure implements org.universAAL.support.directives.util.PomFixer
+	c4341:p -> c4344:p [dir=back,arrowtail=empty,style=dashed];
+	//org.universAAL.support.directives.procedures.UpdateRootVersionsProcedure extends org.universAAL.support.directives.procedures.UpdateParentPomInteractiveProcedure
+	c4343:p -> c4346:p [dir=back,arrowtail=empty];
+	//org.universAAL.support.directives.procedures.UpdateRootVersionsProcedure implements org.universAAL.support.directives.util.PomFixer
+	c4341:p -> c4346:p [dir=back,arrowtail=empty,style=dashed];
 }
 
