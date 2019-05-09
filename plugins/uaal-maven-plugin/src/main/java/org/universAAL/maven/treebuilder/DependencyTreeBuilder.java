@@ -950,7 +950,15 @@ public class DependencyTreeBuilder {
 						recurse(originatingArtifact, childRuntime, resolvedArtifacts, managedVersions, localRepository,
 								childRuntime.getRemoteRepositories(), source, filter, listener, true,
 								combinedSeparatedGroupIds);
-						nodesChildren.add(childRuntime);
+						try {
+							nodesChildren.add(childRuntime);
+						} catch (UnsupportedOperationException e) {
+							// nodesChildren is unmodifiable
+							ArrayList nNodesChildren = new ArrayList(nodesChildren);
+							nNodesChildren.add(childRuntime);
+							nodesChildren = nNodesChildren;
+							childrenField.set(node, nodesChildren);
+						}
 					}
 				}
 				fireEvent(ResolutionListener.FINISH_PROCESSING_CHILDREN, listener, node);
