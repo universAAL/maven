@@ -12,6 +12,7 @@
     <module>uaal-maven-plugin</module>
     <module>uaal-manifest-maven-plugin</module>
     <module>uaalDirectives-maven-plugin</module>
+    <module>code-generator</module>
   </modules>
   <distributionManagement>
     <repository>

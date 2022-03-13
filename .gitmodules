@@ -1,0 +1,3 @@
+[submodule "plugins/code-generator"]
+	path = plugins/code-generator
+	url = https://github.com/AIoTES/DevTools-IDE-CodeGenerator
